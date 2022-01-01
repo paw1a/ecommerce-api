@@ -1,0 +1,8 @@
+is_debug: true
+listen:
+  type:
+  bind_ip: localhost
+  port: 8080
+db:
+  uri: mongodb://localhost:27017
+  database: go_test
