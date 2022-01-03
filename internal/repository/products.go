@@ -62,10 +62,11 @@ func (p ProductsRepo) Update(ctx context.Context, productInput dto.UpdateProduct
 		updateQuery["categories"] = productInput.Categories
 	}
 
-	result := p.db.FindOneAndUpdate(ctx, bson.M{"_id": productInput.ID}, bson.M{"$set": updateQuery})
+	_, err := p.db.UpdateOne(ctx, bson.M{"_id": productInput.ID}, bson.M{"$set": updateQuery})
+	findResult := p.db.FindOne(ctx, bson.M{"_id": productInput.ID})
 
 	var product domain.Product
-	err := result.Decode(&product)
+	err = findResult.Decode(&product)
 
 	return product, err
 }

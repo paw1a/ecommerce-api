@@ -76,6 +76,7 @@ func (h *Handler) updateProduct(context *gin.Context) {
 	productID, err := parseIdFromPath(context, "id")
 	if err != nil {
 		newResponse(context, http.StatusBadRequest, err.Error())
+		return
 	}
 	productDTO.ID = productID
 
@@ -92,6 +93,7 @@ func (h *Handler) deleteProduct(context *gin.Context) {
 	productID, err := parseIdFromPath(context, "id")
 	if err != nil {
 		newResponse(context, http.StatusBadRequest, err.Error())
+		return
 	}
 
 	err = h.services.Products.Delete(context, productID)

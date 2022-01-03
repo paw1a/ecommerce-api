@@ -6,18 +6,18 @@ import (
 )
 
 type CreateProductDTO struct {
-	Name        string            `json:"name"`
+	Name        string            `json:"name" binding:"required"`
 	Description string            `json:"description"`
-	Price       float64           `json:"price"`
+	Price       float64           `json:"price" binding:"required"`
 	Categories  []domain.Category `json:"categories"`
 }
 
 type UpdateProductDTO struct {
 	ID          primitive.ObjectID `json:"id"`
 	Name        string             `json:"name"`
-	Description string             `json:"description"`
-	Price       float64            `json:"price"`
-	TotalRating float32            `json:"totalRating,omitempty"`
+	Description *string            `json:"description"`
+	Price       *float64           `json:"price"`
+	TotalRating *float32           `json:"totalRating,omitempty"`
 	Categories  []domain.Category  `json:"categories"`
 }
 

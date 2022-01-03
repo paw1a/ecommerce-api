@@ -28,12 +28,12 @@ func (h *Handler) Init(api *gin.RouterGroup) {
 func parseIdFromPath(c *gin.Context, paramName string) (primitive.ObjectID, error) {
 	idParam := c.Param(paramName)
 	if idParam == "" {
-		return primitive.ObjectID{}, errors.New("empty id paramName")
+		return primitive.ObjectID{}, errors.New("empty id param")
 	}
 
 	id, err := primitive.ObjectIDFromHex(idParam)
 	if err != nil {
-		return primitive.ObjectID{}, errors.New("invalid id paramName")
+		return primitive.ObjectID{}, errors.New("invalid id param")
 	}
 
 	return id, nil

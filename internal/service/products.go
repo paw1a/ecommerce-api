@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/paw1a/http-server/internal/domain"
 	"github.com/paw1a/http-server/internal/domain/dto"
 	"github.com/paw1a/http-server/internal/repository"
@@ -30,12 +31,13 @@ func (p ProductsService) Create(ctx context.Context, product dto.CreateProductDT
 }
 
 func (p ProductsService) Update(ctx context.Context, productDTO dto.UpdateProductDTO) (domain.Product, error) {
+	fmt.Println(productDTO)
 	return p.repo.Update(ctx, dto.UpdateProductInput{
 		ID:          productDTO.ID,
 		Name:        productDTO.Name,
-		Description: &productDTO.Description,
-		Price:       &productDTO.Price,
-		TotalRating: &productDTO.TotalRating,
+		Description: productDTO.Description,
+		Price:       productDTO.Price,
+		TotalRating: productDTO.TotalRating,
 		Categories:  productDTO.Categories,
 	})
 }
