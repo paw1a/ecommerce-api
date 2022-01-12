@@ -1,6 +1,6 @@
 package service
 
-import "github.com/paw1a/http-server/internal/repository"
+import "github.com/paw1a/ecommerce-api/internal/repository"
 
 type UsersService struct {
 	repo repository.Users

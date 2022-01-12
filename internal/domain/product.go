@@ -8,7 +8,7 @@ type Product struct {
 	Description string             `json:"description" bson:"description"`
 	Price       float64            `json:"price" bson:"price"`
 	TotalRating float32            `json:"totalRating,omitempty" bson:"totalRating,omitempty"`
-	Categories  []Category         `json:"categories" bson:"categories"`
+	Categories  []Category         `json:"categories" bson:"categories"` //TODO: make category independent entity, change type to Array(ObjectID)
 }
 
 type Category struct {

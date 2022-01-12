@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"github.com/paw1a/http-server/internal/domain"
+	"github.com/paw1a/ecommerce-api/internal/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

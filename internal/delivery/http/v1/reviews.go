@@ -7,96 +7,70 @@ import (
 	"net/http"
 )
 
-func (h *Handler) initProductsRoutes(api *gin.RouterGroup) {
-	users := api.Group("/products")
+func (h *Handler) initReviewsRoutes(api *gin.RouterGroup) {
+	users := api.Group("/reviews")
 	{
-		users.GET("/", h.getAllProducts)
-		users.GET("/:id", h.getProductById)
-		users.POST("/", h.createProduct)
-		users.PUT("/:id", h.updateProduct)
-		users.DELETE("/:id", h.deleteProduct)
+		users.GET("/", h.getAllReviews)
+		users.GET("/:id", h.getReviewById)
+		users.POST("/", h.createReview)
+		users.DELETE("/:id", h.deleteReview)
 	}
 }
 
-func (h *Handler) getAllProducts(context *gin.Context) {
-	products, err := h.services.Products.FindAll(context.Request.Context())
+func (h *Handler) getAllReviews(context *gin.Context) {
+	reviews, err := h.services.Reviews.FindAll(context.Request.Context())
 	if err != nil {
 		newResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	productsArray := make([]domain.Product, len(products))
-	if products != nil {
-		productsArray = products
+	reviewsArray := make([]domain.Review, len(reviews))
+	if reviews != nil {
+		reviewsArray = reviews
 	}
 
-	context.JSON(http.StatusOK, dataResponse{Data: productsArray})
+	context.JSON(http.StatusOK, dataResponse{Data: reviewsArray})
 }
 
-func (h *Handler) getProductById(context *gin.Context) {
+func (h *Handler) getReviewById(context *gin.Context) {
 	id, err := parseIdFromPath(context, "id")
 	if err != nil {
 		newResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
-	product, err := h.services.Products.FindByID(context.Request.Context(), id)
+	review, err := h.services.Reviews.FindByID(context.Request.Context(), id)
 	if err != nil {
 		newResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	context.JSON(http.StatusOK, dataResponse{Data: product})
+	context.JSON(http.StatusOK, dataResponse{Data: review})
 }
 
-func (h *Handler) createProduct(context *gin.Context) {
-	var productDTO dto.CreateProductDTO
-	err := context.BindJSON(&productDTO)
+func (h *Handler) createReview(context *gin.Context) {
+	var reviewDTO dto.CreateReviewDTO
+	err := context.BindJSON(&reviewDTO)
 	if err != nil {
 		newResponse(context, http.StatusBadRequest, "Invalid input body")
 		return
 	}
-	product, err := h.services.Products.Create(context.Request.Context(), productDTO)
+	review, err := h.services.Reviews.Create(context.Request.Context(), reviewDTO)
 	if err != nil {
 		newResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	context.JSON(http.StatusOK, dataResponse{Data: product})
+	context.JSON(http.StatusOK, dataResponse{Data: review})
 }
 
-func (h *Handler) updateProduct(context *gin.Context) {
-	var productDTO dto.UpdateProductDTO
-
-	err := context.BindJSON(&productDTO)
-	if err != nil {
-		newResponse(context, http.StatusBadRequest, "Invalid input body")
-		return
-	}
-
-	productID, err := parseIdFromPath(context, "id")
-	if err != nil {
-		newResponse(context, http.StatusBadRequest, err.Error())
-		return
-	}
-	productDTO.ID = productID
-
-	product, err := h.services.Products.Update(context.Request.Context(), productDTO)
-	if err != nil {
-		newResponse(context, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	context.JSON(http.StatusOK, dataResponse{Data: product})
-}
-
-func (h *Handler) deleteProduct(context *gin.Context) {
-	productID, err := parseIdFromPath(context, "id")
+func (h *Handler) deleteReview(context *gin.Context) {
+	reviewID, err := parseIdFromPath(context, "id")
 	if err != nil {
 		newResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	err = h.services.Products.Delete(context, productID)
+	err = h.services.Reviews.Delete(context, reviewID)
 	if err != nil {
 		newResponse(context, http.StatusInternalServerError, err.Error())
 		return

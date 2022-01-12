@@ -2,8 +2,8 @@ package mongodb
 
 import (
 	"context"
-	"github.com/paw1a/http-server/internal/config"
-	"github.com/paw1a/http-server/pkg/logging"
+	"github.com/paw1a/ecommerce-api/internal/config"
+	"github.com/paw1a/ecommerce-api/pkg/logging"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

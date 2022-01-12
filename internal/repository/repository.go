@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
-	"github.com/paw1a/http-server/internal/domain"
-	"github.com/paw1a/http-server/internal/domain/dto"
+	"github.com/paw1a/ecommerce-api/internal/domain"
+	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -19,14 +19,25 @@ type Products interface {
 	Delete(ctx context.Context, productID primitive.ObjectID) error
 }
 
+type Reviews interface {
+	FindAll(ctx context.Context) ([]domain.Review, error)
+	FindByID(ctx context.Context, reviewID primitive.ObjectID) (domain.Review, error)
+	FindByUserID(ctx context.Context, userID primitive.ObjectID) ([]domain.Review, error)
+	FindByProductID(ctx context.Context, productID primitive.ObjectID) ([]domain.Review, error)
+	Create(ctx context.Context, review domain.Review) (domain.Review, error)
+	Delete(ctx context.Context, reviewID primitive.ObjectID) error
+}
+
 type Repositories struct {
 	Users    Users
 	Products Products
+	Reviews  Reviews
 }
 
 func NewRepositories(db *mongo.Database) *Repositories {
 	return &Repositories{
 		Users:    NewUsersRepo(db),
 		Products: NewProductsRepo(db),
+		Reviews:  NewReviewsRepo(db),
 	}
 }

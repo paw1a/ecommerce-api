@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/ilyakaznacheev/cleanenv"
-	"github.com/paw1a/http-server/pkg/logging"
+	"github.com/paw1a/ecommerce-api/pkg/logging"
 	"sync"
 )
 

@@ -21,7 +21,7 @@ type Cart struct {
 }
 
 type CartItem struct {
-	ProductID primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	ProductID primitive.ObjectID `json:"id" bson:"_id,omitempty"` //TODO: rename id
 	Number    int                `json:"number" bson:"number"`
 	ExpiresAt time.Time          `json:"expiresAt" bson:"expiresAt"`
 }

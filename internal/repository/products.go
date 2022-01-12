@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
-	"github.com/paw1a/http-server/internal/domain"
-	"github.com/paw1a/http-server/internal/domain/dto"
+	"github.com/paw1a/ecommerce-api/internal/domain"
+	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

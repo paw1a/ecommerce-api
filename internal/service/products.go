@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/paw1a/http-server/internal/domain"
-	"github.com/paw1a/http-server/internal/domain/dto"
-	"github.com/paw1a/http-server/internal/repository"
+	"github.com/paw1a/ecommerce-api/internal/domain"
+	"github.com/paw1a/ecommerce-api/internal/domain/dto"
+	"github.com/paw1a/ecommerce-api/internal/repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

@@ -2,7 +2,7 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/paw1a/http-server/pkg/logging"
+	"github.com/paw1a/ecommerce-api/pkg/logging"
 )
 
 type dataResponse struct {

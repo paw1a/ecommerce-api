@@ -2,8 +2,8 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/paw1a/http-server/internal/domain"
-	"github.com/paw1a/http-server/internal/domain/dto"
+	"github.com/paw1a/ecommerce-api/internal/domain"
+	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"net/http"
 )
 

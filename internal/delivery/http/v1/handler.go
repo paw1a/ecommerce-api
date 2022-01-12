@@ -3,7 +3,7 @@ package v1
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/paw1a/http-server/internal/service"
+	"github.com/paw1a/ecommerce-api/internal/service"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -22,6 +22,7 @@ func (h *Handler) Init(api *gin.RouterGroup) {
 	{
 		h.initUsersRoutes(v1)
 		h.initProductsRoutes(v1)
+		h.initReviewsRoutes(v1)
 	}
 }
 

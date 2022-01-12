@@ -2,9 +2,9 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/paw1a/http-server/internal/config"
-	v1 "github.com/paw1a/http-server/internal/delivery/http/v1"
-	"github.com/paw1a/http-server/internal/service"
+	"github.com/paw1a/ecommerce-api/internal/config"
+	v1 "github.com/paw1a/ecommerce-api/internal/delivery/http/v1"
+	"github.com/paw1a/ecommerce-api/internal/service"
 	"net/http"
 )
 
