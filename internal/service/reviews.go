@@ -20,7 +20,15 @@ func (r ReviewsService) FindByID(ctx context.Context, reviewID primitive.ObjectI
 	return r.repo.FindByID(ctx, reviewID)
 }
 
-func (r ReviewsService) Create(ctx context.Context, review dto.CreateReviewDTO) (domain.Review, error) {
+func (r ReviewsService) FindByUserID(ctx context.Context, userID primitive.ObjectID) ([]domain.Review, error) {
+	return r.repo.FindByUserID(ctx, userID)
+}
+
+func (r ReviewsService) FindByProductID(ctx context.Context, productID primitive.ObjectID) ([]domain.Review, error) {
+	return r.repo.FindByProductID(ctx, productID)
+}
+
+func (r ReviewsService) Create(ctx context.Context, review dto.CreateReviewInput) (domain.Review, error) {
 	return r.repo.Create(ctx, domain.Review{
 		UserID:    review.UserID,
 		ProductID: review.ProductID,

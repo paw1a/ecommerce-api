@@ -4,18 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 )
-
-func (h *Handler) initReviewsRoutes(api *gin.RouterGroup) {
-	users := api.Group("/reviews")
-	{
-		users.GET("/", h.getAllReviews)
-		users.GET("/:id", h.getReviewById)
-		users.POST("/", h.createReview)
-		users.DELETE("/:id", h.deleteReview)
-	}
-}
 
 func (h *Handler) getAllReviews(context *gin.Context) {
 	reviews, err := h.services.Reviews.FindAll(context.Request.Context())
@@ -54,7 +45,13 @@ func (h *Handler) createReview(context *gin.Context) {
 		newResponse(context, http.StatusBadRequest, "Invalid input body")
 		return
 	}
-	review, err := h.services.Reviews.Create(context.Request.Context(), reviewDTO)
+	review, err := h.services.Reviews.Create(context.Request.Context(), dto.CreateReviewInput{
+		UserID:    primitive.ObjectID{},
+		ProductID: primitive.ObjectID{},
+		Text:      reviewDTO.Text,
+		Rating:    reviewDTO.Rating,
+	})
+
 	if err != nil {
 		newResponse(context, http.StatusInternalServerError, err.Error())
 		return
@@ -77,4 +74,50 @@ func (h *Handler) deleteReview(context *gin.Context) {
 	}
 
 	context.Status(http.StatusOK)
+}
+
+func (h *Handler) getReviewsByProduct(context *gin.Context) {
+	productID, err := parseIdFromPath(context, "id")
+	if err != nil {
+		newResponse(context, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	reviews, err := h.services.Reviews.FindByProductID(context, productID)
+	if err != nil {
+		newResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	context.JSON(http.StatusOK, dataResponse{Data: reviews})
+}
+
+func (h *Handler) createReviewForProduct(context *gin.Context) {
+	productID, err := parseIdFromPath(context, "id")
+	if err != nil {
+		newResponse(context, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var reviewDTO dto.CreateReviewDTO
+	err = context.BindJSON(&reviewDTO)
+	if err != nil {
+		newResponse(context, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+
+	review, err := h.services.Reviews.Create(context, dto.CreateReviewInput{
+		UserID:    primitive.ObjectID{},
+		ProductID: productID,
+		Text:      reviewDTO.Text,
+		Rating:    reviewDTO.Rating,
+	})
+
+	if err != nil {
+		newResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	context.JSON(http.StatusOK, dataResponse{Data: review})
+
 }

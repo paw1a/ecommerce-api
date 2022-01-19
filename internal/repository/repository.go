@@ -28,10 +28,15 @@ type Reviews interface {
 	Delete(ctx context.Context, reviewID primitive.ObjectID) error
 }
 
+type Admins interface {
+	FindByCredentials(ctx context.Context, email string, password string) (domain.Admin, error)
+}
+
 type Repositories struct {
 	Users    Users
 	Products Products
 	Reviews  Reviews
+	Admins   Admins
 }
 
 func NewRepositories(db *mongo.Database) *Repositories {

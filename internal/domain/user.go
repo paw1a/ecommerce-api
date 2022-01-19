@@ -9,8 +9,8 @@ type User struct {
 	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Name     string             `json:"name" bson:"name"`
 	Email    string             `json:"email" bson:"email"`
+	Image    string             `json:"image" bson:"image"`
 	Password string             `json:"password" bson:"password"`
-	Role     string             `json:"role" bson:"role"`
 	Cart     Cart               `json:"cart" bson:"cart"`
 	Orders   []Order            `json:"orders" bson:"orders"`
 }

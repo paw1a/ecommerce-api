@@ -22,14 +22,21 @@ type Products interface {
 type Reviews interface {
 	FindAll(ctx context.Context) ([]domain.Review, error)
 	FindByID(ctx context.Context, reviewID primitive.ObjectID) (domain.Review, error)
-	Create(ctx context.Context, review dto.CreateReviewDTO) (domain.Review, error)
+	FindByUserID(ctx context.Context, userID primitive.ObjectID) ([]domain.Review, error)
+	FindByProductID(ctx context.Context, productID primitive.ObjectID) ([]domain.Review, error)
+	Create(ctx context.Context, review dto.CreateReviewInput) (domain.Review, error)
 	Delete(ctx context.Context, reviewID primitive.ObjectID) error
+}
+
+type Admins interface {
+	FindByCredentials(ctx context.Context, email string, password string) (domain.Admin, error)
 }
 
 type Services struct {
 	Users    Users
 	Products Products
 	Reviews  Reviews
+	Admins   Admins
 }
 
 type Deps struct {
@@ -40,10 +47,12 @@ func NewServices(deps Deps) *Services {
 	usersService := NewUsersService(deps.Repos.Users)
 	productsService := NewProductsService(deps.Repos.Products)
 	reviewsService := NewReviewsService(deps.Repos.Reviews)
+	adminsService := NewAdminsService(deps.Repos.Admins)
 
 	return &Services{
 		Users:    usersService,
 		Products: productsService,
 		Reviews:  reviewsService,
+		Admins:   adminsService,
 	}
 }

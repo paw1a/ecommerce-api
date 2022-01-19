@@ -6,17 +6,6 @@ import (
 	"net/http"
 )
 
-func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
-	users := api.Group("/users")
-	{
-		users.GET("/", getAllUsers)
-		users.GET("/:id", getOneUser)
-		users.POST("/", createUser)
-		users.PUT("/:id", updateUser)
-		users.DELETE("/:id", deleteUser)
-	}
-}
-
 func updateUser(context *gin.Context) {
 	context.String(http.StatusOK, "User updated")
 }

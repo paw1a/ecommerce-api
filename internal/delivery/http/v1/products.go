@@ -7,17 +7,6 @@ import (
 	"net/http"
 )
 
-func (h *Handler) initProductsRoutes(api *gin.RouterGroup) {
-	users := api.Group("/products")
-	{
-		users.GET("/", h.getAllProducts)
-		users.GET("/:id", h.getProductById)
-		users.POST("/", h.createProduct)
-		users.PUT("/:id", h.updateProduct)
-		users.DELETE("/:id", h.deleteProduct)
-	}
-}
-
 func (h *Handler) getAllProducts(context *gin.Context) {
 	products, err := h.services.Products.FindAll(context.Request.Context())
 	if err != nil {

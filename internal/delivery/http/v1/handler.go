@@ -20,9 +20,7 @@ func NewHandler(services *service.Services) *Handler {
 func (h *Handler) Init(api *gin.RouterGroup) {
 	v1 := api.Group("/v1")
 	{
-		h.initUsersRoutes(v1)
-		h.initProductsRoutes(v1)
-		h.initReviewsRoutes(v1)
+		h.initAdminsRoutes(v1)
 	}
 }
 
