@@ -19,6 +19,9 @@ type Config struct {
 		Username string `yaml:"username"`
 		Password string `yaml:"password"`
 	}
+	JWT struct {
+		Secret string `yaml:"secret" env-required:"true"`
+	}
 }
 
 var instance *Config

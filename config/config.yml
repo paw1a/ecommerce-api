@@ -6,3 +6,5 @@ listen:
 db:
   uri: mongodb://localhost:27017
   database: go_test
+jwt:
+  secret: jwtSecret
