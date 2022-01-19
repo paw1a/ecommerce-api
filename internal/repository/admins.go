@@ -21,3 +21,9 @@ func (a AdminsRepo) FindByCredentials(ctx context.Context, email string, passwor
 
 	return admin, err
 }
+
+func NewAdminsRepo(db *mongo.Database) *AdminsRepo {
+	return &AdminsRepo{
+		db: db.Collection(adminsCollection),
+	}
+}

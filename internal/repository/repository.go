@@ -44,5 +44,6 @@ func NewRepositories(db *mongo.Database) *Repositories {
 		Users:    NewUsersRepo(db),
 		Products: NewProductsRepo(db),
 		Reviews:  NewReviewsRepo(db),
+		Admins:   NewAdminsRepo(db),
 	}
 }

@@ -8,3 +8,5 @@ db:
   database: go_test
 jwt:
   secret: jwtSecret
+  accessTokenTime: 1 # 15 minutes
+  refreshTokenTime: 86400 # 60 days

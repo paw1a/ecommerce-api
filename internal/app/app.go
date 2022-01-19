@@ -7,6 +7,7 @@ import (
 	delivery "github.com/paw1a/ecommerce-api/internal/delivery/http"
 	"github.com/paw1a/ecommerce-api/internal/repository"
 	"github.com/paw1a/ecommerce-api/internal/service"
+	"github.com/paw1a/ecommerce-api/pkg/auth"
 	"github.com/paw1a/ecommerce-api/pkg/database/mongodb"
 	"github.com/paw1a/ecommerce-api/pkg/logging"
 	"log"
@@ -29,11 +30,13 @@ func Run(configPath string) {
 
 	db := mongoClient.Database(cfg.DB.Database)
 
+	tokenProvider := auth.NewTokenProvider(cfg)
+
 	repos := repository.NewRepositories(db)
 	services := service.NewServices(service.Deps{
 		Repos: repos,
 	})
-	handlers := delivery.NewHandler(services)
+	handlers := delivery.NewHandler(services, tokenProvider)
 
 	server := &http.Server{
 		Handler:      handlers.Init(cfg),

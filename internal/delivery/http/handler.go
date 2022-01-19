@@ -5,16 +5,19 @@ import (
 	"github.com/paw1a/ecommerce-api/internal/config"
 	v1 "github.com/paw1a/ecommerce-api/internal/delivery/http/v1"
 	"github.com/paw1a/ecommerce-api/internal/service"
+	"github.com/paw1a/ecommerce-api/pkg/auth"
 	"net/http"
 )
 
 type Handler struct {
-	services *service.Services
+	services      *service.Services
+	tokenProvider auth.TokenProvider
 }
 
-func NewHandler(services *service.Services) *Handler {
+func NewHandler(services *service.Services, tokenProvider auth.TokenProvider) *Handler {
 	return &Handler{
-		services: services,
+		services:      services,
+		tokenProvider: tokenProvider,
 	}
 }
 
@@ -34,7 +37,7 @@ func (h *Handler) Init(cfg *config.Config) *gin.Engine {
 }
 
 func (h *Handler) initAPI(router *gin.Engine) {
-	handlerV1 := v1.NewHandler(h.services)
+	handlerV1 := v1.NewHandler(h.services, h.tokenProvider)
 	api := router.Group("/api")
 	{
 		handlerV1.Init(api)

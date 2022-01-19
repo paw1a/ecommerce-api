@@ -29,7 +29,7 @@ type Reviews interface {
 }
 
 type Admins interface {
-	FindByCredentials(ctx context.Context, email string, password string) (domain.Admin, error)
+	FindByCredentials(ctx context.Context, adminDTO dto.AdminDTO) (domain.Admin, error)
 }
 
 type Services struct {

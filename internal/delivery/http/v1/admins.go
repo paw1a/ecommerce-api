@@ -1,8 +1,10 @@
 package v1
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
+	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 )
 
@@ -49,6 +51,23 @@ func (h *Handler) adminSignIn(context *gin.Context) {
 	err := context.BindJSON(&adminDTO)
 	if err != nil {
 		newResponse(context, http.StatusBadRequest, "Invalid input body")
+		return
 	}
 
+	admin, err := h.services.Admins.FindByCredentials(context, adminDTO)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			newResponse(context, http.StatusUnauthorized, "Invalid admin credentials")
+		} else {
+			newResponse(context, http.StatusInternalServerError, err.Error())
+		}
+		return
+	}
+
+	token, err := h.tokenProvider.CreateToken(admin)
+	if err != nil {
+		newResponse(context, http.StatusUnauthorized, err.Error())
+		return
+	}
+	context.JSON(http.StatusOK, dataResponse{Data: token})
 }

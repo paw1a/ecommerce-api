@@ -4,16 +4,19 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/paw1a/ecommerce-api/internal/service"
+	"github.com/paw1a/ecommerce-api/pkg/auth"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Handler struct {
-	services *service.Services
+	services      *service.Services
+	tokenProvider auth.TokenProvider
 }
 
-func NewHandler(services *service.Services) *Handler {
+func NewHandler(services *service.Services, tokenProvider auth.TokenProvider) *Handler {
 	return &Handler{
-		services: services,
+		services:      services,
+		tokenProvider: tokenProvider,
 	}
 }
 

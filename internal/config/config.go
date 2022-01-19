@@ -20,7 +20,9 @@ type Config struct {
 		Password string `yaml:"password"`
 	}
 	JWT struct {
-		Secret string `yaml:"secret" env-required:"true"`
+		Secret           string `yaml:"secret" env-required:"true"`
+		AccessTokenTime  int64  `yaml:"accessTokenTime" env-default:"15"`
+		RefreshTokenTime int64  `yaml:"refreshTokenTime" env-default:"86400"`
 	}
 }
 
