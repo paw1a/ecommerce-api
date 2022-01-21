@@ -64,7 +64,7 @@ func (h *Handler) adminSignIn(context *gin.Context) {
 		return
 	}
 
-	token, err := h.tokenProvider.CreateToken(admin)
+	token, err := h.tokenProvider.CreateJWTSession(admin, "")
 	if err != nil {
 		newResponse(context, http.StatusUnauthorized, err.Error())
 		return

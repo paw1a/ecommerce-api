@@ -9,6 +9,7 @@ import (
 	"github.com/paw1a/ecommerce-api/internal/service"
 	"github.com/paw1a/ecommerce-api/pkg/auth"
 	"github.com/paw1a/ecommerce-api/pkg/database/mongodb"
+	"github.com/paw1a/ecommerce-api/pkg/database/redis"
 	"github.com/paw1a/ecommerce-api/pkg/logging"
 	"log"
 	"net/http"
@@ -27,15 +28,21 @@ func Run(configPath string) {
 		logger.Fatal(err)
 	}
 	logger.Info("Mongo is connected")
-
 	db := mongoClient.Database(cfg.DB.Database)
 
-	tokenProvider := auth.NewTokenProvider(cfg)
+	redisClient, err := redis.NewClient(cfg)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	logger.Info("Redis is connected")
+
+	tokenProvider := auth.NewTokenProvider(cfg, redisClient)
 
 	repos := repository.NewRepositories(db)
 	services := service.NewServices(service.Deps{
 		Repos: repos,
 	})
+
 	handlers := delivery.NewHandler(services, tokenProvider)
 
 	server := &http.Server{

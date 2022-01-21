@@ -10,3 +10,5 @@ jwt:
   secret: jwtSecret
   accessTokenTime: 1 # 15 minutes
   refreshTokenTime: 86400 # 60 days
+redis:
+  uri: localhost:6379

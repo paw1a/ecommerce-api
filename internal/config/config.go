@@ -23,7 +23,10 @@ type Config struct {
 		Secret           string `yaml:"secret" env-required:"true"`
 		AccessTokenTime  int64  `yaml:"accessTokenTime" env-default:"15"`
 		RefreshTokenTime int64  `yaml:"refreshTokenTime" env-default:"86400"`
-	}
+	} `yaml:"jwt"`
+	Redis struct {
+		URI string `yaml:"uri" env-default:"localhost:6379"`
+	} `yaml:"redis"`
 }
 
 var instance *Config
