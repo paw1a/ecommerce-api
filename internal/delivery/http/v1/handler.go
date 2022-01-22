@@ -6,6 +6,7 @@ import (
 	"github.com/paw1a/ecommerce-api/internal/service"
 	"github.com/paw1a/ecommerce-api/pkg/auth"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"strings"
 )
 
 type Handler struct {
@@ -39,4 +40,22 @@ func parseIdFromPath(c *gin.Context, paramName string) (primitive.ObjectID, erro
 	}
 
 	return id, nil
+}
+
+func extractAuthToken(context *gin.Context) (string, error) {
+	authHeader := context.GetHeader("Authorization")
+	if authHeader == "" {
+		return "", errors.New("empty auth header")
+	}
+
+	headerParts := strings.Split(authHeader, " ")
+	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
+		return "", errors.New("invalid auth header")
+	}
+
+	if len(headerParts[1]) == 0 {
+		return "", errors.New("token is empty")
+	}
+
+	return headerParts[1], nil
 }

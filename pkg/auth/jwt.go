@@ -7,15 +7,15 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-redis/redis/v7"
 	"github.com/paw1a/ecommerce-api/internal/config"
-	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/twinj/uuid"
 	"time"
 )
 
 type RefreshSession struct {
-	RefreshToken string `json:"refreshToken"`
-	RefreshExp   int64  `json:"refreshExp"`
-	Fingerprint  string `json:"fingerprint"`
+	RefreshToken string        `json:"refreshToken"`
+	RefreshExp   int64         `json:"refreshExp"`
+	Fingerprint  string        `json:"fingerprint"`
+	Claims       jwt.MapClaims `json:"claims"`
 }
 
 type AuthDetails struct {
@@ -23,9 +23,20 @@ type AuthDetails struct {
 	RefreshToken string `json:"refreshToken"`
 }
 
+type RefreshInput struct {
+	RefreshToken string `json:"refreshToken"`
+	Fingerprint  string `json:"fingerprint"`
+}
+
+type CreateSessionInput struct {
+	Fingerprint string
+	Claims      jwt.MapClaims
+}
+
 type TokenProvider interface {
-	CreateJWTSession(admin domain.Admin, fingerprint string) (*AuthDetails, error)
+	CreateJWTSession(input CreateSessionInput) (*AuthDetails, error)
 	VerifyToken(tokenString string) (jwt.MapClaims, error)
+	Refresh(refreshInput RefreshInput) (*AuthDetails, error)
 }
 
 type Provider struct {
@@ -40,15 +51,12 @@ func NewTokenProvider(cfg *config.Config, redisClient *redis.Client) *Provider {
 	}
 }
 
-func (p *Provider) CreateJWTSession(admin domain.Admin, fingerprint string) (*AuthDetails, error) {
+func (p *Provider) CreateJWTSession(input CreateSessionInput) (*AuthDetails, error) {
 	accessExpTime := time.Minute * time.Duration(p.cfg.JWT.AccessTokenTime)
 	accessExp := time.Now().Add(accessExpTime).Unix()
-	claims := jwt.MapClaims{
-		"adminID": admin.ID,
-		"exp":     accessExp,
-	}
+	input.Claims["exp"] = accessExp
 
-	unsignedToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	unsignedToken := jwt.NewWithClaims(jwt.SigningMethodHS256, input.Claims)
 	accessToken, err := unsignedToken.SignedString([]byte(p.cfg.JWT.Secret))
 	if err != nil {
 		return nil, err
@@ -61,7 +69,8 @@ func (p *Provider) CreateJWTSession(admin domain.Admin, fingerprint string) (*Au
 	session := RefreshSession{
 		RefreshToken: refreshToken,
 		RefreshExp:   refreshExp,
-		Fingerprint:  fingerprint,
+		Fingerprint:  input.Fingerprint,
+		Claims:       input.Claims,
 	}
 
 	sessionJson, err := json.Marshal(session)
@@ -75,6 +84,33 @@ func (p *Provider) CreateJWTSession(admin domain.Admin, fingerprint string) (*Au
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
+}
+
+func (p *Provider) Refresh(refreshInput RefreshInput) (*AuthDetails, error) {
+	sessionJson, err := p.redisClient.Get(refreshInput.RefreshToken).Bytes()
+	if err != nil {
+		return nil, errors.New("invalid refresh token")
+	}
+
+	err = p.redisClient.Del(refreshInput.RefreshToken).Err()
+	if err != nil {
+		return nil, err
+	}
+
+	var session RefreshSession
+	err = json.Unmarshal(sessionJson, &session)
+	if err != nil {
+		return nil, err
+	}
+
+	if session.Fingerprint != refreshInput.Fingerprint {
+		return nil, errors.New("invalid client fingerprint")
+	}
+
+	return p.CreateJWTSession(CreateSessionInput{
+		Fingerprint: refreshInput.Fingerprint,
+		Claims:      session.Claims,
+	})
 }
 
 func (p *Provider) VerifyToken(tokenString string) (jwt.MapClaims, error) {

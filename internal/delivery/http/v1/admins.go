@@ -2,17 +2,19 @@ package v1
 
 import (
 	"errors"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
+	"github.com/paw1a/ecommerce-api/pkg/auth"
 	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
-	"strings"
 )
 
 func (h *Handler) initAdminsRoutes(api *gin.RouterGroup) {
 	admins := api.Group("/admins")
 	{
-		admins.POST("/sign-in", h.adminSignIn)
+		admins.POST("/auth/sign-in", h.adminSignIn)
+		admins.POST("/auth/refresh", h.adminRefresh)
 
 		authenticated := admins.Group("/", h.verifyAdmin)
 		{
@@ -65,7 +67,11 @@ func (h *Handler) adminSignIn(context *gin.Context) {
 		return
 	}
 
-	authDetails, err := h.tokenProvider.CreateJWTSession(admin, "fingerprint")
+	adminClaims := jwt.MapClaims{"adminID": admin.ID}
+	authDetails, err := h.tokenProvider.CreateJWTSession(auth.CreateSessionInput{
+		Fingerprint: adminDTO.Fingerprint,
+		Claims:      adminClaims,
+	})
 	if err != nil {
 		newResponse(context, http.StatusUnauthorized, err.Error())
 		return
@@ -74,7 +80,7 @@ func (h *Handler) adminSignIn(context *gin.Context) {
 }
 
 func (h *Handler) verifyAdmin(context *gin.Context) {
-	tokenString, err := extractToken(context)
+	tokenString, err := extractAuthToken(context)
 	if err != nil {
 		newResponse(context, http.StatusUnauthorized, err.Error())
 		return
@@ -95,20 +101,22 @@ func (h *Handler) verifyAdmin(context *gin.Context) {
 	context.Set("adminID", adminID)
 }
 
-func extractToken(context *gin.Context) (string, error) {
-	authHeader := context.GetHeader("Authorization")
-	if authHeader == "" {
-		return "", errors.New("empty auth header")
+func (h *Handler) adminRefresh(context *gin.Context) {
+	var input auth.RefreshInput
+	err := context.BindJSON(&input)
+	if err != nil {
+		newResponse(context, http.StatusBadRequest, "invalid request body")
+		return
 	}
 
-	headerParts := strings.Split(authHeader, " ")
-	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
-		return "", errors.New("invalid auth header")
-	}
+	authDetails, err := h.tokenProvider.Refresh(auth.RefreshInput{
+		RefreshToken: input.RefreshToken,
+		Fingerprint:  input.Fingerprint,
+	})
 
-	if len(headerParts[1]) == 0 {
-		return "", errors.New("token is empty")
+	if err != nil {
+		newResponse(context, http.StatusUnauthorized, err.Error())
+		return
 	}
-
-	return headerParts[1], nil
+	context.JSON(http.StatusOK, dataResponse{Data: authDetails})
 }
