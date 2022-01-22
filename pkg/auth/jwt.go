@@ -2,6 +2,8 @@ package auth
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-redis/redis/v7"
 	"github.com/paw1a/ecommerce-api/internal/config"
@@ -17,13 +19,13 @@ type RefreshSession struct {
 }
 
 type AuthDetails struct {
-	AccessToken  string
-	RefreshToken string
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
 }
 
 type TokenProvider interface {
 	CreateJWTSession(admin domain.Admin, fingerprint string) (*AuthDetails, error)
-	VerifyToken(token jwt.Token) (jwt.Claims, error)
+	VerifyToken(tokenString string) (jwt.MapClaims, error)
 }
 
 type Provider struct {
@@ -75,7 +77,19 @@ func (p *Provider) CreateJWTSession(admin domain.Admin, fingerprint string) (*Au
 	}, nil
 }
 
-func (p *Provider) VerifyToken(token jwt.Token) (jwt.Claims, error) {
-	//TODO implement me
-	panic("implement me")
+func (p *Provider) VerifyToken(tokenString string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(p.cfg.JWT.Secret), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok && token.Valid {
+		return claims, nil
+	}
+	return nil, errors.New("token or claims are invalid")
 }
