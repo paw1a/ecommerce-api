@@ -53,14 +53,14 @@ func (h *Handler) adminSignIn(context *gin.Context) {
 	var adminDTO dto.AdminDTO
 	err := context.BindJSON(&adminDTO)
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, "Invalid input body")
+		newResponse(context, http.StatusBadRequest, "invalid input body")
 		return
 	}
 
 	admin, err := h.services.Admins.FindByCredentials(context, adminDTO)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			newResponse(context, http.StatusUnauthorized, "Invalid admin credentials")
+			newResponse(context, http.StatusUnauthorized, "invalid admin credentials")
 		} else {
 			newResponse(context, http.StatusInternalServerError, err.Error())
 		}

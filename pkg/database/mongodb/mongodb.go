@@ -3,12 +3,12 @@ package mongodb
 import (
 	"context"
 	"github.com/paw1a/ecommerce-api/internal/config"
-	"github.com/paw1a/ecommerce-api/pkg/logging"
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func NewClient(ctx context.Context, config *config.Config, logger *logging.Logger) (*mongo.Client, error) {
+func NewClient(ctx context.Context, config *config.Config) (*mongo.Client, error) {
 	opts := options.Client().ApplyURI(config.DB.URI)
 	if config.DB.Username != "" && config.DB.Password != "" {
 		opts.SetAuth(options.Credential{
@@ -18,18 +18,19 @@ func NewClient(ctx context.Context, config *config.Config, logger *logging.Logge
 
 	client, err := mongo.NewClient(opts)
 	if err != nil {
+		log.Error("failed to create mongo client")
 		return nil, err
 	}
 
 	err = client.Connect(ctx)
 	if err != nil {
-		logger.Errorf("Failed to connect to mongo")
+		log.Errorf("failed to connect to mongo")
 		return nil, err
 	}
 
 	err = client.Ping(context.Background(), nil)
 	if err != nil {
-		logger.Errorf("Failed to ping mongo")
+		log.Errorf("failed to ping mongo")
 		return nil, err
 	}
 

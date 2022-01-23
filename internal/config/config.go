@@ -2,13 +2,12 @@ package config
 
 import (
 	"github.com/ilyakaznacheev/cleanenv"
-	"github.com/paw1a/ecommerce-api/pkg/logging"
+	log "github.com/sirupsen/logrus"
 	"sync"
 )
 
 type Config struct {
-	IsDebug *bool `yaml:"is_debug" env-required:"true"`
-	Listen  struct {
+	Listen struct {
 		Type   string `yaml:"type" env-default:"port"`
 		BindIP string `yaml:"bind_ip" env-default:"127.0.0.1"`
 		Port   string `yaml:"port" env-default:"8080"`
@@ -34,13 +33,12 @@ var once sync.Once
 
 func GetConfig(configPath string) *Config {
 	once.Do(func() {
-		logger := logging.GetLogger()
-		logger.Info("Read application configuration...")
+		log.Infof("read config file: %s", configPath)
 		instance = &Config{}
 		if err := cleanenv.ReadConfig(configPath, instance); err != nil {
 			help, _ := cleanenv.GetDescription(instance, nil)
-			logger.Info(help)
-			logger.Fatal(err)
+			log.Info(help)
+			log.Fatal(err)
 		}
 	})
 	return instance

@@ -2,7 +2,7 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/paw1a/ecommerce-api/pkg/logging"
+	log "github.com/sirupsen/logrus"
 )
 
 type dataResponse struct {
@@ -18,6 +18,6 @@ type response struct {
 }
 
 func newResponse(c *gin.Context, statusCode int, message string) {
-	logging.GetLogger().Error(message)
+	log.Error(message)
 	c.AbortWithStatusJSON(statusCode, response{message})
 }

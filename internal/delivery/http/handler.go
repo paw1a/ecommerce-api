@@ -2,7 +2,6 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/paw1a/ecommerce-api/internal/config"
 	v1 "github.com/paw1a/ecommerce-api/internal/delivery/http/v1"
 	"github.com/paw1a/ecommerce-api/internal/service"
 	"github.com/paw1a/ecommerce-api/pkg/auth"
@@ -21,12 +20,10 @@ func NewHandler(services *service.Services, tokenProvider auth.TokenProvider) *H
 	}
 }
 
-func (h *Handler) Init(cfg *config.Config) *gin.Engine {
-	// gin.SetMode(gin.ReleaseMode)
-	// Init gin handler
+func (h *Handler) Init() *gin.Engine {
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
-	// Init router
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
