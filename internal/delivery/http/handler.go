@@ -5,6 +5,11 @@ import (
 	v1 "github.com/paw1a/ecommerce-api/internal/delivery/http/v1"
 	"github.com/paw1a/ecommerce-api/internal/service"
 	"github.com/paw1a/ecommerce-api/pkg/auth"
+
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
+
+	_ "github.com/paw1a/ecommerce-api/docs"
 	"net/http"
 )
 
@@ -22,8 +27,9 @@ func NewHandler(services *service.Services, tokenProvider auth.TokenProvider) *H
 
 func (h *Handler) Init() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
-	router := gin.Default()
+	router := gin.New()
 
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})

@@ -1,0 +1,17 @@
+basePath: /api/v1
+host: localhost:8080
+info:
+  contact:
+    email: paw1a@yandex.ru
+    name: API Support
+    url: https://t.me/paw1a
+  description: This is simple api of e-commerce shop
+  title: E-commerce API
+  version: "1.0"
+paths: {}
+securityDefinitions:
+  AdminAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

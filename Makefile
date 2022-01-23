@@ -1,5 +1,8 @@
-.PHONY: build
 build:
-	go build -v ./cmd/server
+	go run cmd/app/main.go
 
-.DEFAULT_GOAL := build
+build_swag:
+	swag init -g cmd/app/main.go
+	go run cmd/app/main.go
+
+.DEFAULT_GOAL := build_swag

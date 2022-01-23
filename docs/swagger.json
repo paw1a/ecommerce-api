@@ -1,0 +1,23 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is simple api of e-commerce shop",
+        "title": "E-commerce API",
+        "contact": {
+            "name": "API Support",
+            "url": "https://t.me/paw1a",
+            "email": "paw1a@yandex.ru"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {},
+    "securityDefinitions": {
+        "AdminAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
