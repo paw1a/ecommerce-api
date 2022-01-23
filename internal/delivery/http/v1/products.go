@@ -7,10 +7,20 @@ import (
 	"net/http"
 )
 
+// GetProducts godoc
+// @Summary   Get all products
+// @Tags      admin-products
+// @Accept    json
+// @Produce   json
+// @Success   200  {array}   success
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/products [get]
 func (h *Handler) getAllProducts(context *gin.Context) {
 	products, err := h.services.Products.FindAll(context.Request.Context())
 	if err != nil {
-		newResponse(context, http.StatusInternalServerError, err.Error())
+		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -19,38 +29,38 @@ func (h *Handler) getAllProducts(context *gin.Context) {
 		productsArray = products
 	}
 
-	context.JSON(http.StatusOK, dataResponse{Data: productsArray})
+	successResponse(context, productsArray)
 }
 
 func (h *Handler) getProductById(context *gin.Context) {
 	id, err := parseIdFromPath(context, "id")
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, err.Error())
+		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 	product, err := h.services.Products.FindByID(context.Request.Context(), id)
 	if err != nil {
-		newResponse(context, http.StatusInternalServerError, err.Error())
+		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	context.JSON(http.StatusOK, dataResponse{Data: product})
+	successResponse(context, product)
 }
 
 func (h *Handler) createProduct(context *gin.Context) {
 	var productDTO dto.CreateProductDTO
 	err := context.BindJSON(&productDTO)
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, "Invalid input body")
+		errorResponse(context, http.StatusBadRequest, "Invalid input body")
 		return
 	}
 	product, err := h.services.Products.Create(context.Request.Context(), productDTO)
 	if err != nil {
-		newResponse(context, http.StatusInternalServerError, err.Error())
+		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	context.JSON(http.StatusOK, dataResponse{Data: product})
+	successResponse(context, product)
 }
 
 func (h *Handler) updateProduct(context *gin.Context) {
@@ -58,36 +68,36 @@ func (h *Handler) updateProduct(context *gin.Context) {
 
 	err := context.BindJSON(&productDTO)
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, "Invalid input body")
+		errorResponse(context, http.StatusBadRequest, "Invalid input body")
 		return
 	}
 
 	productID, err := parseIdFromPath(context, "id")
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, err.Error())
+		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 	productDTO.ID = productID
 
 	product, err := h.services.Products.Update(context.Request.Context(), productDTO)
 	if err != nil {
-		newResponse(context, http.StatusInternalServerError, err.Error())
+		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	context.JSON(http.StatusOK, dataResponse{Data: product})
+	successResponse(context, product)
 }
 
 func (h *Handler) deleteProduct(context *gin.Context) {
 	productID, err := parseIdFromPath(context, "id")
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, err.Error())
+		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	err = h.services.Products.Delete(context, productID)
 	if err != nil {
-		newResponse(context, http.StatusInternalServerError, err.Error())
+		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 

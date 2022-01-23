@@ -3,21 +3,27 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"net/http"
 )
 
-type dataResponse struct {
+type success struct {
 	Data interface{} `json:"data"`
 }
 
-type idResponse struct {
-	ID interface{} `json:"id"`
+type failure struct {
+	Code    int    `json:"code" example:"404"`
+	Message string `json:"message" example:"not found"`
 }
 
-type response struct {
-	Message string `json:"message"`
+func successResponse(c *gin.Context, data interface{}) {
+	log.Infof("Response OK: %v", data)
+	c.JSON(http.StatusOK, success{Data: data})
 }
 
-func newResponse(c *gin.Context, statusCode int, message string) {
+func errorResponse(c *gin.Context, statusCode int, message string) {
 	log.Error(message)
-	c.AbortWithStatusJSON(statusCode, response{message})
+	c.AbortWithStatusJSON(statusCode, failure{
+		Code:    statusCode,
+		Message: message,
+	})
 }

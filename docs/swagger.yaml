@@ -1,4 +1,17 @@
 basePath: /api/v1
+definitions:
+  v1.failure:
+    properties:
+      code:
+        type: integer
+      message:
+        example: invalid request body
+        type: string
+    type: object
+  v1.success:
+    properties:
+      data: {}
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -8,7 +21,33 @@ info:
   description: This is simple api of e-commerce shop
   title: E-commerce API
   version: "1.0"
-paths: {}
+paths:
+  /admins/products:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/v1.success'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Get all products
+      tags:
+      - admin-products
 securityDefinitions:
   AdminAuth:
     in: header

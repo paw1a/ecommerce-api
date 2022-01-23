@@ -1,4 +1,3 @@
-is_debug: true
 listen:
   type:
   bind_ip: localhost

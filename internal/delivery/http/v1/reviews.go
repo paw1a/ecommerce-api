@@ -11,7 +11,7 @@ import (
 func (h *Handler) getAllReviews(context *gin.Context) {
 	reviews, err := h.services.Reviews.FindAll(context.Request.Context())
 	if err != nil {
-		newResponse(context, http.StatusInternalServerError, err.Error())
+		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -20,29 +20,29 @@ func (h *Handler) getAllReviews(context *gin.Context) {
 		reviewsArray = reviews
 	}
 
-	context.JSON(http.StatusOK, dataResponse{Data: reviewsArray})
+	successResponse(context, reviewsArray)
 }
 
 func (h *Handler) getReviewById(context *gin.Context) {
 	id, err := parseIdFromPath(context, "id")
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, err.Error())
+		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 	review, err := h.services.Reviews.FindByID(context.Request.Context(), id)
 	if err != nil {
-		newResponse(context, http.StatusInternalServerError, err.Error())
+		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	context.JSON(http.StatusOK, dataResponse{Data: review})
+	successResponse(context, review)
 }
 
 func (h *Handler) createReview(context *gin.Context) {
 	var reviewDTO dto.CreateReviewDTO
 	err := context.BindJSON(&reviewDTO)
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, "Invalid input body")
+		errorResponse(context, http.StatusBadRequest, "Invalid input body")
 		return
 	}
 	review, err := h.services.Reviews.Create(context.Request.Context(), dto.CreateReviewInput{
@@ -53,23 +53,23 @@ func (h *Handler) createReview(context *gin.Context) {
 	})
 
 	if err != nil {
-		newResponse(context, http.StatusInternalServerError, err.Error())
+		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	context.JSON(http.StatusOK, dataResponse{Data: review})
+	successResponse(context, review)
 }
 
 func (h *Handler) deleteReview(context *gin.Context) {
 	reviewID, err := parseIdFromPath(context, "id")
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, err.Error())
+		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	err = h.services.Reviews.Delete(context, reviewID)
 	if err != nil {
-		newResponse(context, http.StatusInternalServerError, err.Error())
+		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -79,30 +79,30 @@ func (h *Handler) deleteReview(context *gin.Context) {
 func (h *Handler) getReviewsByProduct(context *gin.Context) {
 	productID, err := parseIdFromPath(context, "id")
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, err.Error())
+		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	reviews, err := h.services.Reviews.FindByProductID(context, productID)
 	if err != nil {
-		newResponse(context, http.StatusInternalServerError, err.Error())
+		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	context.JSON(http.StatusOK, dataResponse{Data: reviews})
+	successResponse(context, reviews)
 }
 
 func (h *Handler) createReviewForProduct(context *gin.Context) {
 	productID, err := parseIdFromPath(context, "id")
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, err.Error())
+		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	var reviewDTO dto.CreateReviewDTO
 	err = context.BindJSON(&reviewDTO)
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, "Invalid input body")
+		errorResponse(context, http.StatusBadRequest, "Invalid input body")
 		return
 	}
 
@@ -114,10 +114,9 @@ func (h *Handler) createReviewForProduct(context *gin.Context) {
 	})
 
 	if err != nil {
-		newResponse(context, http.StatusInternalServerError, err.Error())
+		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	context.JSON(http.StatusOK, dataResponse{Data: review})
-
+	successResponse(context, review)
 }

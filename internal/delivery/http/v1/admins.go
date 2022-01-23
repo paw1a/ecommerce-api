@@ -53,16 +53,16 @@ func (h *Handler) adminSignIn(context *gin.Context) {
 	var adminDTO dto.AdminDTO
 	err := context.BindJSON(&adminDTO)
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, "invalid input body")
+		errorResponse(context, http.StatusBadRequest, "invalid input body")
 		return
 	}
 
 	admin, err := h.services.Admins.FindByCredentials(context, adminDTO)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			newResponse(context, http.StatusUnauthorized, "invalid admin credentials")
+			errorResponse(context, http.StatusUnauthorized, "invalid admin credentials")
 		} else {
-			newResponse(context, http.StatusInternalServerError, err.Error())
+			errorResponse(context, http.StatusInternalServerError, err.Error())
 		}
 		return
 	}
@@ -73,28 +73,28 @@ func (h *Handler) adminSignIn(context *gin.Context) {
 		Claims:      adminClaims,
 	})
 	if err != nil {
-		newResponse(context, http.StatusUnauthorized, err.Error())
+		errorResponse(context, http.StatusUnauthorized, err.Error())
 		return
 	}
-	context.JSON(http.StatusOK, dataResponse{Data: authDetails})
+	successResponse(context, authDetails)
 }
 
 func (h *Handler) verifyAdmin(context *gin.Context) {
 	tokenString, err := extractAuthToken(context)
 	if err != nil {
-		newResponse(context, http.StatusUnauthorized, err.Error())
+		errorResponse(context, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	tokenClaims, err := h.tokenProvider.VerifyToken(tokenString)
 	if err != nil {
-		newResponse(context, http.StatusUnauthorized, err.Error())
+		errorResponse(context, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	adminID, ok := tokenClaims["adminID"]
 	if !ok {
-		newResponse(context, http.StatusForbidden, "admin endpoint is forbidden")
+		errorResponse(context, http.StatusForbidden, "admin endpoint is forbidden")
 		return
 	}
 
@@ -105,7 +105,7 @@ func (h *Handler) adminRefresh(context *gin.Context) {
 	var input auth.RefreshInput
 	err := context.BindJSON(&input)
 	if err != nil {
-		newResponse(context, http.StatusBadRequest, "invalid request body")
+		errorResponse(context, http.StatusBadRequest, "invalid request body")
 		return
 	}
 
@@ -115,8 +115,8 @@ func (h *Handler) adminRefresh(context *gin.Context) {
 	})
 
 	if err != nil {
-		newResponse(context, http.StatusUnauthorized, err.Error())
+		errorResponse(context, http.StatusUnauthorized, err.Error())
 		return
 	}
-	context.JSON(http.StatusOK, dataResponse{Data: authDetails})
+	successResponse(context, authDetails)
 }
