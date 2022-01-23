@@ -11,8 +11,8 @@ type success struct {
 }
 
 type failure struct {
-	Code    int    `json:"code" example:"404"`
-	Message string `json:"message" example:"not found"`
+	Code    int    `json:"code" example:"400"`
+	Message string `json:"message" example:"invalid request body"`
 }
 
 func successResponse(c *gin.Context, data interface{}) {

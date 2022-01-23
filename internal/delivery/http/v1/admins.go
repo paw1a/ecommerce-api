@@ -79,6 +79,26 @@ func (h *Handler) adminSignIn(context *gin.Context) {
 	successResponse(context, authDetails)
 }
 
+func (h *Handler) adminRefresh(context *gin.Context) {
+	var input auth.RefreshInput
+	err := context.BindJSON(&input)
+	if err != nil {
+		errorResponse(context, http.StatusBadRequest, "invalid request body")
+		return
+	}
+
+	authDetails, err := h.tokenProvider.Refresh(auth.RefreshInput{
+		RefreshToken: input.RefreshToken,
+		Fingerprint:  input.Fingerprint,
+	})
+
+	if err != nil {
+		errorResponse(context, http.StatusUnauthorized, err.Error())
+		return
+	}
+	successResponse(context, authDetails)
+}
+
 func (h *Handler) verifyAdmin(context *gin.Context) {
 	tokenString, err := extractAuthToken(context)
 	if err != nil {
@@ -99,24 +119,4 @@ func (h *Handler) verifyAdmin(context *gin.Context) {
 	}
 
 	context.Set("adminID", adminID)
-}
-
-func (h *Handler) adminRefresh(context *gin.Context) {
-	var input auth.RefreshInput
-	err := context.BindJSON(&input)
-	if err != nil {
-		errorResponse(context, http.StatusBadRequest, "invalid request body")
-		return
-	}
-
-	authDetails, err := h.tokenProvider.Refresh(auth.RefreshInput{
-		RefreshToken: input.RefreshToken,
-		Fingerprint:  input.Fingerprint,
-	})
-
-	if err != nil {
-		errorResponse(context, http.StatusUnauthorized, err.Error())
-		return
-	}
-	successResponse(context, authDetails)
 }

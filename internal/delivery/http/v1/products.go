@@ -13,8 +13,8 @@ import (
 // @Accept    json
 // @Produce   json
 // @Success   200  {array}   success
-// @Failure   404  {object}  failure
-// @Failure   500  {object}  failure
+// @Failure   404      {object}  failure
+// @Failure   500      {object}  failure
 // @Security  AdminAuth
 // @Router    /admins/products [get]
 func (h *Handler) getAllProducts(context *gin.Context) {
@@ -32,6 +32,18 @@ func (h *Handler) getAllProducts(context *gin.Context) {
 	successResponse(context, productsArray)
 }
 
+// GetProductById godoc
+// @Summary   Get product by id
+// @Tags      admin-products
+// @Accept    json
+// @Produce   json
+// @Param     id   path      string  true  "product id"
+// @Success   200      {object}  success
+// @Failure   400      {object}  failure
+// @Failure   404      {object}  failure
+// @Failure   500      {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/products/{id} [get]
 func (h *Handler) getProductById(context *gin.Context) {
 	id, err := parseIdFromPath(context, "id")
 	if err != nil {
@@ -47,6 +59,18 @@ func (h *Handler) getProductById(context *gin.Context) {
 	successResponse(context, product)
 }
 
+// CreateProduct godoc
+// @Summary   Create product
+// @Tags      admin-products
+// @Accept    json
+// @Produce   json
+// @Param     product  body      dto.CreateProductDTO  true  "product"
+// @Success   201      {object}  success
+// @Failure   400      {object}  failure
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/products [post]
 func (h *Handler) createProduct(context *gin.Context) {
 	var productDTO dto.CreateProductDTO
 	err := context.BindJSON(&productDTO)
@@ -63,6 +87,19 @@ func (h *Handler) createProduct(context *gin.Context) {
 	successResponse(context, product)
 }
 
+// UpdateProduct godoc
+// @Summary   Update product
+// @Tags      admin-products
+// @Accept    json
+// @Produce   json
+// @Param     id       path      string                true  "product id"
+// @Param     product  body      dto.UpdateProductDTO  true  "product update fields"
+// @Success   200  {object}  success
+// @Failure   400  {object}  failure
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/products/{id} [put]
 func (h *Handler) updateProduct(context *gin.Context) {
 	var productDTO dto.UpdateProductDTO
 
@@ -88,6 +125,18 @@ func (h *Handler) updateProduct(context *gin.Context) {
 	successResponse(context, product)
 }
 
+// DeleteProduct godoc
+// @Summary   Delete product
+// @Tags      admin-products
+// @Accept    json
+// @Produce   json
+// @Param     id   path      string  true  "product id"
+// @Success   200  {object}  success
+// @Failure   400  {object}  failure
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/products/{id} [delete]
 func (h *Handler) deleteProduct(context *gin.Context) {
 	productID, err := parseIdFromPath(context, "id")
 	if err != nil {

@@ -1,8 +1,49 @@
 basePath: /api/v1
 definitions:
+  domain.Category:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  dto.CreateProductDTO:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/domain.Category'
+        type: array
+      description:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    required:
+    - name
+    - price
+    type: object
+  dto.UpdateProductDTO:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/domain.Category'
+        type: array
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      totalRating:
+        type: number
+    type: object
   v1.failure:
     properties:
       code:
+        example: 400
         type: integer
       message:
         example: invalid request body
@@ -46,6 +87,146 @@ paths:
       security:
       - AdminAuth: []
       summary: Get all products
+      tags:
+      - admin-products
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateProductDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Create product
+      tags:
+      - admin-products
+  /admins/products/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Delete product
+      tags:
+      - admin-products
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Get product by id
+      tags:
+      - admin-products
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: product update fields
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateProductDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Update product
       tags:
       - admin-products
 securityDefinitions:

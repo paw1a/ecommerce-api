@@ -13,7 +13,7 @@ type CreateProductDTO struct {
 }
 
 type UpdateProductDTO struct {
-	ID          primitive.ObjectID `json:"id"`
+	ID          primitive.ObjectID `json:"id"` //TODO: delete id from input body, it can't be changed
 	Name        string             `json:"name"`
 	Description *string            `json:"description"`
 	Price       *float64           `json:"price"`
