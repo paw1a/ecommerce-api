@@ -7,7 +7,7 @@ db:
   database: go_test
 jwt:
   secret: jwtSecret
-  accessTokenTime: 3 # 15 minutes
+  accessTokenTime: 300000 # 15 minutes, 300000 for tests
   refreshTokenTime: 86400 # 60 days
 redis:
   uri: localhost:6379

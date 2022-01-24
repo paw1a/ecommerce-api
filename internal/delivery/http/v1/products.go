@@ -13,11 +13,12 @@ import (
 // @Accept    json
 // @Produce   json
 // @Success   200  {array}   success
-// @Failure   404      {object}  failure
-// @Failure   500      {object}  failure
+// @Failure   401  {object}  failure
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
 // @Security  AdminAuth
 // @Router    /admins/products [get]
-func (h *Handler) getAllProducts(context *gin.Context) {
+func (h *Handler) getAllProductsAdmin(context *gin.Context) {
 	products, err := h.services.Products.FindAll(context.Request.Context())
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
@@ -38,13 +39,14 @@ func (h *Handler) getAllProducts(context *gin.Context) {
 // @Accept    json
 // @Produce   json
 // @Param     id   path      string  true  "product id"
-// @Success   200      {object}  success
-// @Failure   400      {object}  failure
+// @Success   200  {object}  success
+// @Failure   400  {object}  failure
+// @Failure   401      {object}  failure
 // @Failure   404      {object}  failure
 // @Failure   500      {object}  failure
 // @Security  AdminAuth
 // @Router    /admins/products/{id} [get]
-func (h *Handler) getProductById(context *gin.Context) {
+func (h *Handler) getProductByIdAdmin(context *gin.Context) {
 	id, err := parseIdFromPath(context, "id")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
@@ -67,11 +69,12 @@ func (h *Handler) getProductById(context *gin.Context) {
 // @Param     product  body      dto.CreateProductDTO  true  "product"
 // @Success   201      {object}  success
 // @Failure   400      {object}  failure
+// @Failure   401  {object}  failure
 // @Failure   404  {object}  failure
 // @Failure   500  {object}  failure
 // @Security  AdminAuth
 // @Router    /admins/products [post]
-func (h *Handler) createProduct(context *gin.Context) {
+func (h *Handler) createProductAdmin(context *gin.Context) {
 	var productDTO dto.CreateProductDTO
 	err := context.BindJSON(&productDTO)
 	if err != nil {
@@ -96,11 +99,12 @@ func (h *Handler) createProduct(context *gin.Context) {
 // @Param     product  body      dto.UpdateProductDTO  true  "product update fields"
 // @Success   200  {object}  success
 // @Failure   400  {object}  failure
+// @Failure   401  {object}  failure
 // @Failure   404  {object}  failure
 // @Failure   500  {object}  failure
 // @Security  AdminAuth
 // @Router    /admins/products/{id} [put]
-func (h *Handler) updateProduct(context *gin.Context) {
+func (h *Handler) updateProductAdmin(context *gin.Context) {
 	var productDTO dto.UpdateProductDTO
 
 	err := context.BindJSON(&productDTO)
@@ -133,11 +137,12 @@ func (h *Handler) updateProduct(context *gin.Context) {
 // @Param     id   path      string  true  "product id"
 // @Success   200  {object}  success
 // @Failure   400  {object}  failure
+// @Failure   401  {object}  failure
 // @Failure   404  {object}  failure
 // @Failure   500  {object}  failure
 // @Security  AdminAuth
 // @Router    /admins/products/{id} [delete]
-func (h *Handler) deleteProduct(context *gin.Context) {
+func (h *Handler) deleteProductAdmin(context *gin.Context) {
 	productID, err := parseIdFromPath(context, "id")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
@@ -151,4 +156,33 @@ func (h *Handler) deleteProduct(context *gin.Context) {
 	}
 
 	context.Status(http.StatusOK)
+}
+
+// GetProductReviews godoc
+// @Summary   Get product reviews list
+// @Tags      admin-products
+// @Accept    json
+// @Produce   json
+// @Param     id   path      string  true  "product id"
+// @Success   200      {object}  success
+// @Failure   400      {object}  failure
+// @Failure   401      {object}  failure
+// @Failure   404      {object}  failure
+// @Failure   500      {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/products/{id}/reviews [get]
+func (h *Handler) getProductReviewsAdmin(context *gin.Context) {
+	productID, err := parseIdFromPath(context, "id")
+	if err != nil {
+		errorResponse(context, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	reviews, err := h.services.Reviews.FindByProductID(context, productID)
+	if err != nil {
+		errorResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	successResponse(context, reviews)
 }

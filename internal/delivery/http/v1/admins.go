@@ -20,21 +20,20 @@ func (h *Handler) initAdminsRoutes(api *gin.RouterGroup) {
 		{
 			products := authenticated.Group("/products")
 			{
-				products.GET("/", h.getAllProducts)
-				products.GET("/:id", h.getProductById)
-				products.POST("/", h.createProduct)
-				products.PUT("/:id", h.updateProduct)
-				products.DELETE("/:id", h.deleteProduct)
-				products.GET("/:id/reviews", h.getReviewsByProduct)
-				products.POST("/:id/reviews", h.createReviewForProduct)
+				products.GET("/", h.getAllProductsAdmin)
+				products.GET("/:id", h.getProductByIdAdmin)
+				products.POST("/", h.createProductAdmin)
+				products.PUT("/:id", h.updateProductAdmin)
+				products.DELETE("/:id", h.deleteProductAdmin)
+				products.GET("/:id/reviews", h.getProductReviewsAdmin)
 			}
 
 			reviews := authenticated.Group("/reviews")
 			{
-				reviews.GET("/", h.getAllReviews)
-				reviews.GET("/:id", h.getReviewById)
-				reviews.POST("/", h.createReview)
-				reviews.DELETE("/:id", h.deleteReview)
+				reviews.GET("/", h.getAllReviewsAdmin)
+				reviews.GET("/:id", h.getReviewByIdAdmin)
+				reviews.POST("/", h.createReviewAdmin)
+				reviews.DELETE("/:id", h.deleteReviewAdmin)
 			}
 
 			users := authenticated.Group("/users")
@@ -49,6 +48,18 @@ func (h *Handler) initAdminsRoutes(api *gin.RouterGroup) {
 	}
 }
 
+// AdminSignIn godoc
+// @Summary  Admin sign-in
+// @Tags     admin-auth
+// @Accept   json
+// @Produce  json
+// @Param    admin  body      dto.AdminDTO  true  "admin credentials"
+// @Success  200    {object}  auth.AuthDetails
+// @Failure  400    {object}  failure
+// @Failure  401    {object}  failure
+// @Failure  404    {object}  failure
+// @Failure  500    {object}  failure
+// @Router   /admins/auth/sign-in [post]
 func (h *Handler) adminSignIn(context *gin.Context) {
 	var adminDTO dto.AdminDTO
 	err := context.BindJSON(&adminDTO)
@@ -79,6 +90,18 @@ func (h *Handler) adminSignIn(context *gin.Context) {
 	successResponse(context, authDetails)
 }
 
+// AdminSignIn godoc
+// @Summary  Admin sign-in
+// @Tags     admin-auth
+// @Accept   json
+// @Produce  json
+// @Param    refreshInput  body      auth.RefreshInput  true  "admin credentials"
+// @Success  200           {object}  auth.AuthDetails
+// @Failure  400           {object}  failure
+// @Failure  401           {object}  failure
+// @Failure  404           {object}  failure
+// @Failure  500           {object}  failure
+// @Router   /admins/auth/refresh [post]
 func (h *Handler) adminRefresh(context *gin.Context) {
 	var input auth.RefreshInput
 	err := context.BindJSON(&input)

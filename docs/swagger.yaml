@@ -1,10 +1,33 @@
 basePath: /api/v1
 definitions:
+  auth.AuthDetails:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+    type: object
+  auth.RefreshInput:
+    properties:
+      fingerprint:
+        type: string
+      refreshToken:
+        type: string
+    type: object
   domain.Category:
     properties:
       description:
         type: string
       name:
+        type: string
+    type: object
+  dto.AdminDTO:
+    properties:
+      email:
+        type: string
+      fingerprint:
+        type: string
+      password:
         type: string
     type: object
   dto.CreateProductDTO:
@@ -23,6 +46,13 @@ definitions:
     - name
     - price
     type: object
+  dto.CreateReviewDTO:
+    properties:
+      rating:
+        type: integer
+      text:
+        type: string
+    type: object
   dto.UpdateProductDTO:
     properties:
       categories:
@@ -30,8 +60,6 @@ definitions:
           $ref: '#/definitions/domain.Category'
         type: array
       description:
-        type: string
-      id:
         type: string
       name:
         type: string
@@ -63,6 +91,80 @@ info:
   title: E-commerce API
   version: "1.0"
 paths:
+  /admins/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: admin credentials
+        in: body
+        name: refreshInput
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RefreshInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.AuthDetails'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      summary: Admin sign-in
+      tags:
+      - admin-auth
+  /admins/auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: admin credentials
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AdminDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.AuthDetails'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      summary: Admin sign-in
+      tags:
+      - admin-auth
   /admins/products:
     get:
       consumes:
@@ -76,6 +178,10 @@ paths:
             items:
               $ref: '#/definitions/v1.success'
             type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
         "404":
           description: Not Found
           schema:
@@ -108,6 +214,10 @@ paths:
             $ref: '#/definitions/v1.success'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/v1.failure'
         "404":
@@ -144,6 +254,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
         "404":
           description: Not Found
           schema:
@@ -175,6 +289,10 @@ paths:
             $ref: '#/definitions/v1.success'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/v1.failure'
         "404":
@@ -216,6 +334,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
         "404":
           description: Not Found
           schema:
@@ -229,6 +351,187 @@ paths:
       summary: Update product
       tags:
       - admin-products
+  /admins/products/{id}/reviews:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Get product reviews list
+      tags:
+      - admin-products
+  /admins/reviews:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/v1.success'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Get all reviews
+      tags:
+      - admin-reviews
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: review
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateReviewDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Create review
+      tags:
+      - admin-reviews
+  /admins/reviews/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: review id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Delete review
+      tags:
+      - admin-reviews
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: review id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Get review by id
+      tags:
+      - admin-reviews
 securityDefinitions:
   AdminAuth:
     in: header

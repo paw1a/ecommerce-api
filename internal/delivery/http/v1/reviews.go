@@ -8,7 +8,18 @@ import (
 	"net/http"
 )
 
-func (h *Handler) getAllReviews(context *gin.Context) {
+// GetReviews godoc
+// @Summary   Get all reviews
+// @Tags      admin-reviews
+// @Accept    json
+// @Produce   json
+// @Success   200  {array}   success
+// @Failure   401     {object}  failure
+// @Failure   404     {object}  failure
+// @Failure   500     {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/reviews [get]
+func (h *Handler) getAllReviewsAdmin(context *gin.Context) {
 	reviews, err := h.services.Reviews.FindAll(context.Request.Context())
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
@@ -23,7 +34,20 @@ func (h *Handler) getAllReviews(context *gin.Context) {
 	successResponse(context, reviewsArray)
 }
 
-func (h *Handler) getReviewById(context *gin.Context) {
+// GetReviewById godoc
+// @Summary   Get review by id
+// @Tags      admin-reviews
+// @Accept    json
+// @Produce   json
+// @Param     id   path      string  true  "review id"
+// @Success   200  {object}  success
+// @Failure   400  {object}  failure
+// @Failure   401  {object}  failure
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/reviews/{id} [get]
+func (h *Handler) getReviewByIdAdmin(context *gin.Context) {
 	id, err := parseIdFromPath(context, "id")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
@@ -38,7 +62,20 @@ func (h *Handler) getReviewById(context *gin.Context) {
 	successResponse(context, review)
 }
 
-func (h *Handler) createReview(context *gin.Context) {
+// CreateReview godoc
+// @Summary   Create review
+// @Tags      admin-reviews
+// @Accept    json
+// @Produce   json
+// @Param     review  body      dto.CreateReviewDTO  true  "review"
+// @Success   201     {object}  success
+// @Failure   400     {object}  failure
+// @Failure   401  {object}  failure
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/reviews [post]
+func (h *Handler) createReviewAdmin(context *gin.Context) {
 	var reviewDTO dto.CreateReviewDTO
 	err := context.BindJSON(&reviewDTO)
 	if err != nil {
@@ -60,7 +97,20 @@ func (h *Handler) createReview(context *gin.Context) {
 	successResponse(context, review)
 }
 
-func (h *Handler) deleteReview(context *gin.Context) {
+// DeleteReview godoc
+// @Summary   Delete review
+// @Tags      admin-reviews
+// @Accept    json
+// @Produce   json
+// @Param     id   path      string  true  "review id"
+// @Success   200  {object}  success
+// @Failure   400  {object}  failure
+// @Failure   401  {object}  failure
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/reviews/{id} [delete]
+func (h *Handler) deleteReviewAdmin(context *gin.Context) {
 	reviewID, err := parseIdFromPath(context, "id")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
@@ -74,49 +124,4 @@ func (h *Handler) deleteReview(context *gin.Context) {
 	}
 
 	context.Status(http.StatusOK)
-}
-
-func (h *Handler) getReviewsByProduct(context *gin.Context) {
-	productID, err := parseIdFromPath(context, "id")
-	if err != nil {
-		errorResponse(context, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	reviews, err := h.services.Reviews.FindByProductID(context, productID)
-	if err != nil {
-		errorResponse(context, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	successResponse(context, reviews)
-}
-
-func (h *Handler) createReviewForProduct(context *gin.Context) {
-	productID, err := parseIdFromPath(context, "id")
-	if err != nil {
-		errorResponse(context, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	var reviewDTO dto.CreateReviewDTO
-	err = context.BindJSON(&reviewDTO)
-	if err != nil {
-		errorResponse(context, http.StatusBadRequest, "Invalid input body")
-		return
-	}
-
-	review, err := h.services.Reviews.Create(context, dto.CreateReviewInput{
-		UserID:    primitive.ObjectID{},
-		ProductID: productID,
-		Text:      reviewDTO.Text,
-		Rating:    reviewDTO.Rating,
-	})
-
-	if err != nil {
-		errorResponse(context, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	successResponse(context, review)
 }
