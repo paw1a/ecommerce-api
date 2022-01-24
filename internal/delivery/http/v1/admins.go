@@ -38,11 +38,11 @@ func (h *Handler) initAdminsRoutes(api *gin.RouterGroup) {
 
 			users := authenticated.Group("/users")
 			{
-				users.GET("/", getAllUsers)
-				users.GET("/:id", getOneUser)
-				users.POST("/", createUser)
-				users.PUT("/:id", updateUser)
-				users.DELETE("/:id", deleteUser)
+				users.GET("/", getAllUsersAdmin)
+				users.GET("/:id", getUserByIdAdmin)
+				users.POST("/", createUserAdmin)
+				users.PUT("/:id", updateUserAdmin)
+				users.DELETE("/:id", deleteUserAdmin)
 			}
 		}
 	}

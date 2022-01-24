@@ -39,7 +39,7 @@ func (p ProductsRepo) Create(ctx context.Context, product domain.Product) (domai
 	return product, err
 }
 
-func (p ProductsRepo) Update(ctx context.Context, productInput dto.UpdateProductInput) (domain.Product, error) {
+func (p ProductsRepo) Update(ctx context.Context, productInput dto.UpdateProductInput, productID primitive.ObjectID) (domain.Product, error) {
 	updateQuery := bson.M{}
 
 	if productInput.Name != "" {
@@ -62,8 +62,8 @@ func (p ProductsRepo) Update(ctx context.Context, productInput dto.UpdateProduct
 		updateQuery["categories"] = productInput.Categories
 	}
 
-	_, err := p.db.UpdateOne(ctx, bson.M{"_id": productInput.ID}, bson.M{"$set": updateQuery})
-	findResult := p.db.FindOne(ctx, bson.M{"_id": productInput.ID})
+	_, err := p.db.UpdateOne(ctx, bson.M{"_id": productID}, bson.M{"$set": updateQuery})
+	findResult := p.db.FindOne(ctx, bson.M{"_id": productID})
 
 	var product domain.Product
 	err = findResult.Decode(&product)

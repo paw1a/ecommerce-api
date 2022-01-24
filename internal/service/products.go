@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"github.com/paw1a/ecommerce-api/internal/repository"
@@ -30,16 +29,14 @@ func (p ProductsService) Create(ctx context.Context, product dto.CreateProductDT
 	})
 }
 
-func (p ProductsService) Update(ctx context.Context, productDTO dto.UpdateProductDTO) (domain.Product, error) {
-	fmt.Println(productDTO)
+func (p ProductsService) Update(ctx context.Context, productDTO dto.UpdateProductDTO, productID primitive.ObjectID) (domain.Product, error) {
 	return p.repo.Update(ctx, dto.UpdateProductInput{
-		ID:          productDTO.ID,
 		Name:        productDTO.Name,
 		Description: productDTO.Description,
 		Price:       productDTO.Price,
 		TotalRating: productDTO.TotalRating,
 		Categories:  productDTO.Categories,
-	})
+	}, productID)
 }
 
 func (p ProductsService) Delete(ctx context.Context, productID primitive.ObjectID) error {

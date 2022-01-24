@@ -109,7 +109,7 @@ func (h *Handler) updateProductAdmin(context *gin.Context) {
 
 	err := context.BindJSON(&productDTO)
 	if err != nil {
-		errorResponse(context, http.StatusBadRequest, "Invalid input body")
+		errorResponse(context, http.StatusBadRequest, "invalid input body")
 		return
 	}
 
@@ -118,9 +118,8 @@ func (h *Handler) updateProductAdmin(context *gin.Context) {
 		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
-	productDTO.ID = productID
 
-	product, err := h.services.Products.Update(context.Request.Context(), productDTO)
+	product, err := h.services.Products.Update(context.Request.Context(), productDTO, productID)
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return

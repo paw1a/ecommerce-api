@@ -9,13 +9,20 @@ import (
 )
 
 type Users interface {
+	FindAll(ctx context.Context) ([]domain.User, error)
+	FindByID(ctx context.Context, userID primitive.ObjectID) (domain.User, error)
+	Create(ctx context.Context, userDTO dto.CreateUserDTO) (domain.User, error)
+	Update(ctx context.Context, userDTO dto.UpdateUserDTO,
+		userID primitive.ObjectID) (domain.User, error)
+	Delete(ctx context.Context, userID primitive.ObjectID) error
 }
 
 type Products interface {
 	FindAll(ctx context.Context) ([]domain.Product, error)
 	FindByID(ctx context.Context, productID primitive.ObjectID) (domain.Product, error)
-	Create(ctx context.Context, product dto.CreateProductDTO) (domain.Product, error)
-	Update(ctx context.Context, productDTO dto.UpdateProductDTO) (domain.Product, error)
+	Create(ctx context.Context, productDTO dto.CreateProductDTO) (domain.Product, error)
+	Update(ctx context.Context, productDTO dto.UpdateProductDTO,
+		productID primitive.ObjectID) (domain.Product, error)
 	Delete(ctx context.Context, productID primitive.ObjectID) error
 }
 
