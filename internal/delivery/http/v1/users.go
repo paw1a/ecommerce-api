@@ -7,6 +7,17 @@ import (
 	"net/http"
 )
 
+// GetUsers godoc
+// @Summary   Get all users
+// @Tags      admin-users
+// @Accept    json
+// @Produce   json
+// @Success   200  {array}   success
+// @Failure   401   {object}  failure
+// @Failure   404   {object}  failure
+// @Failure   500   {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/users [get]
 func (h *Handler) getAllUsersAdmin(context *gin.Context) {
 	users, err := h.services.Users.FindAll(context.Request.Context())
 	if err != nil {
@@ -22,6 +33,19 @@ func (h *Handler) getAllUsersAdmin(context *gin.Context) {
 	successResponse(context, usersArray)
 }
 
+// GetUserById godoc
+// @Summary   Get user by id
+// @Tags      admin-users
+// @Accept    json
+// @Produce   json
+// @Param     id   path      string  true  "user id"
+// @Success   200   {object}  success
+// @Failure   400   {object}  failure
+// @Failure   401   {object}  failure
+// @Failure   404   {object}  failure
+// @Failure   500   {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/users/{id} [get]
 func (h *Handler) getUserByIdAdmin(context *gin.Context) {
 	id, err := parseIdFromPath(context, "id")
 	if err != nil {
@@ -37,6 +61,19 @@ func (h *Handler) getUserByIdAdmin(context *gin.Context) {
 	successResponse(context, user)
 }
 
+// CreateUser godoc
+// @Summary   Create user
+// @Tags      admin-users
+// @Accept    json
+// @Produce   json
+// @Param     user  body      dto.CreateUserDTO  true  "user"
+// @Success   201   {object}  success
+// @Failure   400   {object}  failure
+// @Failure   401  {object}  failure
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/users [post]
 func (h *Handler) createUserAdmin(context *gin.Context) {
 	var userDTO dto.CreateUserDTO
 	err := context.BindJSON(&userDTO)
@@ -53,6 +90,20 @@ func (h *Handler) createUserAdmin(context *gin.Context) {
 	successResponse(context, user)
 }
 
+// UpdateUser godoc
+// @Summary   Update user
+// @Tags      admin-users
+// @Accept    json
+// @Produce   json
+// @Param     id    path      string             true  "user id"
+// @Param     user  body      dto.UpdateUserDTO  true  "user update fields"
+// @Success   200  {object}  success
+// @Failure   400  {object}  failure
+// @Failure   401  {object}  failure
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/users/{id} [put]
 func (h *Handler) updateUserAdmin(context *gin.Context) {
 	var userDTO dto.UpdateUserDTO
 
@@ -77,6 +128,19 @@ func (h *Handler) updateUserAdmin(context *gin.Context) {
 	successResponse(context, user)
 }
 
+// DeleteUser godoc
+// @Summary   Delete user
+// @Tags      admin-users
+// @Accept    json
+// @Produce   json
+// @Param     id   path      string  true  "user id"
+// @Success   200  {object}  success
+// @Failure   400  {object}  failure
+// @Failure   401  {object}  failure
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
+// @Security  AdminAuth
+// @Router    /admins/users/{id} [delete]
 func (h *Handler) deleteUserAdmin(context *gin.Context) {
 	userID, err := parseIdFromPath(context, "id")
 	if err != nil {
