@@ -28,13 +28,14 @@ func NewHandler(services *service.Services, tokenProvider auth.TokenProvider) *H
 
 func (h *Handler) Init(api *gin.RouterGroup) {
 	v1 := api.Group("/v1")
-	v1.Use(Logger())
+	v1.Use(LoggerMiddleware())
 	{
 		h.initAdminsRoutes(v1)
+		h.initUsersRoutes(v1)
 	}
 }
 
-func Logger() gin.HandlerFunc {
+func LoggerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		path := c.Request.URL.Path
 		start := time.Now()

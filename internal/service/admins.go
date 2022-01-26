@@ -11,8 +11,8 @@ type AdminsService struct {
 	repo repository.Admins
 }
 
-func (a *AdminsService) FindByCredentials(ctx context.Context, adminDTO dto.AdminDTO) (domain.Admin, error) {
-	return a.repo.FindByCredentials(ctx, adminDTO.Email, adminDTO.Password)
+func (a *AdminsService) FindByCredentials(ctx context.Context, signInDTO dto.SignInDTO) (domain.Admin, error) {
+	return a.repo.FindByCredentials(ctx, signInDTO.Email, signInDTO.Password)
 }
 
 func NewAdminsService(repo repository.Admins) *AdminsService {

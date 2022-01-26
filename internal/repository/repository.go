@@ -11,6 +11,7 @@ import (
 type Users interface {
 	FindAll(ctx context.Context) ([]domain.User, error)
 	FindByID(ctx context.Context, userID primitive.ObjectID) (domain.User, error)
+	FindByCredentials(ctx context.Context, email string, password string) (domain.User, error)
 	Create(ctx context.Context, user domain.User) (domain.User, error)
 	Update(ctx context.Context, userInput dto.UpdateUserInput,
 		userID primitive.ObjectID) (domain.User, error)

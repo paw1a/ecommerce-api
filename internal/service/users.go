@@ -26,6 +26,10 @@ func (u UsersService) FindByID(ctx context.Context, userID primitive.ObjectID) (
 	return u.repo.FindByID(ctx, userID)
 }
 
+func (u UsersService) FindByCredentials(ctx context.Context, signInDTO dto.SignInDTO) (domain.User, error) {
+	return u.repo.FindByCredentials(ctx, signInDTO.Email, signInDTO.Password)
+}
+
 func (u UsersService) Create(ctx context.Context, userDTO dto.CreateUserDTO) (domain.User, error) {
 	return u.repo.Create(ctx, domain.User{
 		Name:     userDTO.Name,

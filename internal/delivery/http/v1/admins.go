@@ -53,7 +53,7 @@ func (h *Handler) initAdminsRoutes(api *gin.RouterGroup) {
 // @Tags     admin-auth
 // @Accept   json
 // @Produce  json
-// @Param    admin  body      dto.AdminDTO  true  "admin credentials"
+// @Param    admin  body      dto.SignInDTO  true  "admin credentials"
 // @Success  200    {object}  auth.AuthDetails
 // @Failure  400    {object}  failure
 // @Failure  401    {object}  failure
@@ -61,14 +61,14 @@ func (h *Handler) initAdminsRoutes(api *gin.RouterGroup) {
 // @Failure  500    {object}  failure
 // @Router   /admins/auth/sign-in [post]
 func (h *Handler) adminSignIn(context *gin.Context) {
-	var adminDTO dto.AdminDTO
-	err := context.BindJSON(&adminDTO)
+	var signInDTO dto.SignInDTO
+	err := context.BindJSON(&signInDTO)
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, "invalid input body")
 		return
 	}
 
-	admin, err := h.services.Admins.FindByCredentials(context, adminDTO)
+	admin, err := h.services.Admins.FindByCredentials(context, signInDTO)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			errorResponse(context, http.StatusUnauthorized, "invalid admin credentials")
@@ -80,7 +80,7 @@ func (h *Handler) adminSignIn(context *gin.Context) {
 
 	adminClaims := jwt.MapClaims{"adminID": admin.ID}
 	authDetails, err := h.tokenProvider.CreateJWTSession(auth.CreateSessionInput{
-		Fingerprint: adminDTO.Fingerprint,
+		Fingerprint: signInDTO.Fingerprint,
 		Claims:      adminClaims,
 	})
 	if err != nil {

@@ -1,11 +1,104 @@
 package v1
 
 import (
+	"errors"
+	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
+	"github.com/paw1a/ecommerce-api/pkg/auth"
+	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 )
+
+func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
+	users := api.Group("/users")
+	{
+		users.POST("/auth/sign-in", h.userSignIn)
+		users.POST("/auth/sign-up", h.userSignUp)
+		users.POST("/auth/refresh", h.userRefresh)
+
+		authenticated := users.Group("/", h.verifyUser)
+		{
+			authenticated.GET("/account", h.getUserAccount)
+			authenticated.PUT("/account", h.updateUserAccount)
+		}
+	}
+}
+
+func (h *Handler) getUserAccount(context *gin.Context) {
+
+}
+
+func (h *Handler) updateUserAccount(context *gin.Context) {
+
+}
+
+func (h *Handler) userSignIn(context *gin.Context) {
+	var signInDTO dto.SignInDTO
+	err := context.BindJSON(&signInDTO)
+	if err != nil {
+		errorResponse(context, http.StatusBadRequest, "invalid input body")
+		return
+	}
+
+	user, err := h.services.Users.FindByCredentials(context, signInDTO)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			errorResponse(context, http.StatusUnauthorized, "invalid admin credentials")
+		} else {
+			errorResponse(context, http.StatusInternalServerError, err.Error())
+		}
+		return
+	}
+
+	userClaims := jwt.MapClaims{"userID": user.ID}
+	authDetails, err := h.tokenProvider.CreateJWTSession(auth.CreateSessionInput{
+		Fingerprint: signInDTO.Fingerprint,
+		Claims:      userClaims,
+	})
+
+	if err != nil {
+		errorResponse(context, http.StatusUnauthorized, err.Error())
+		return
+	}
+	successResponse(context, authDetails)
+}
+
+func (h *Handler) userSignUp(context *gin.Context) {
+	var signUpDTO dto.SignUpDTO
+	err := context.BindJSON(signUpDTO)
+	if err != nil {
+		errorResponse(context, http.StatusBadRequest, "invalid input body")
+		return
+	}
+
+	user, err := h.services.Users.Create(context, dto.CreateUserDTO{
+		Name:     signUpDTO.Name,
+		Email:    signUpDTO.Email,
+		Password: signUpDTO.Password,
+	})
+	if err != nil {
+		if mongo.IsDuplicateKeyError(err) {
+			errorResponse(context, http.StatusInternalServerError,
+				fmt.Sprintf("user with email %s already exists", signUpDTO.Email))
+		} else {
+			errorResponse(context, http.StatusInternalServerError, err.Error())
+		}
+		return
+	}
+
+	createdResponse(context, user)
+}
+
+func (h *Handler) userRefresh(context *gin.Context) {
+
+}
+
+func (h *Handler) verifyUser(context *gin.Context) {
+
+}
 
 // GetUsers godoc
 // @Summary   Get all users
@@ -67,7 +160,7 @@ func (h *Handler) getUserByIdAdmin(context *gin.Context) {
 // @Accept    json
 // @Produce   json
 // @Param     user  body      dto.CreateUserDTO  true  "user"
-// @Success   201   {object}  success
+// @Success   200   {object}  success
 // @Failure   400   {object}  failure
 // @Failure   401  {object}  failure
 // @Failure   404  {object}  failure
@@ -83,11 +176,16 @@ func (h *Handler) createUserAdmin(context *gin.Context) {
 	}
 	user, err := h.services.Users.Create(context.Request.Context(), userDTO)
 	if err != nil {
-		errorResponse(context, http.StatusInternalServerError, err.Error())
+		if mongo.IsDuplicateKeyError(err) {
+			errorResponse(context, http.StatusInternalServerError,
+				fmt.Sprintf("user with email %s already exists", userDTO.Email))
+		} else {
+			errorResponse(context, http.StatusInternalServerError, err.Error())
+		}
 		return
 	}
 
-	successResponse(context, user)
+	createdResponse(context, user)
 }
 
 // UpdateUser godoc

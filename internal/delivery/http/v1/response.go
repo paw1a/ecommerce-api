@@ -15,9 +15,14 @@ type failure struct {
 	Message string `json:"message" example:"invalid request body"`
 }
 
-func successResponse(c *gin.Context, data interface{}) {
-	log.Infof("Response OK: %v", data)
-	c.JSON(http.StatusOK, success{Data: data})
+func successResponse(context *gin.Context, data interface{}) {
+	log.Infof("Response with status OK: %v", data)
+	context.JSON(http.StatusOK, success{Data: data})
+}
+
+func createdResponse(context *gin.Context, data interface{}) {
+	log.Infof("Response with status Created: %v", data)
+	context.JSON(http.StatusCreated, success{Data: data})
 }
 
 func errorResponse(c *gin.Context, statusCode int, message string) {

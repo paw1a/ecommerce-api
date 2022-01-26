@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type UsersRepo struct {
@@ -32,6 +33,16 @@ func (u UsersRepo) FindAll(ctx context.Context) ([]domain.User, error) {
 
 func (u UsersRepo) FindByID(ctx context.Context, userID primitive.ObjectID) (domain.User, error) {
 	result := u.db.FindOne(ctx, bson.M{"_id": userID})
+
+	var user domain.User
+	err := result.Decode(&user)
+
+	return user, err
+}
+
+func (u UsersRepo) FindByCredentials(ctx context.Context, email string, password string) (domain.User, error) {
+	result := u.db.FindOne(ctx, bson.M{"email": email, "password": password},
+		options.FindOne().SetProjection(bson.M{"password": "0"}))
 
 	var user domain.User
 	err := result.Decode(&user)

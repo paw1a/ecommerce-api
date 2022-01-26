@@ -13,3 +13,9 @@ type UpdateUserDTO struct {
 type UpdateUserInput struct {
 	Name string `json:"name"`
 }
+
+type SignUpDTO struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}

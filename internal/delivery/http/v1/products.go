@@ -7,6 +7,36 @@ import (
 	"net/http"
 )
 
+func (h *Handler) initProductsRoutes(api *gin.RouterGroup) {
+	products := api.Group("/products")
+	{
+		products.GET("/", h.getAllProducts)
+		products.GET("/:id", h.getProductById)
+		products.GET("/:id/reviews", h.getProductReviews)
+
+		authenticated := products.Group("/", h.verifyUser)
+		{
+			authenticated.POST("/:id/reviews", h.createProductReview)
+		}
+	}
+}
+
+func (h *Handler) getAllProducts(context *gin.Context) {
+
+}
+
+func (h *Handler) getProductById(context *gin.Context) {
+
+}
+
+func (h *Handler) getProductReviews(context *gin.Context) {
+
+}
+
+func (h *Handler) createProductReview(context *gin.Context) {
+
+}
+
 // GetProducts godoc
 // @Summary   Get all products
 // @Tags      admin-products
