@@ -72,14 +72,15 @@ func getIdFromPath(c *gin.Context, paramName string) (primitive.ObjectID, error)
 	return id, nil
 }
 
-func getIdFromRequestContext(c *gin.Context, paramName string) (primitive.ObjectID, error) {
-	idString, ok := c.Get(paramName)
+func getIdFromRequestContext(context *gin.Context, paramName string) (primitive.ObjectID, error) {
+	idString, ok := context.Get(paramName)
+	log.Infof("%v %t", idString, idString)
 	if !ok {
 		return primitive.ObjectID{}, errors.New("not authenticated")
 	}
 
-	id, ok := idString.(primitive.ObjectID)
-	if !ok {
+	id, err := primitive.ObjectIDFromHex(idString.(string))
+	if err != nil {
 		return primitive.ObjectID{}, errors.New("invalid id param")
 	}
 

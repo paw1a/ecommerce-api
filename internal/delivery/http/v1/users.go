@@ -48,6 +48,7 @@ func (h *Handler) getUserAccount(context *gin.Context) {
 	userInfo, err := h.services.Users.FindUserInfo(context.Request.Context(), userID)
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	successResponse(context, userInfo)

@@ -66,7 +66,7 @@ func (u *UsersRepo) FindUserInfo(ctx context.Context, userID primitive.ObjectID)
 		options.FindOne().SetProjection(bson.M{"email": 1, "name": 1}))
 
 	var userInfo domain.UserInfo
-	err := result.Decode(userInfo)
+	err := result.Decode(&userInfo)
 
 	return userInfo, err
 }

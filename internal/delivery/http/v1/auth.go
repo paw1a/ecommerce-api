@@ -59,11 +59,11 @@ func (h *Handler) verifyToken(context *gin.Context, idName string) {
 		return
 	}
 
-	adminID, ok := tokenClaims[idName]
+	id, ok := tokenClaims[idName]
 	if !ok {
 		errorResponse(context, http.StatusForbidden, "this endpoint is forbidden")
 		return
 	}
 
-	context.Set(idName, adminID)
+	context.Set(idName, id)
 }
