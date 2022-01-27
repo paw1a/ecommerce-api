@@ -76,7 +76,7 @@ func (h *Handler) userSignIn(context *gin.Context) {
 	user, err := h.services.Users.FindByCredentials(context, signInDTO)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			errorResponse(context, http.StatusUnauthorized, "invalid admin credentials")
+			errorResponse(context, http.StatusUnauthorized, "invalid user credentials")
 		} else {
 			errorResponse(context, http.StatusInternalServerError, err.Error())
 		}

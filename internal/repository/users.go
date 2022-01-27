@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,9 +16,18 @@ type UsersRepo struct {
 }
 
 func NewUsersRepo(db *mongo.Database) *UsersRepo {
+	collection := db.Collection(usersCollection)
+	indexModel := mongo.IndexModel{
+		Keys:    bson.M{"email": 1},
+		Options: options.Index().SetUnique(true),
+	}
+	_, err := collection.Indexes().CreateOne(context.Background(), indexModel)
+	if err != nil {
+		log.Fatalf("unable to create user collection index, %v", err)
+	}
 
 	return &UsersRepo{
-		db: db.Collection(usersCollection),
+		db: collection,
 	}
 }
 
