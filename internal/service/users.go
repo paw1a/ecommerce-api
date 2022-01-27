@@ -18,16 +18,20 @@ func NewUsersService(repo repository.Users) *UsersService {
 	}
 }
 
-func (u UsersService) FindAll(ctx context.Context) ([]domain.User, error) {
+func (u *UsersService) FindAll(ctx context.Context) ([]domain.User, error) {
 	return u.repo.FindAll(ctx)
 }
 
-func (u UsersService) FindByID(ctx context.Context, userID primitive.ObjectID) (domain.User, error) {
+func (u *UsersService) FindByID(ctx context.Context, userID primitive.ObjectID) (domain.User, error) {
 	return u.repo.FindByID(ctx, userID)
 }
 
-func (u UsersService) FindByCredentials(ctx context.Context, signInDTO dto.SignInDTO) (domain.User, error) {
+func (u *UsersService) FindByCredentials(ctx context.Context, signInDTO dto.SignInDTO) (domain.User, error) {
 	return u.repo.FindByCredentials(ctx, signInDTO.Email, signInDTO.Password)
+}
+
+func (u *UsersService) FindUserInfo(ctx context.Context, userID primitive.ObjectID) (domain.UserInfo, error) {
+	return u.repo.FindUserInfo(ctx, userID)
 }
 
 func (u UsersService) Create(ctx context.Context, userDTO dto.CreateUserDTO) (domain.User, error) {
@@ -38,10 +42,10 @@ func (u UsersService) Create(ctx context.Context, userDTO dto.CreateUserDTO) (do
 	})
 }
 
-func (u UsersService) Update(ctx context.Context, userDTO dto.UpdateUserDTO, userID primitive.ObjectID) (domain.User, error) {
+func (u *UsersService) Update(ctx context.Context, userDTO dto.UpdateUserDTO, userID primitive.ObjectID) (domain.User, error) {
 	return u.repo.Update(ctx, dto.UpdateUserInput{Name: userDTO.Name}, userID)
 }
 
-func (u UsersService) Delete(ctx context.Context, userID primitive.ObjectID) error {
+func (u *UsersService) Delete(ctx context.Context, userID primitive.ObjectID) error {
 	return u.repo.Delete(ctx, userID)
 }

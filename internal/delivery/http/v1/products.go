@@ -77,7 +77,7 @@ func (h *Handler) getAllProductsAdmin(context *gin.Context) {
 // @Security  AdminAuth
 // @Router    /admins/products/{id} [get]
 func (h *Handler) getProductByIdAdmin(context *gin.Context) {
-	id, err := parseIdFromPath(context, "id")
+	id, err := getIdFromPath(context, "id")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
@@ -143,7 +143,7 @@ func (h *Handler) updateProductAdmin(context *gin.Context) {
 		return
 	}
 
-	productID, err := parseIdFromPath(context, "id")
+	productID, err := getIdFromPath(context, "id")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
@@ -172,7 +172,7 @@ func (h *Handler) updateProductAdmin(context *gin.Context) {
 // @Security  AdminAuth
 // @Router    /admins/products/{id} [delete]
 func (h *Handler) deleteProductAdmin(context *gin.Context) {
-	productID, err := parseIdFromPath(context, "id")
+	productID, err := getIdFromPath(context, "id")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
@@ -201,7 +201,7 @@ func (h *Handler) deleteProductAdmin(context *gin.Context) {
 // @Security  AdminAuth
 // @Router    /admins/products/{id}/reviews [get]
 func (h *Handler) getProductReviewsAdmin(context *gin.Context) {
-	productID, err := parseIdFromPath(context, "id")
+	productID, err := getIdFromPath(context, "id")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
 		return

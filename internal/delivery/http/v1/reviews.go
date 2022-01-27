@@ -48,7 +48,7 @@ func (h *Handler) getAllReviewsAdmin(context *gin.Context) {
 // @Security  AdminAuth
 // @Router    /admins/reviews/{id} [get]
 func (h *Handler) getReviewByIdAdmin(context *gin.Context) {
-	id, err := parseIdFromPath(context, "id")
+	id, err := getIdFromPath(context, "id")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
@@ -111,7 +111,7 @@ func (h *Handler) createReviewAdmin(context *gin.Context) {
 // @Security  AdminAuth
 // @Router    /admins/reviews/{id} [delete]
 func (h *Handler) deleteReviewAdmin(context *gin.Context) {
-	reviewID, err := parseIdFromPath(context, "id")
+	reviewID, err := getIdFromPath(context, "id")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
 		return

@@ -12,15 +12,15 @@ type ProductsService struct {
 	repo repository.Products
 }
 
-func (p ProductsService) FindAll(ctx context.Context) ([]domain.Product, error) {
+func (p *ProductsService) FindAll(ctx context.Context) ([]domain.Product, error) {
 	return p.repo.FindAll(ctx)
 }
 
-func (p ProductsService) FindByID(ctx context.Context, productID primitive.ObjectID) (domain.Product, error) {
+func (p *ProductsService) FindByID(ctx context.Context, productID primitive.ObjectID) (domain.Product, error) {
 	return p.repo.FindByID(ctx, productID)
 }
 
-func (p ProductsService) Create(ctx context.Context, product dto.CreateProductDTO) (domain.Product, error) {
+func (p *ProductsService) Create(ctx context.Context, product dto.CreateProductDTO) (domain.Product, error) {
 	return p.repo.Create(ctx, domain.Product{
 		Name:        product.Name,
 		Description: product.Description,
@@ -29,7 +29,7 @@ func (p ProductsService) Create(ctx context.Context, product dto.CreateProductDT
 	})
 }
 
-func (p ProductsService) Update(ctx context.Context, productDTO dto.UpdateProductDTO, productID primitive.ObjectID) (domain.Product, error) {
+func (p *ProductsService) Update(ctx context.Context, productDTO dto.UpdateProductDTO, productID primitive.ObjectID) (domain.Product, error) {
 	return p.repo.Update(ctx, dto.UpdateProductInput{
 		Name:        productDTO.Name,
 		Description: productDTO.Description,
@@ -39,7 +39,7 @@ func (p ProductsService) Update(ctx context.Context, productDTO dto.UpdateProduc
 	}, productID)
 }
 
-func (p ProductsService) Delete(ctx context.Context, productID primitive.ObjectID) error {
+func (p *ProductsService) Delete(ctx context.Context, productID primitive.ObjectID) error {
 	return p.repo.Delete(ctx, productID)
 }
 

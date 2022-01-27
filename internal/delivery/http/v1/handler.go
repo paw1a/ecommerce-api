@@ -59,14 +59,28 @@ func LoggerMiddleware() gin.HandlerFunc {
 	}
 }
 
-func parseIdFromPath(c *gin.Context, paramName string) (primitive.ObjectID, error) {
-	idParam := c.Param(paramName)
-	if idParam == "" {
+func getIdFromPath(c *gin.Context, paramName string) (primitive.ObjectID, error) {
+	idString := c.Param(paramName)
+	if idString == "" {
 		return primitive.ObjectID{}, errors.New("empty id param")
 	}
 
-	id, err := primitive.ObjectIDFromHex(idParam)
+	id, err := primitive.ObjectIDFromHex(idString)
 	if err != nil {
+		return primitive.ObjectID{}, errors.New("invalid id param")
+	}
+
+	return id, nil
+}
+
+func getIdFromRequestContext(c *gin.Context, paramName string) (primitive.ObjectID, error) {
+	idString, ok := c.Get(paramName)
+	if !ok {
+		return primitive.ObjectID{}, errors.New("not authenticated")
+	}
+
+	id, ok := idString.(primitive.ObjectID)
+	if !ok {
 		return primitive.ObjectID{}, errors.New("invalid id param")
 	}
 

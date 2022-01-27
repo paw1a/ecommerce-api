@@ -2,7 +2,6 @@ package domain
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"time"
 )
 
 type User struct {
@@ -12,13 +11,7 @@ type User struct {
 	Password string             `json:"password" bson:"password"`
 }
 
-type Cart struct {
-	TotalPrice float64    `json:"totalPrice" bson:"totalPrice"`
-	CartItems  []CartItem `json:"cartItems" bson:"cartItems"`
-}
-
-type CartItem struct {
-	ProductID primitive.ObjectID `json:"id" bson:"_id,omitempty"` //TODO: rename id
-	Number    int                `json:"number" bson:"number"`
-	ExpiresAt time.Time          `json:"expiresAt" bson:"expiresAt"`
+type UserInfo struct {
+	Name  string `json:"name" bson:"name"`
+	Email string `json:"email" bson:"email"`
 }

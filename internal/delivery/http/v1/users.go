@@ -28,7 +28,18 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 }
 
 func (h *Handler) getUserAccount(context *gin.Context) {
+	userID, err := getIdFromRequestContext(context, "userID")
+	if err != nil {
+		errorResponse(context, http.StatusUnauthorized, err.Error())
+		return
+	}
 
+	userInfo, err := h.services.Users.FindUserInfo(context.Request.Context(), userID)
+	if err != nil {
+		errorResponse(context, http.StatusInternalServerError, err.Error())
+	}
+
+	successResponse(context, userInfo)
 }
 
 func (h *Handler) updateUserAccount(context *gin.Context) {
@@ -140,7 +151,7 @@ func (h *Handler) getAllUsersAdmin(context *gin.Context) {
 // @Security  AdminAuth
 // @Router    /admins/users/{id} [get]
 func (h *Handler) getUserByIdAdmin(context *gin.Context) {
-	id, err := parseIdFromPath(context, "id")
+	id, err := getIdFromPath(context, "id")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
@@ -211,7 +222,7 @@ func (h *Handler) updateUserAdmin(context *gin.Context) {
 		return
 	}
 
-	userID, err := parseIdFromPath(context, "id")
+	userID, err := getIdFromPath(context, "id")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
@@ -240,7 +251,7 @@ func (h *Handler) updateUserAdmin(context *gin.Context) {
 // @Security  AdminAuth
 // @Router    /admins/users/{id} [delete]
 func (h *Handler) deleteUserAdmin(context *gin.Context) {
-	userID, err := parseIdFromPath(context, "id")
+	userID, err := getIdFromPath(context, "id")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
