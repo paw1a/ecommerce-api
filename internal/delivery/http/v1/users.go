@@ -26,6 +26,18 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 	}
 }
 
+// UserAccount godoc
+// @Summary   User account
+// @Tags      user
+// @Accept    json
+// @Produce   json
+// @Success   200  {object}  auth.AuthDetails
+// @Failure   400   {object}  failure
+// @Failure   401   {object}  failure
+// @Failure   404   {object}  failure
+// @Failure   500   {object}  failure
+// @Security  UserAuth
+// @Router    /users/account [get]
 func (h *Handler) getUserAccount(context *gin.Context) {
 	userID, err := getIdFromRequestContext(context, "userID")
 	if err != nil {
@@ -41,6 +53,18 @@ func (h *Handler) getUserAccount(context *gin.Context) {
 	successResponse(context, userInfo)
 }
 
+// UserSignIn godoc
+// @Summary  User sign-in
+// @Tags     user-auth
+// @Accept   json
+// @Produce  json
+// @Param    user  body      dto.SignInDTO  true  "user credentials"
+// @Success  200   {object}  auth.AuthDetails
+// @Failure  400   {object}  failure
+// @Failure  401   {object}  failure
+// @Failure  404   {object}  failure
+// @Failure  500   {object}  failure
+// @Router   /users/auth/sign-in [post]
 func (h *Handler) userSignIn(context *gin.Context) {
 	var signInDTO dto.SignInDTO
 	err := context.BindJSON(&signInDTO)
@@ -72,9 +96,21 @@ func (h *Handler) userSignIn(context *gin.Context) {
 	successResponse(context, authDetails)
 }
 
+// UserSignUp godoc
+// @Summary  User sign-up
+// @Tags     user-auth
+// @Accept   json
+// @Produce  json
+// @Param    user  body      dto.SignUpDTO  true  "user data"
+// @Success  200   {object}  domain.UserInfo
+// @Failure  400   {object}  failure
+// @Failure  401   {object}  failure
+// @Failure  404   {object}  failure
+// @Failure  500   {object}  failure
+// @Router   /users/auth/sign-up [post]
 func (h *Handler) userSignUp(context *gin.Context) {
 	var signUpDTO dto.SignUpDTO
-	err := context.BindJSON(signUpDTO)
+	err := context.BindJSON(&signUpDTO)
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, "invalid input body")
 		return
@@ -101,6 +137,18 @@ func (h *Handler) userSignUp(context *gin.Context) {
 	})
 }
 
+// UserRefresh godoc
+// @Summary  User refresh token
+// @Tags     user-auth
+// @Accept   json
+// @Produce  json
+// @Param    refreshInput  body      auth.RefreshInput  true  "user refresh data"
+// @Success  200           {object}  auth.AuthDetails
+// @Failure  400           {object}  failure
+// @Failure  401           {object}  failure
+// @Failure  404           {object}  failure
+// @Failure  500           {object}  failure
+// @Router   /users/auth/refresh [post]
 func (h *Handler) userRefresh(context *gin.Context) {
 	h.refreshToken(context)
 }
@@ -142,10 +190,10 @@ func (h *Handler) getAllUsersAdmin(context *gin.Context) {
 // @Produce   json
 // @Param     id   path      string  true  "user id"
 // @Success   200   {object}  success
-// @Failure   400   {object}  failure
-// @Failure   401   {object}  failure
-// @Failure   404   {object}  failure
-// @Failure   500   {object}  failure
+// @Failure   400  {object}  failure
+// @Failure   401  {object}  failure
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
 // @Security  AdminAuth
 // @Router    /admins/users/{id} [get]
 func (h *Handler) getUserByIdAdmin(context *gin.Context) {

@@ -90,12 +90,12 @@ func (h *Handler) adminSignIn(context *gin.Context) {
 	successResponse(context, authDetails)
 }
 
-// AdminSignIn godoc
-// @Summary  Admin sign-in
+// AdminRefresh godoc
+// @Summary  Admin refresh token
 // @Tags     admin-auth
 // @Accept   json
 // @Produce  json
-// @Param    refreshInput  body      auth.RefreshInput  true  "admin credentials"
+// @Param    refreshInput  body      auth.RefreshInput  true  "refresh data"
 // @Success  200           {object}  auth.AuthDetails
 // @Failure  400           {object}  failure
 // @Failure  401           {object}  failure

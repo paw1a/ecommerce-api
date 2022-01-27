@@ -21,13 +21,11 @@ definitions:
       name:
         type: string
     type: object
-  dto.AdminDTO:
+  domain.UserInfo:
     properties:
       email:
         type: string
-      fingerprint:
-        type: string
-      password:
+      name:
         type: string
     type: object
   dto.CreateProductDTO:
@@ -62,6 +60,24 @@ definitions:
       password:
         type: string
     type: object
+  dto.SignInDTO:
+    properties:
+      email:
+        type: string
+      fingerprint:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.SignUpDTO:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
   dto.UpdateProductDTO:
     properties:
       categories:
@@ -83,6 +99,11 @@ definitions:
         type: string
     type: object
   v1.failure:
+    properties:
+      error:
+        $ref: '#/definitions/v1.failureInfo'
+    type: object
+  v1.failureInfo:
     properties:
       code:
         example: 400
@@ -110,7 +131,7 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: admin credentials
+      - description: refresh data
         in: body
         name: refreshInput
         required: true
@@ -139,7 +160,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/v1.failure'
-      summary: Admin sign-in
+      summary: Admin refresh token
       tags:
       - admin-auth
   /admins/auth/sign-in:
@@ -152,7 +173,7 @@ paths:
         name: admin
         required: true
         schema:
-          $ref: '#/definitions/dto.AdminDTO'
+          $ref: '#/definitions/dto.SignInDTO'
       produces:
       - application/json
       responses:
@@ -589,8 +610,8 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
             $ref: '#/definitions/v1.success'
         "400":
@@ -732,8 +753,155 @@ paths:
       summary: Update user
       tags:
       - admin-users
+  /users/account:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.AuthDetails'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - UserAuth: []
+      summary: User account
+      tags:
+      - user
+  /users/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: user refresh data
+        in: body
+        name: refreshInput
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RefreshInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.AuthDetails'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      summary: User refresh token
+      tags:
+      - user-auth
+  /users/auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: user credentials
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignInDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.AuthDetails'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      summary: User sign-in
+      tags:
+      - user-auth
+  /users/auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: user data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignUpDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.UserInfo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      summary: User sign-up
+      tags:
+      - user-auth
 securityDefinitions:
   AdminAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+  UserAuth:
     in: header
     name: Authorization
     type: apiKey

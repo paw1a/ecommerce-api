@@ -11,6 +11,10 @@ type success struct {
 }
 
 type failure struct {
+	Error failureInfo `json:"error"`
+}
+
+type failureInfo struct {
 	Code    int    `json:"code" example:"400"`
 	Message string `json:"message" example:"invalid request body"`
 }
@@ -27,8 +31,8 @@ func createdResponse(context *gin.Context, data interface{}) {
 
 func errorResponse(c *gin.Context, statusCode int, message string) {
 	log.Error(message)
-	c.AbortWithStatusJSON(statusCode, failure{
+	c.AbortWithStatusJSON(statusCode, failure{Error: failureInfo{
 		Code:    statusCode,
 		Message: message,
-	})
+	}})
 }

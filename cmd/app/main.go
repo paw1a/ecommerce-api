@@ -16,6 +16,10 @@ import "github.com/paw1a/ecommerce-api/internal/app"
 // @securityDefinitions.apikey  AdminAuth
 // @in                          header
 // @name                        Authorization
+
+// @securityDefinitions.apikey  UserAuth
+// @in                          header
+// @name                        Authorization
 func main() {
 	app.Run("config/config.yml")
 }

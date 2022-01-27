@@ -15,6 +15,7 @@ type UsersRepo struct {
 }
 
 func NewUsersRepo(db *mongo.Database) *UsersRepo {
+
 	return &UsersRepo{
 		db: db.Collection(usersCollection),
 	}
