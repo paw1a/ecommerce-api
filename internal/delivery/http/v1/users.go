@@ -22,7 +22,6 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 		authenticated := users.Group("/", h.verifyUser)
 		{
 			authenticated.GET("/account", h.getUserAccount)
-			authenticated.PUT("/account", h.updateUserAccount)
 		}
 	}
 }
@@ -40,10 +39,6 @@ func (h *Handler) getUserAccount(context *gin.Context) {
 	}
 
 	successResponse(context, userInfo)
-}
-
-func (h *Handler) updateUserAccount(context *gin.Context) {
-
 }
 
 func (h *Handler) userSignIn(context *gin.Context) {
@@ -100,15 +95,18 @@ func (h *Handler) userSignUp(context *gin.Context) {
 		return
 	}
 
-	createdResponse(context, user)
+	createdResponse(context, domain.UserInfo{
+		Name:  user.Name,
+		Email: user.Email,
+	})
 }
 
 func (h *Handler) userRefresh(context *gin.Context) {
-
+	h.refreshToken(context)
 }
 
 func (h *Handler) verifyUser(context *gin.Context) {
-
+	h.verifyToken(context, "userID")
 }
 
 // GetUsers godoc
