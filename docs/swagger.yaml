@@ -21,6 +21,19 @@ definitions:
       name:
         type: string
     type: object
+  domain.Review:
+    properties:
+      id:
+        type: string
+      productID:
+        type: string
+      rating:
+        type: integer
+      text:
+        type: string
+      userID:
+        type: string
+    type: object
   domain.UserInfo:
     properties:
       email:
@@ -764,10 +777,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/auth.AuthDetails'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/v1.failure'
         "401":
           description: Unauthorized
           schema:
@@ -896,6 +905,36 @@ paths:
       summary: User sign-up
       tags:
       - user-auth
+  /users/reviews:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Review'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - UserAuth: []
+      summary: User reviews list
+      tags:
+      - user
 securityDefinitions:
   AdminAuth:
     in: header
