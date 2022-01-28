@@ -54,10 +54,6 @@ func (p ProductsRepo) Update(ctx context.Context, productInput dto.UpdateProduct
 		updateQuery["price"] = productInput.Price
 	}
 
-	if productInput.TotalRating != nil {
-		updateQuery["totalRating"] = productInput.TotalRating
-	}
-
 	if productInput.Categories != nil {
 		updateQuery["categories"] = productInput.Categories
 	}

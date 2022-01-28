@@ -35,6 +35,7 @@ type Reviews interface {
 	FindByProductID(ctx context.Context, productID primitive.ObjectID) ([]domain.Review, error)
 	Create(ctx context.Context, review domain.Review) (domain.Review, error)
 	Delete(ctx context.Context, reviewID primitive.ObjectID) error
+	DeleteByProductID(ctx context.Context, productID primitive.ObjectID) error
 }
 
 type Admins interface {

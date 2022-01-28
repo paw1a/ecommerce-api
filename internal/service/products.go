@@ -9,15 +9,45 @@ import (
 )
 
 type ProductsService struct {
-	repo repository.Products
+	repo           repository.Products
+	reviewsService Reviews
 }
 
 func (p *ProductsService) FindAll(ctx context.Context) ([]domain.Product, error) {
-	return p.repo.FindAll(ctx)
+	products, err := p.repo.FindAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, product := range products {
+		productReviews, err := p.reviewsService.FindByProductID(ctx, product.ID)
+		if err != nil {
+			return nil, err
+		}
+		var ratingSum = 0
+		for _, review := range productReviews {
+			ratingSum += int(review.Rating)
+		}
+		product.TotalRating = float32(ratingSum / len(productReviews))
+	}
+
+	return products, nil
 }
 
 func (p *ProductsService) FindByID(ctx context.Context, productID primitive.ObjectID) (domain.Product, error) {
-	return p.repo.FindByID(ctx, productID)
+	product, err := p.repo.FindByID(ctx, productID)
+	if err != nil {
+		return domain.Product{}, err
+	}
+	productReviews, err := p.reviewsService.FindByProductID(ctx, product.ID)
+	if err != nil {
+		return domain.Product{}, err
+	}
+	var ratingSum = 0
+	for _, review := range productReviews {
+		ratingSum += int(review.Rating)
+	}
+	product.TotalRating = float32(ratingSum / len(productReviews))
+	return product, nil
 }
 
 func (p *ProductsService) Create(ctx context.Context, product dto.CreateProductDTO) (domain.Product, error) {
@@ -34,17 +64,21 @@ func (p *ProductsService) Update(ctx context.Context, productDTO dto.UpdateProdu
 		Name:        productDTO.Name,
 		Description: productDTO.Description,
 		Price:       productDTO.Price,
-		TotalRating: productDTO.TotalRating,
 		Categories:  productDTO.Categories,
 	}, productID)
 }
 
 func (p *ProductsService) Delete(ctx context.Context, productID primitive.ObjectID) error {
-	return p.repo.Delete(ctx, productID)
+	err := p.repo.Delete(ctx, productID)
+	if err != nil {
+		return err
+	}
+	return p.reviewsService.DeleteByProductID(ctx, productID)
 }
 
-func NewProductsService(repo repository.Products) *ProductsService {
+func NewProductsService(repo repository.Products, reviewsService Reviews) *ProductsService {
 	return &ProductsService{
-		repo: repo,
+		repo:           repo,
+		reviewsService: reviewsService,
 	}
 }

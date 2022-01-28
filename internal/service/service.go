@@ -35,6 +35,7 @@ type Reviews interface {
 	FindByProductID(ctx context.Context, productID primitive.ObjectID) ([]domain.Review, error)
 	Create(ctx context.Context, review dto.CreateReviewInput) (domain.Review, error)
 	Delete(ctx context.Context, reviewID primitive.ObjectID) error
+	DeleteByProductID(ctx context.Context, productID primitive.ObjectID) error
 }
 
 type Admins interface {
@@ -49,12 +50,13 @@ type Services struct {
 }
 
 type Deps struct {
-	Repos *repository.Repositories
+	Repos    *repository.Repositories
+	Services *Services
 }
 
 func NewServices(deps Deps) *Services {
 	usersService := NewUsersService(deps.Repos.Users)
-	productsService := NewProductsService(deps.Repos.Products)
+	productsService := NewProductsService(deps.Repos.Products, deps.Services.Reviews)
 	reviewsService := NewReviewsService(deps.Repos.Reviews)
 	adminsService := NewAdminsService(deps.Repos.Admins)
 

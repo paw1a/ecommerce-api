@@ -15,7 +15,6 @@ type UpdateProductDTO struct {
 	Name        string            `json:"name"`
 	Description *string           `json:"description"`
 	Price       *float64          `json:"price"`
-	TotalRating *float32          `json:"totalRating,omitempty"`
 	Categories  []domain.Category `json:"categories"`
 }
 
@@ -23,6 +22,5 @@ type UpdateProductInput struct {
 	Name        string
 	Description *string
 	Price       *float64
-	TotalRating *float32
 	Categories  []domain.Category
 }

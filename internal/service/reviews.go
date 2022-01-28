@@ -41,6 +41,10 @@ func (r *ReviewsService) Delete(ctx context.Context, reviewID primitive.ObjectID
 	return r.repo.Delete(ctx, reviewID)
 }
 
+func (r *ReviewsService) DeleteByProductID(ctx context.Context, productID primitive.ObjectID) error {
+	return r.repo.DeleteByProductID(ctx, productID)
+}
+
 func NewReviewsService(repo repository.Reviews) *ReviewsService {
 	return &ReviewsService{
 		repo: repo,

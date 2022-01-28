@@ -65,6 +65,11 @@ func (r ReviewsRepo) Delete(ctx context.Context, reviewID primitive.ObjectID) er
 	return err
 }
 
+func (r ReviewsRepo) DeleteByProductID(ctx context.Context, productID primitive.ObjectID) error {
+	_, err := r.db.DeleteMany(ctx, bson.M{"productID": productID})
+	return err
+}
+
 func NewReviewsRepo(db *mongo.Database) *ReviewsRepo {
 	return &ReviewsRepo{
 		db: db.Collection(reviewsCollection),
