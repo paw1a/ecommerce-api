@@ -1,0 +1,82 @@
+[
+    {
+        "_id": {
+            "$oid": "61f551dc3c4d746917459834"
+        },
+        "name": "Brett Miller",
+        "email": "santoskristie@hotmail.com",
+        "password": "(9Yy7F9g&!"
+    },
+    {
+        "_id": {
+            "$oid": "61f551dc3c4d746917459835"
+        },
+        "name": "David Miller",
+        "email": "kimberly79@hotmail.com",
+        "password": "N+#I8BhfbM"
+    },
+    {
+        "_id": {
+            "$oid": "61f551dc3c4d746917459836"
+        },
+        "name": "Ian Cross",
+        "email": "hollandbrian@hotmail.com",
+        "password": "n&O7A43k!A"
+    },
+    {
+        "_id": {
+            "$oid": "61f551dc3c4d746917459837"
+        },
+        "name": "Debbie Phillips",
+        "email": "brandon47@hotmail.com",
+        "password": "f(wg(5Gn$f"
+    },
+    {
+        "_id": {
+            "$oid": "61f551dc3c4d746917459838"
+        },
+        "name": "Andrew Campbell",
+        "email": "hickscorey@yahoo.com",
+        "password": "0s0KnuMxS+"
+    },
+    {
+        "_id": {
+            "$oid": "61f551dc3c4d746917459839"
+        },
+        "name": "Charles Hernandez",
+        "email": "jeremywells@gmail.com",
+        "password": "$574DNgO7W"
+    },
+    {
+        "_id": {
+            "$oid": "61f551dc3c4d74691745983a"
+        },
+        "name": "Raymond Valdez",
+        "email": "benjaminmills@hotmail.com",
+        "password": "_3&1U5nuy$"
+    },
+    {
+        "_id": {
+            "$oid": "61f551dc3c4d74691745983b"
+        },
+        "name": "Justin Williams",
+        "email": "kimberlyjohnson@hotmail.com",
+        "password": "!RrY)Vsj0n"
+    },
+    {
+        "_id": {
+            "$oid": "61f551dc3c4d74691745983c"
+        },
+        "name": "Haley Benton",
+        "email": "courtney21@gmail.com",
+        "password": "v%LSGhr8@8"
+    },
+    {
+        "_id": {
+            "$oid": "61f551dc3c4d74691745983d"
+        },
+        "name": "Paula Davis",
+        "email": "nfoster@hotmail.com",
+        "password": "U!Q5Tw0izz"
+    }
+]
