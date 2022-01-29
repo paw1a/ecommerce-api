@@ -1,0 +1,3 @@
+faker
+faker_commerce
+bson
