@@ -6,6 +6,7 @@ import (
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"github.com/paw1a/ecommerce-api/internal/repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"math"
 )
 
 type ProductsService struct {
@@ -18,8 +19,8 @@ func (p *ProductsService) FindAll(ctx context.Context) ([]domain.Product, error)
 	if err != nil {
 		return nil, err
 	}
-	for _, product := range products {
-		productReviews, err := p.reviewsService.FindByProductID(ctx, product.ID)
+	for i, _ := range products {
+		productReviews, err := p.reviewsService.FindByProductID(ctx, products[i].ID)
 		if err != nil {
 			return nil, err
 		}
@@ -29,7 +30,8 @@ func (p *ProductsService) FindAll(ctx context.Context) ([]domain.Product, error)
 		}
 
 		if len(productReviews) != 0 {
-			product.TotalRating = float32(ratingSum / len(productReviews))
+			value := float64(ratingSum) / float64(len(productReviews))
+			products[i].TotalRating = math.Floor(value*10) / 10
 		}
 	}
 
@@ -50,7 +52,8 @@ func (p *ProductsService) FindByID(ctx context.Context, productID primitive.Obje
 		ratingSum += int(review.Rating)
 	}
 	if len(productReviews) != 0 {
-		product.TotalRating = float32(ratingSum / len(productReviews))
+		value := float64(ratingSum) / float64(len(productReviews))
+		product.TotalRating = math.Floor(value*10) / 10
 	}
 	return product, nil
 }

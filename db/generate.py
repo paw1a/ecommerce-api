@@ -39,6 +39,7 @@ users.close()
 products = open('data/products.json', 'w')
 fake.set_arguments('product_desc_arg', {'nb_words': 10})
 fake.set_arguments('category_desc_arg', {'nb_words': 5})
+fake.set_arguments('price', {'min_value': 100, 'max_value': 100000})
 
 productList = []
 productIds = []
@@ -51,7 +52,7 @@ for _ in range(PRODUCT_NUM):
     product = fake.json(data_columns={'_id': {"$oid": f'@{productId}'},
                                       'name': 'ecommerce_name',
                                       'description': 'sentence:product_desc_arg',
-                                      'price': 'ecommerce_price',
+                                      'price': 'pyint:price',
                                       'categories': categoriesFormatter}, num_rows=1)
 
     parsedProduct = json.loads(product)
@@ -73,8 +74,8 @@ for productId in productIds:
             '_id': {"$oid": f'@{reviewId}'},
             'text': f'@{reviewText}',
             'rating': f'pyint:rating',
-            'productID': f'@{productId}',
-            'userID': f'@{random.choice(userIds)}'
+            'productID': {"$oid": f'@{productId}'},
+            'userID': {"$oid": f'@{random.choice(userIds)}'}
         }, num_rows=1)
         parsedReview = json.loads(review)
         reviewsList.append(parsedReview)
