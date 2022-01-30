@@ -27,7 +27,10 @@ func (p *ProductsService) FindAll(ctx context.Context) ([]domain.Product, error)
 		for _, review := range productReviews {
 			ratingSum += int(review.Rating)
 		}
-		product.TotalRating = float32(ratingSum / len(productReviews))
+
+		if len(productReviews) != 0 {
+			product.TotalRating = float32(ratingSum / len(productReviews))
+		}
 	}
 
 	return products, nil
@@ -46,7 +49,9 @@ func (p *ProductsService) FindByID(ctx context.Context, productID primitive.Obje
 	for _, review := range productReviews {
 		ratingSum += int(review.Rating)
 	}
-	product.TotalRating = float32(ratingSum / len(productReviews))
+	if len(productReviews) != 0 {
+		product.TotalRating = float32(ratingSum / len(productReviews))
+	}
 	return product, nil
 }
 

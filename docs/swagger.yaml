@@ -103,8 +103,6 @@ definitions:
         type: string
       price:
         type: number
-      totalRating:
-        type: number
     type: object
   dto.UpdateUserDTO:
     properties:

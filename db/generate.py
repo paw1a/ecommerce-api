@@ -61,15 +61,18 @@ data = json.dumps(productList, indent=4)
 products.write(data)
 products.close()
 
+# generate reviews
+fake.set_arguments('rating', {'min_value': 1, 'max_value': 5})
 reviews = open('data/reviews.json', 'w')
 reviewsList = []
 for productId in productIds:
     for _ in range(random.randint(0, REVIEW_NUM)):
         reviewId = str(bson.ObjectId())
+        reviewText = fake.text().replace('\n', ' ')
         review = fake.json(data_columns={
             '_id': {"$oid": f'@{reviewId}'},
-            'text': 'text',
-            'rating': f'@{random.randint(1, 5)}',
+            'text': f'@{reviewText}',
+            'rating': f'pyint:rating',
             'productID': f'@{productId}',
             'userID': f'@{random.choice(userIds)}'
         }, num_rows=1)
@@ -80,6 +83,7 @@ data = json.dumps(reviewsList, indent=4)
 reviews.write(data)
 reviews.close()
 
+# generate admins
 admins = open('data/admins.json', 'w')
 data = [
     {

@@ -7,7 +7,7 @@ type Product struct {
 	Name        string             `json:"name" bson:"name"`
 	Description string             `json:"description" bson:"description"`
 	Price       float64            `json:"price" bson:"price"`
-	TotalRating float32            `json:"totalRating,omitempty" bson:"-"`
+	TotalRating float32            `json:"totalRating" bson:"-"`
 	Categories  []Category         `json:"categories" bson:"categories"` //TODO: make category independent entity, change type to Array(ObjectID)
 }
 

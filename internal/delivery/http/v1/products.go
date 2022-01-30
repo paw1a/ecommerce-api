@@ -1,9 +1,12 @@
 package v1
 
 import (
+	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
+	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 )
 
@@ -84,7 +87,12 @@ func (h *Handler) getProductByIdAdmin(context *gin.Context) {
 	}
 	product, err := h.services.Products.FindByID(context.Request.Context(), id)
 	if err != nil {
-		errorResponse(context, http.StatusInternalServerError, err.Error())
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			errorResponse(context, http.StatusInternalServerError,
+				fmt.Sprintf("no products with id: %s", id.Hex()))
+		} else {
+			errorResponse(context, http.StatusInternalServerError, err.Error())
+		}
 		return
 	}
 
@@ -108,7 +116,7 @@ func (h *Handler) createProductAdmin(context *gin.Context) {
 	var productDTO dto.CreateProductDTO
 	err := context.BindJSON(&productDTO)
 	if err != nil {
-		errorResponse(context, http.StatusBadRequest, "Invalid input body")
+		errorResponse(context, http.StatusBadRequest, "invalid input body")
 		return
 	}
 	product, err := h.services.Products.Create(context.Request.Context(), productDTO)
