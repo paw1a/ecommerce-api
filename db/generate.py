@@ -1,3 +1,4 @@
+import os
 import random
 
 from faker import Faker
@@ -6,14 +7,21 @@ import faker_commerce
 import json
 import bson
 
+USER_NUM = 20
+PRODUCT_NUM = 20
+REVIEW_NUM = 10
+
+if not os.path.exists('data'):
+    os.makedirs('data')
+
 fake = Faker(['en_US'])
 fake.add_provider(faker_commerce.Provider)
 
 # generate users
-users = open('users.json', 'w')
+users = open('data/users.json', 'w')
 userList = []
 userIds = []
-for _ in range(10):
+for _ in range(USER_NUM):
     userId = str(bson.ObjectId())
     userIds.append(userId)
     user = fake.json(data_columns={'_id': {"$oid": f'@{userId}'},
@@ -28,13 +36,13 @@ users.write(data)
 users.close()
 
 # generate products
-products = open('products.json', 'w')
+products = open('data/products.json', 'w')
 fake.set_arguments('product_desc_arg', {'nb_words': 10})
 fake.set_arguments('category_desc_arg', {'nb_words': 5})
 
 productList = []
 productIds = []
-for _ in range(10):
+for _ in range(PRODUCT_NUM):
     productId = str(bson.ObjectId())
     productIds.append(productId)
     categoriesFormatter = [{'name': 'ecommerce_category',
@@ -53,15 +61,38 @@ data = json.dumps(productList, indent=4)
 products.write(data)
 products.close()
 
-reviews = []
+reviews = open('data/reviews.json', 'w')
+reviewsList = []
 for productId in productIds:
-    for _ in range(random.randint(0, 10)):
+    for _ in range(random.randint(0, REVIEW_NUM)):
         reviewId = str(bson.ObjectId())
         review = fake.json(data_columns={
-            '_id': f'@{reviewId}',
+            '_id': {"$oid": f'@{reviewId}'},
             'text': 'text',
-            'rating': 'pyint',
+            'rating': f'@{random.randint(1, 5)}',
             'productID': f'@{productId}',
             'userID': f'@{random.choice(userIds)}'
-        })
+        }, num_rows=1)
+        parsedReview = json.loads(review)
+        reviewsList.append(parsedReview)
 
+data = json.dumps(reviewsList, indent=4)
+reviews.write(data)
+reviews.close()
+
+admins = open('data/admins.json', 'w')
+data = [
+    {
+        'name': 'Admin',
+        'email': 'paw1a@yandex.ru',
+        'password': '123'
+    },
+    {
+        'name': 'Admin 2',
+        'email': 'admin@admin.com',
+        'password': 'admin'
+    }
+]
+data = json.dumps(data, indent=4)
+admins.write(data)
+admins.close()

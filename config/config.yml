@@ -4,7 +4,7 @@ listen:
   port: 8080
 db:
   uri: mongodb://localhost:27017
-  database: go_test
+  database: ecommerce
 jwt:
   secret: jwtSecret
   accessTokenTime: 300000 # 15 minutes, 300000 for tests
