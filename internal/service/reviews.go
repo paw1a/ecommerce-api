@@ -2,14 +2,19 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"github.com/go-redis/redis/v7"
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"github.com/paw1a/ecommerce-api/internal/repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"math"
+	"time"
 )
 
 type ReviewsService struct {
-	repo repository.Reviews
+	repo        repository.Reviews
+	redisClient *redis.Client
 }
 
 func (r *ReviewsService) FindAll(ctx context.Context) ([]domain.Review, error) {
@@ -28,25 +33,84 @@ func (r *ReviewsService) FindByProductID(ctx context.Context, productID primitiv
 	return r.repo.FindByProductID(ctx, productID)
 }
 
-func (r *ReviewsService) Create(ctx context.Context, review dto.CreateReviewInput) (domain.Review, error) {
-	return r.repo.Create(ctx, domain.Review{
-		UserID:    review.UserID,
-		ProductID: review.ProductID,
-		Text:      review.Text,
-		Rating:    review.Rating,
+func (r *ReviewsService) Create(ctx context.Context, reviewDTO dto.CreateReviewInput) (domain.Review, error) {
+	review, err := r.repo.Create(ctx, domain.Review{
+		UserID:    reviewDTO.UserID,
+		ProductID: reviewDTO.ProductID,
+		Text:      reviewDTO.Text,
+		Rating:    reviewDTO.Rating,
 	})
+	if err != nil {
+		return domain.Review{}, err
+	}
+
+	_, err = r.calculateProductRating(ctx, review.ProductID)
+
+	return review, err
+}
+
+func (r *ReviewsService) calculateProductRating(ctx context.Context, productID primitive.ObjectID) (float64, error) {
+	productReviews, err := r.FindByProductID(ctx, productID)
+	if err != nil {
+		return 0.0, err
+	}
+
+	var ratingSum = 0
+	for _, review := range productReviews {
+		ratingSum += int(review.Rating)
+	}
+
+	var rating float64
+	if len(productReviews) != 0 {
+		value := float64(ratingSum) / float64(len(productReviews))
+		rating = math.Floor(value*10) / 10
+	}
+
+	err = r.redisClient.Set(productID.Hex(), rating, time.Hour*24*7).Err()
+	return rating, err
+}
+
+func (r *ReviewsService) GetTotalReviewRating(ctx context.Context, productID primitive.ObjectID) (float64, error) {
+	var rating float64
+	cachedRating, err := r.redisClient.Get(productID.Hex()).Float64()
+	if err != nil {
+		rating, err = r.calculateProductRating(ctx, productID)
+	} else {
+		rating = cachedRating
+	}
+
+	return rating, err
 }
 
 func (r *ReviewsService) Delete(ctx context.Context, reviewID primitive.ObjectID) error {
-	return r.repo.Delete(ctx, reviewID)
+	review, err := r.repo.FindByID(ctx, reviewID)
+	if err != nil {
+		return fmt.Errorf("no review with id: %s", reviewID.Hex())
+	}
+	err = r.repo.Delete(ctx, reviewID)
+	if err != nil {
+		return fmt.Errorf("failed to delete review with id: %s", reviewID)
+	}
+
+	_, err = r.calculateProductRating(ctx, review.ProductID)
+
+	return err
 }
 
 func (r *ReviewsService) DeleteByProductID(ctx context.Context, productID primitive.ObjectID) error {
-	return r.repo.DeleteByProductID(ctx, productID)
+	err := r.repo.DeleteByProductID(ctx, productID)
+	if err != nil {
+		return fmt.Errorf("failed to delete review with productID: %s", productID)
+	}
+
+	_, err = r.calculateProductRating(ctx, productID)
+
+	return err
 }
 
-func NewReviewsService(repo repository.Reviews) *ReviewsService {
+func NewReviewsService(repo repository.Reviews, redisClient *redis.Client) *ReviewsService {
 	return &ReviewsService{
-		repo: repo,
+		repo:        repo,
+		redisClient: redisClient,
 	}
 }

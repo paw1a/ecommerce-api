@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -20,12 +21,12 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 	}
 }
 
-// UserReviews godoc
-// @Summary   User reviews list
+// GerUserReviews godoc
+// @Summary   User reviews List
 // @Tags      user
 // @Accept    json
 // @Produce   json
-// @Success   200  {array}   domain.Review
+// @Success   200  {array}   success
 // @Failure   401  {object}  failure
 // @Failure   404  {object}  failure
 // @Failure   500  {object}  failure
@@ -39,6 +40,7 @@ func (h *Handler) getAllReviewsUser(context *gin.Context) {
 	}
 
 	reviews, err := h.services.Reviews.FindByUserID(context, userID)
+	log.Error(reviews)
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return

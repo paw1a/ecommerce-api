@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/go-redis/redis/v7"
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"github.com/paw1a/ecommerce-api/internal/repository"
@@ -33,6 +34,7 @@ type Reviews interface {
 	FindByID(ctx context.Context, reviewID primitive.ObjectID) (domain.Review, error)
 	FindByUserID(ctx context.Context, userID primitive.ObjectID) ([]domain.Review, error)
 	FindByProductID(ctx context.Context, productID primitive.ObjectID) ([]domain.Review, error)
+	GetTotalReviewRating(ctx context.Context, productID primitive.ObjectID) (float64, error)
 	Create(ctx context.Context, review dto.CreateReviewInput) (domain.Review, error)
 	Delete(ctx context.Context, reviewID primitive.ObjectID) error
 	DeleteByProductID(ctx context.Context, productID primitive.ObjectID) error
@@ -50,13 +52,14 @@ type Services struct {
 }
 
 type Deps struct {
-	Repos    *repository.Repositories
-	Services *Services
+	Repos       *repository.Repositories
+	Services    *Services
+	RedisClient *redis.Client
 }
 
 func NewServices(deps Deps) *Services {
 	usersService := NewUsersService(deps.Repos.Users)
-	reviewsService := NewReviewsService(deps.Repos.Reviews)
+	reviewsService := NewReviewsService(deps.Repos.Reviews, deps.RedisClient)
 	productsService := NewProductsService(deps.Repos.Products, reviewsService)
 	adminsService := NewAdminsService(deps.Repos.Admins)
 

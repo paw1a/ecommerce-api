@@ -74,7 +74,6 @@ func getIdFromPath(c *gin.Context, paramName string) (primitive.ObjectID, error)
 
 func getIdFromRequestContext(context *gin.Context, paramName string) (primitive.ObjectID, error) {
 	idString, ok := context.Get(paramName)
-	log.Infof("%v %t", idString, idString)
 	if !ok {
 		return primitive.ObjectID{}, errors.New("not authenticated")
 	}

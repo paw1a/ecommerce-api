@@ -8,8 +8,8 @@ import json
 import bson
 
 USER_NUM = 20
-PRODUCT_NUM = 20
-REVIEW_NUM = 10
+PRODUCT_NUM = 200
+REVIEW_NUM = 3000
 
 if not os.path.exists('data'):
     os.makedirs('data')
@@ -67,7 +67,7 @@ fake.set_arguments('rating', {'min_value': 1, 'max_value': 5})
 reviews = open('data/reviews.json', 'w')
 reviewsList = []
 for productId in productIds:
-    for _ in range(random.randint(0, REVIEW_NUM)):
+    for _ in range(random.randint(REVIEW_NUM // 2, REVIEW_NUM)):
         reviewId = str(bson.ObjectId())
         reviewText = fake.text().replace('\n', ' ')
         review = fake.json(data_columns={

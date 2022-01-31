@@ -21,19 +21,6 @@ definitions:
       name:
         type: string
     type: object
-  domain.Review:
-    properties:
-      id:
-        type: string
-      productID:
-        type: string
-      rating:
-        type: integer
-      text:
-        type: string
-      userID:
-        type: string
-    type: object
   domain.UserInfo:
     properties:
       email:
@@ -59,9 +46,13 @@ definitions:
     type: object
   dto.CreateReviewDTO:
     properties:
+      productID:
+        type: string
       rating:
         type: integer
       text:
+        type: string
+      userID:
         type: string
     type: object
   dto.CreateUserDTO:
@@ -914,7 +905,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/domain.Review'
+              $ref: '#/definitions/v1.success'
             type: array
         "401":
           description: Unauthorized
@@ -930,7 +921,7 @@ paths:
             $ref: '#/definitions/v1.failure'
       security:
       - UserAuth: []
-      summary: User reviews list
+      summary: User reviews List
       tags:
       - user
 securityDefinitions:

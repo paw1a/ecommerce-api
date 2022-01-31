@@ -6,7 +6,6 @@ import (
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"github.com/paw1a/ecommerce-api/internal/repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"math"
 )
 
 type ProductsService struct {
@@ -19,19 +18,11 @@ func (p *ProductsService) FindAll(ctx context.Context) ([]domain.Product, error)
 	if err != nil {
 		return nil, err
 	}
-	for i, _ := range products {
-		productReviews, err := p.reviewsService.FindByProductID(ctx, products[i].ID)
+
+	for i, product := range products {
+		products[i].TotalRating, err = p.reviewsService.GetTotalReviewRating(ctx, product.ID)
 		if err != nil {
 			return nil, err
-		}
-		var ratingSum = 0
-		for _, review := range productReviews {
-			ratingSum += int(review.Rating)
-		}
-
-		if len(productReviews) != 0 {
-			value := float64(ratingSum) / float64(len(productReviews))
-			products[i].TotalRating = math.Floor(value*10) / 10
 		}
 	}
 
@@ -43,19 +34,10 @@ func (p *ProductsService) FindByID(ctx context.Context, productID primitive.Obje
 	if err != nil {
 		return domain.Product{}, err
 	}
-	productReviews, err := p.reviewsService.FindByProductID(ctx, product.ID)
-	if err != nil {
-		return domain.Product{}, err
-	}
-	var ratingSum = 0
-	for _, review := range productReviews {
-		ratingSum += int(review.Rating)
-	}
-	if len(productReviews) != 0 {
-		value := float64(ratingSum) / float64(len(productReviews))
-		product.TotalRating = math.Floor(value*10) / 10
-	}
-	return product, nil
+
+	product.TotalRating, err = p.reviewsService.GetTotalReviewRating(ctx, productID)
+
+	return product, err
 }
 
 func (p *ProductsService) Create(ctx context.Context, product dto.CreateProductDTO) (domain.Product, error) {

@@ -41,7 +41,8 @@ func Run(configPath string) {
 
 	repos := repository.NewRepositories(db)
 	services := service.NewServices(service.Deps{
-		Repos: repos,
+		Repos:       repos,
+		RedisClient: redisClient,
 	})
 	handlers := delivery.NewHandler(services, tokenProvider)
 	log.Info("services, repositories and handlers initialized")
