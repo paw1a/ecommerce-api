@@ -44,7 +44,7 @@ definitions:
     - name
     - price
     type: object
-  dto.CreateReviewDTO:
+  dto.CreateReviewDTOAdmin:
     properties:
       productID:
         type: string
@@ -53,6 +53,13 @@ definitions:
       text:
         type: string
       userID:
+        type: string
+    type: object
+  dto.CreateReviewDTOUser:
+    properties:
+      rating:
+        type: integer
+      text:
         type: string
     type: object
   dto.CreateUserDTO:
@@ -465,7 +472,7 @@ paths:
         name: review
         required: true
         schema:
-          $ref: '#/definitions/dto.CreateReviewDTO'
+          $ref: '#/definitions/dto.CreateReviewDTOAdmin'
       produces:
       - application/json
       responses:
@@ -755,6 +762,149 @@ paths:
       summary: Update user
       tags:
       - admin-users
+  /products:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/v1.success'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      summary: Get all products
+      tags:
+      - products
+  /products/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      summary: Get product by id
+      tags:
+      - products
+  /products/{id}/reviews:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      summary: Get product reviews list
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: review
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateReviewDTOUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - UserAuth: []
+      summary: Create review
+      tags:
+      - products
   /users/account:
     get:
       consumes:

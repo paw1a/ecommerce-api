@@ -7,9 +7,9 @@ import faker_commerce
 import json
 import bson
 
-USER_NUM = 20
-PRODUCT_NUM = 200
-REVIEW_NUM = 3000
+USER_NUM = 10
+PRODUCT_NUM = 10
+REVIEW_NUM = 6
 
 if not os.path.exists('data'):
     os.makedirs('data')
@@ -21,6 +21,7 @@ fake.add_provider(faker_commerce.Provider)
 users = open('data/users.json', 'w')
 userList = []
 userIds = []
+
 for _ in range(USER_NUM):
     userId = str(bson.ObjectId())
     userIds.append(userId)

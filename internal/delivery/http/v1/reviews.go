@@ -74,7 +74,7 @@ func (h *Handler) getReviewByIdAdmin(context *gin.Context) {
 // @Tags      admin-reviews
 // @Accept    json
 // @Produce   json
-// @Param     review  body      dto.CreateReviewDTO  true  "review"
+// @Param     review  body      dto.CreateReviewDTOAdmin  true  "review"
 // @Success   201     {object}  success
 // @Failure   400     {object}  failure
 // @Failure   401  {object}  failure
@@ -83,7 +83,7 @@ func (h *Handler) getReviewByIdAdmin(context *gin.Context) {
 // @Security  AdminAuth
 // @Router    /admins/reviews [post]
 func (h *Handler) createReviewAdmin(context *gin.Context) {
-	var reviewDTO dto.CreateReviewDTO
+	var reviewDTO dto.CreateReviewDTOAdmin
 	err := context.BindJSON(&reviewDTO)
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, "Invalid input body")
