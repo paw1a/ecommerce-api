@@ -42,11 +42,21 @@ type Admins interface {
 	FindByCredentials(ctx context.Context, email string, password string) (domain.Admin, error)
 }
 
+type Carts interface {
+	FindAll(ctx context.Context) ([]domain.Cart, error)
+	FindByID(ctx context.Context, cartID primitive.ObjectID) (domain.Cart, error)
+	Create(ctx context.Context, cart domain.Cart) (domain.Cart, error)
+	Update(ctx context.Context, cartInput dto.UpdateCartInput,
+		cartID primitive.ObjectID) (domain.Cart, error)
+	Delete(ctx context.Context, cartID primitive.ObjectID) error
+}
+
 type Repositories struct {
 	Users    Users
 	Products Products
 	Reviews  Reviews
 	Admins   Admins
+	Carts    Carts
 }
 
 func NewRepositories(db *mongo.Database) *Repositories {
@@ -55,5 +65,6 @@ func NewRepositories(db *mongo.Database) *Repositories {
 		Products: NewProductsRepo(db),
 		Reviews:  NewReviewsRepo(db),
 		Admins:   NewAdminsRepo(db),
+		Carts:    NewCartsRepo(db),
 	}
 }

@@ -44,11 +44,21 @@ type Admins interface {
 	FindByCredentials(ctx context.Context, signInDTO dto.SignInDTO) (domain.Admin, error)
 }
 
+type Carts interface {
+	FindAll(ctx context.Context) ([]domain.Cart, error)
+	FindByID(ctx context.Context, cartID primitive.ObjectID) (domain.Cart, error)
+	Create(ctx context.Context, cartDTO dto.CreateCartDTO) (domain.Cart, error)
+	Update(ctx context.Context, cartDTO dto.UpdateCartDTO,
+		cartID primitive.ObjectID) (domain.Cart, error)
+	Delete(ctx context.Context, cartID primitive.ObjectID) error
+}
+
 type Services struct {
 	Users    Users
 	Products Products
 	Reviews  Reviews
 	Admins   Admins
+	Carts    Carts
 }
 
 type Deps struct {
@@ -62,11 +72,13 @@ func NewServices(deps Deps) *Services {
 	reviewsService := NewReviewsService(deps.Repos.Reviews, deps.RedisClient)
 	productsService := NewProductsService(deps.Repos.Products, reviewsService)
 	adminsService := NewAdminsService(deps.Repos.Admins)
+	cartsService := NewCartsService(deps.Repos.Carts, productsService)
 
 	return &Services{
 		Users:    usersService,
 		Products: productsService,
 		Reviews:  reviewsService,
 		Admins:   adminsService,
+		Carts:    cartsService,
 	}
 }

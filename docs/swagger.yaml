@@ -209,6 +209,111 @@ paths:
       summary: Admin sign-in
       tags:
       - admin-auth
+  /admins/carts:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/v1.success'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Get all carts
+      tags:
+      - admin-carts
+  /admins/carts/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: cart id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Delete cart
+      tags:
+      - admin-carts
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: cart id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Get cart by id
+      tags:
+      - admin-carts
   /admins/products:
     get:
       consumes:

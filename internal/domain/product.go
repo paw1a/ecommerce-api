@@ -9,6 +9,7 @@ type Product struct {
 	Price       float64            `json:"price" bson:"price"`
 	TotalRating float64            `json:"totalRating" bson:"-"`
 	Categories  []Category         `json:"categories" bson:"categories"` //TODO: make category independent entity, change type to Array(ObjectID)
+	//TODO: add available in stock field
 }
 
 type Category struct {
