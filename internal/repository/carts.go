@@ -35,6 +35,32 @@ func (c *CartsRepo) FindByID(ctx context.Context, cartID primitive.ObjectID) (do
 	return cart, err
 }
 
+func (c *CartsRepo) FindCartItems(ctx context.Context, cartID primitive.ObjectID) ([]domain.CartItem, error) {
+	result := c.db.FindOne(ctx, bson.M{"_id": cartID}, options.FindOne().SetProjection(bson.M{"cartItems": 1}))
+
+	var cartItems []domain.CartItem
+	err := result.Decode(&cartItems)
+
+	return cartItems, err
+}
+
+func (c *CartsRepo) AddCartItem(ctx context.Context, cartItem domain.CartItem, cartID primitive.ObjectID) (domain.CartItem, error) {
+	_, err := c.db.UpdateOne(ctx, bson.M{"cartID": cartID}, bson.M{"$addToSet": bson.M{"cartItems": cartItem}})
+	return cartItem, err
+}
+
+func (c *CartsRepo) UpdateCartItem(ctx context.Context, cartItem domain.CartItem, cartID primitive.ObjectID) (domain.CartItem, error) {
+	updateOptions := bson.M{"$set": bson.M{"cartItems.$.quantity": cartItem.Quantity}}
+	_, err := c.db.UpdateOne(ctx, bson.M{"cartID": cartID, "cartItems.productID": cartItem.ProductID}, updateOptions)
+	return cartItem, err
+}
+
+func (c *CartsRepo) DeleteCartItem(ctx context.Context, productID primitive.ObjectID, cartID primitive.ObjectID) error {
+	updateOptions := bson.M{"$pull": bson.M{"cartItems": bson.M{"productID": productID}}}
+	_, err := c.db.UpdateOne(ctx, bson.M{"cartID": cartID}, updateOptions)
+	return err
+}
+
 func (c *CartsRepo) Create(ctx context.Context, cart domain.Cart) (domain.Cart, error) {
 	cart.ID = primitive.NewObjectID()
 	_, err := c.db.InsertOne(ctx, cart)
@@ -44,8 +70,8 @@ func (c *CartsRepo) Create(ctx context.Context, cart domain.Cart) (domain.Cart, 
 func (c *CartsRepo) Update(ctx context.Context, cartInput dto.UpdateCartInput, cartID primitive.ObjectID) (domain.Cart, error) {
 	updateQuery := bson.M{}
 
-	if cartInput.Products != nil {
-		updateQuery["products"] = cartInput.Products
+	if cartInput.CartItems != nil {
+		updateQuery["products"] = cartInput.CartItems
 	}
 
 	if cartInput.ExpireAt != nil {

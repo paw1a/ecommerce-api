@@ -80,7 +80,7 @@ func (h *Handler) createUserAdmin(context *gin.Context) {
 	var userDTO dto.CreateUserDTO
 	err := context.BindJSON(&userDTO)
 	if err != nil {
-		errorResponse(context, http.StatusBadRequest, "Invalid input body")
+		errorResponse(context, http.StatusBadRequest, "invalid input body")
 		return
 	}
 	user, err := h.services.Users.Create(context.Request.Context(), userDTO)

@@ -42,8 +42,8 @@ func (u UsersService) Create(ctx context.Context, userDTO dto.CreateUserDTO) (do
 	var cartID primitive.ObjectID
 	if userDTO.CartID == primitive.NilObjectID {
 		cart, err := u.cartService.Create(ctx, dto.CreateCartDTO{
-			ExpireAt: time.Now().Add(30 * time.Hour * 24),
-			Products: nil,
+			ExpireAt:  time.Now().Add(30 * time.Hour * 24),
+			CartItems: nil,
 		})
 		if err != nil {
 			return domain.User{}, err

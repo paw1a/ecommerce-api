@@ -45,6 +45,10 @@ type Admins interface {
 type Carts interface {
 	FindAll(ctx context.Context) ([]domain.Cart, error)
 	FindByID(ctx context.Context, cartID primitive.ObjectID) (domain.Cart, error)
+	FindCartItems(ctx context.Context, cartID primitive.ObjectID) ([]domain.CartItem, error)
+	AddCartItem(ctx context.Context, cartItem domain.CartItem, cartID primitive.ObjectID) (domain.CartItem, error)
+	UpdateCartItem(ctx context.Context, cartItem domain.CartItem, cartID primitive.ObjectID) (domain.CartItem, error)
+	DeleteCartItem(ctx context.Context, productID primitive.ObjectID, cartID primitive.ObjectID) error
 	Create(ctx context.Context, cart domain.Cart) (domain.Cart, error)
 	Update(ctx context.Context, cartInput dto.UpdateCartInput,
 		cartID primitive.ObjectID) (domain.Cart, error)

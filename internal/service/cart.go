@@ -21,7 +21,7 @@ func (c *CartService) FindAll(ctx context.Context) ([]domain.Cart, error) {
 
 	for i, cart := range carts {
 		var totalPrice float64
-		for _, cartItem := range cart.Products {
+		for _, cartItem := range cart.CartItems {
 			product, err := c.productService.FindByID(ctx, cartItem.ProductID)
 			if err != nil {
 				return nil, err
@@ -41,7 +41,7 @@ func (c *CartService) FindByID(ctx context.Context, cartID primitive.ObjectID) (
 	}
 
 	var totalPrice float64
-	for _, cartItem := range cart.Products {
+	for _, cartItem := range cart.CartItems {
 		product, err := c.productService.FindByID(ctx, cartItem.ProductID)
 		if err != nil {
 			return domain.Cart{}, err
@@ -53,17 +53,33 @@ func (c *CartService) FindByID(ctx context.Context, cartID primitive.ObjectID) (
 	return cart, nil
 }
 
+func (c *CartService) FindCartItems(ctx context.Context, cartID primitive.ObjectID) ([]domain.CartItem, error) {
+	return c.repo.FindCartItems(ctx, cartID)
+}
+
+func (c *CartService) AddCartItem(ctx context.Context, cartItem domain.CartItem, cartID primitive.ObjectID) (domain.CartItem, error) {
+	return c.repo.AddCartItem(ctx, cartItem, cartID)
+}
+
+func (c *CartService) UpdateCartItem(ctx context.Context, cartItem domain.CartItem, cartID primitive.ObjectID) (domain.CartItem, error) {
+	return c.repo.UpdateCartItem(ctx, cartItem, cartID)
+}
+
+func (c *CartService) DeleteCartItem(ctx context.Context, productID primitive.ObjectID, cartID primitive.ObjectID) error {
+	return c.repo.DeleteCartItem(ctx, productID, cartID)
+}
+
 func (c *CartService) Create(ctx context.Context, cartDTO dto.CreateCartDTO) (domain.Cart, error) {
 	return c.repo.Create(ctx, domain.Cart{
-		ExpireAt: cartDTO.ExpireAt,
-		Products: cartDTO.Products,
+		ExpireAt:  cartDTO.ExpireAt,
+		CartItems: cartDTO.CartItems,
 	})
 }
 
 func (c *CartService) Update(ctx context.Context, cartDTO dto.UpdateCartDTO, cartID primitive.ObjectID) (domain.Cart, error) {
 	return c.repo.Update(ctx, dto.UpdateCartInput{
-		ExpireAt: cartDTO.ExpireAt,
-		Products: cartDTO.Products,
+		ExpireAt:  cartDTO.ExpireAt,
+		CartItems: cartDTO.CartItems,
 	}, cartID)
 }
 

@@ -9,7 +9,7 @@ type Cart struct {
 	ID         primitive.ObjectID `json:"id" bson:"_id"`
 	ExpireAt   time.Time          `json:"expireAt" bson:"expireAt"`
 	TotalPrice float64            `json:"totalPrice" bson:"-"`
-	Products   []CartItem         `json:"products" bson:"products"`
+	CartItems  []CartItem         `json:"cartItems" bson:"cartItems"`
 }
 
 type CartItem struct {
