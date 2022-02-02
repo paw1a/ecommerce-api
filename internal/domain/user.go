@@ -9,6 +9,7 @@ type User struct {
 	Name     string             `json:"name" bson:"name"`
 	Email    string             `json:"email" bson:"email"`
 	Password string             `json:"-" bson:"password"`
+	CartID   primitive.ObjectID `json:"cartID" bson:"cartID"`
 }
 
 type UserInfo struct {

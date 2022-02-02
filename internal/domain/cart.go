@@ -7,7 +7,7 @@ import (
 
 type Cart struct {
 	ID         primitive.ObjectID `json:"id" bson:"_id"`
-	CreatedAt  time.Time          `json:"createdAt" bson:"createdAt"`
+	ExpireAt   time.Time          `json:"expireAt" bson:"expireAt"`
 	TotalPrice float64            `json:"totalPrice" bson:"-"`
 	Products   []CartItem         `json:"products" bson:"products"`
 }

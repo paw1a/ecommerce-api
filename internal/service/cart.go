@@ -6,7 +6,6 @@ import (
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"github.com/paw1a/ecommerce-api/internal/repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"time"
 )
 
 type CartService struct {
@@ -56,13 +55,16 @@ func (c *CartService) FindByID(ctx context.Context, cartID primitive.ObjectID) (
 
 func (c *CartService) Create(ctx context.Context, cartDTO dto.CreateCartDTO) (domain.Cart, error) {
 	return c.repo.Create(ctx, domain.Cart{
-		CreatedAt: time.Now(),
-		Products:  cartDTO.Products,
+		ExpireAt: cartDTO.ExpireAt,
+		Products: cartDTO.Products,
 	})
 }
 
 func (c *CartService) Update(ctx context.Context, cartDTO dto.UpdateCartDTO, cartID primitive.ObjectID) (domain.Cart, error) {
-	return c.repo.Update(ctx, dto.UpdateCartInput{Products: cartDTO.Products}, cartID)
+	return c.repo.Update(ctx, dto.UpdateCartInput{
+		ExpireAt: cartDTO.ExpireAt,
+		Products: cartDTO.Products,
+	}, cartID)
 }
 
 func (c *CartService) Delete(ctx context.Context, cartID primitive.ObjectID) error {

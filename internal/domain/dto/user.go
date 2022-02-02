@@ -1,5 +1,7 @@
 package dto
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type CreateUserDTO struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
@@ -7,11 +9,13 @@ type CreateUserDTO struct {
 }
 
 type UpdateUserDTO struct {
-	Name string `json:"name"`
+	Name   string              `json:"name"`
+	CartID *primitive.ObjectID `json:"cartID"`
 }
 
 type UpdateUserInput struct {
-	Name string `json:"name"`
+	Name   string              `json:"name"`
+	CartID *primitive.ObjectID `json:"cartID"`
 }
 
 type SignUpDTO struct {

@@ -5,11 +5,100 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/paw1a/ecommerce-api/internal/domain"
+	"github.com/paw1a/ecommerce-api/internal/domain/dto"
+	log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
+	"time"
 )
 
 func (h *Handler) initCartRoutes(api *gin.RouterGroup) {
+	cart := api.Group("/cart", h.extractCartId)
+	{
+		cart.GET("/", h.getCartItems)
+		cart.POST("/", h.createCartItem)
+		cart.PUT("/:id", h.updateCartItem)
+		cart.DELETE("/:id", h.deleteCartItem)
+	}
+}
+
+func (h *Handler) extractCartId(context *gin.Context) {
+	cartIDHex, err := context.Cookie("cartID")
+	if err == nil {
+		cartID, err := primitive.ObjectIDFromHex(cartIDHex)
+		if err == nil {
+			_, err = h.services.Carts.FindByID(context.Request.Context(), cartID)
+			if err == nil {
+				context.Set("cartID", cartID)
+				return
+			} else {
+				log.Warnf("cart with id: %s not found in db", cartIDHex)
+			}
+		} else {
+			log.Warnf("failed to convert cookie %s to objectID", cartIDHex)
+		}
+	}
+
+	log.Warn("cartID cookie not found")
+	userID, err := h.extractIdFromAuthHeader(context, "userID")
+	if err == nil {
+		user, err := h.services.Users.FindByID(context.Request.Context(), userID)
+		if err != nil {
+			errorResponse(context, http.StatusInternalServerError,
+				fmt.Sprintf("user with id: %s not found", userID))
+			return
+		}
+
+		_, err = h.services.Carts.FindByID(context.Request.Context(), user.CartID)
+		if err != nil {
+			log.Warnf("user with id: %s don't have cart with id: %s", userID, user.CartID)
+
+			newCart, err := h.services.Carts.Create(context.Request.Context(), dto.CreateCartDTO{
+				ExpireAt: time.Now().Add(30 * time.Hour * 24),
+				Products: nil,
+			})
+			if err != nil {
+				errorResponse(context, http.StatusInternalServerError, err.Error())
+				return
+			}
+			user.CartID = newCart.ID
+
+			_, err = h.services.Users.Update(context, dto.UpdateUserDTO{CartID: &user.CartID}, userID)
+			if err != nil {
+				errorResponse(context, http.StatusInternalServerError, err.Error())
+				return
+			}
+		}
+		context.Set("cartID", user.CartID)
+		return
+	}
+
+	log.Warnf("user not authenticated")
+	newCart, err := h.services.Carts.Create(context.Request.Context(), dto.CreateCartDTO{
+		ExpireAt: time.Now().Add(30 * time.Hour * 24),
+		Products: nil,
+	})
+	if err != nil {
+		errorResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+	context.Set("cartID", newCart.ID)
+}
+
+func (h *Handler) getCartItems(context *gin.Context) {
+
+}
+
+func (h *Handler) createCartItem(context *gin.Context) {
+
+}
+
+func (h *Handler) updateCartItem(context *gin.Context) {
+
+}
+
+func (h *Handler) deleteCartItem(context *gin.Context) {
 
 }
 

@@ -2,8 +2,10 @@ package v1
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/paw1a/ecommerce-api/pkg/auth"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 	"strings"
 )
@@ -66,4 +68,28 @@ func (h *Handler) verifyToken(context *gin.Context, idName string) {
 	}
 
 	context.Set(idName, id)
+}
+
+func (h *Handler) extractIdFromAuthHeader(context *gin.Context, idName string) (primitive.ObjectID, error) {
+	tokenString, err := extractAuthToken(context)
+	if err != nil {
+		return primitive.ObjectID{}, err
+	}
+
+	tokenClaims, err := h.tokenProvider.VerifyToken(tokenString)
+	if err != nil {
+		return primitive.ObjectID{}, err
+	}
+
+	idHex, ok := tokenClaims[idName]
+	if !ok {
+		return primitive.ObjectID{}, fmt.Errorf("failed to extract %s from auth header", idName)
+	}
+
+	id, err := primitive.ObjectIDFromHex(idHex.(string))
+	if err != nil {
+		return primitive.ObjectID{}, fmt.Errorf("failed to convert %s to objectId", idHex)
+	}
+
+	return id, nil
 }

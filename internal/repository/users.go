@@ -84,6 +84,10 @@ func (u UsersRepo) Update(ctx context.Context, userInput dto.UpdateUserInput, us
 		updateQuery["name"] = userInput.Name
 	}
 
+	if userInput.CartID != nil {
+		updateQuery["cartID"] = userInput.CartID
+	}
+
 	_, err := u.db.UpdateOne(ctx, bson.M{"_id": userID}, bson.M{"$set": updateQuery})
 	findResult := u.db.FindOne(ctx, bson.M{"_id": userID})
 

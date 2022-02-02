@@ -43,7 +43,10 @@ func (u UsersService) Create(ctx context.Context, userDTO dto.CreateUserDTO) (do
 }
 
 func (u *UsersService) Update(ctx context.Context, userDTO dto.UpdateUserDTO, userID primitive.ObjectID) (domain.User, error) {
-	return u.repo.Update(ctx, dto.UpdateUserInput{Name: userDTO.Name}, userID)
+	return u.repo.Update(ctx, dto.UpdateUserInput{
+		Name:   userDTO.Name,
+		CartID: userDTO.CartID,
+	}, userID)
 }
 
 func (u *UsersService) Delete(ctx context.Context, userID primitive.ObjectID) error {
