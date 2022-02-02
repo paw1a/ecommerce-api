@@ -3,9 +3,10 @@ package dto
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type CreateUserDTO struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Name     string             `json:"name"`
+	Email    string             `json:"email" required:"true"`
+	Password string             `json:"password" required:"true"`
+	CartID   primitive.ObjectID `json:"cartID"`
 }
 
 type UpdateUserDTO struct {

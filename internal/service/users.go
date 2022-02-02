@@ -2,19 +2,23 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"github.com/paw1a/ecommerce-api/internal/repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
 )
 
 type UsersService struct {
-	repo repository.Users
+	repo        repository.Users
+	cartService Carts
 }
 
-func NewUsersService(repo repository.Users) *UsersService {
+func NewUsersService(repo repository.Users, cartService Carts) *UsersService {
 	return &UsersService{
-		repo: repo,
+		repo:        repo,
+		cartService: cartService,
 	}
 }
 
@@ -35,10 +39,30 @@ func (u *UsersService) FindUserInfo(ctx context.Context, userID primitive.Object
 }
 
 func (u UsersService) Create(ctx context.Context, userDTO dto.CreateUserDTO) (domain.User, error) {
+	var cartID primitive.ObjectID
+	if userDTO.CartID == primitive.NilObjectID {
+		cart, err := u.cartService.Create(ctx, dto.CreateCartDTO{
+			ExpireAt: time.Now().Add(30 * time.Hour * 24),
+			Products: nil,
+		})
+		if err != nil {
+			return domain.User{}, err
+		}
+		cartID = cart.ID
+	} else {
+		expireTime := time.Now().Add(30 * time.Hour * 24)
+		_, err := u.cartService.Update(ctx, dto.UpdateCartDTO{ExpireAt: &expireTime}, userDTO.CartID)
+		if err != nil {
+			return domain.User{}, err
+		}
+		cartID = userDTO.CartID
+	}
+
 	return u.repo.Create(ctx, domain.User{
 		Name:     userDTO.Name,
 		Email:    userDTO.Email,
 		Password: userDTO.Password,
+		CartID:   cartID,
 	})
 }
 
@@ -50,5 +74,13 @@ func (u *UsersService) Update(ctx context.Context, userDTO dto.UpdateUserDTO, us
 }
 
 func (u *UsersService) Delete(ctx context.Context, userID primitive.ObjectID) error {
-	return u.repo.Delete(ctx, userID)
+	user, err := u.FindByID(ctx, userID)
+	if err != nil {
+		return fmt.Errorf("not found user with id: %s", userID)
+	}
+	err = u.repo.Delete(ctx, userID)
+	if err != nil {
+		return err
+	}
+	return u.cartService.Delete(ctx, user.CartID)
 }

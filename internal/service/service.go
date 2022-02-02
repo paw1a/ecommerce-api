@@ -68,11 +68,11 @@ type Deps struct {
 }
 
 func NewServices(deps Deps) *Services {
-	usersService := NewUsersService(deps.Repos.Users)
 	reviewsService := NewReviewsService(deps.Repos.Reviews, deps.RedisClient)
 	productsService := NewProductsService(deps.Repos.Products, reviewsService)
 	adminsService := NewAdminsService(deps.Repos.Admins)
 	cartsService := NewCartsService(deps.Repos.Carts, productsService)
+	usersService := NewUsersService(deps.Repos.Users, cartsService)
 
 	return &Services{
 		Users:    usersService,
