@@ -71,7 +71,7 @@ func (h *Handler) extractCartId(context *gin.Context) {
 			}
 		}
 		context.Set("cartID", user.CartID)
-		context.SetCookie("cartID", user.CartID.Hex(), int(time.Second.Seconds())*60*60*24,
+		context.SetCookie("cartID", user.CartID.Hex(), int(time.Second.Seconds())*60*60*12,
 			"/", "localhost", false, true)
 		return
 	}
@@ -85,7 +85,7 @@ func (h *Handler) extractCartId(context *gin.Context) {
 		return
 	}
 	context.Set("cartID", newCart.ID)
-	context.SetCookie("cartID", newCart.ID.Hex(), int(time.Second.Seconds())*60*60*24,
+	context.SetCookie("cartID", newCart.ID.Hex(), int(time.Second.Seconds())*60*60*12,
 		"/", "localhost", false, true)
 }
 
