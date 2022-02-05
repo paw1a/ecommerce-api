@@ -18,8 +18,8 @@ func (h *Handler) initCartRoutes(api *gin.RouterGroup) {
 	{
 		cart.GET("/", h.getCartItems)
 		cart.POST("/", h.createCartItem)
-		cart.PUT("/:id", h.updateCartItem)
-		cart.DELETE("/:id", h.deleteCartItem)
+		cart.PUT("/:productID", h.updateCartItem)
+		cart.DELETE("/:productID", h.deleteCartItem)
 	}
 }
 
@@ -42,6 +42,7 @@ func (h *Handler) extractCartId(context *gin.Context) {
 
 	log.Warn("cartID cookie not found")
 	userID, err := h.extractIdFromAuthHeader(context, "userID")
+	log.Debugf("user with id %s", userID.Hex())
 	if err == nil {
 		user, err := h.services.Users.FindByID(context.Request.Context(), userID)
 		if err != nil {
@@ -55,8 +56,7 @@ func (h *Handler) extractCartId(context *gin.Context) {
 			log.Warnf("user with id: %s don't have cart with id: %s", userID, user.CartID)
 
 			newCart, err := h.services.Carts.Create(context.Request.Context(), dto.CreateCartDTO{
-				ExpireAt:  time.Now().Add(30 * time.Hour * 24),
-				CartItems: nil,
+				ExpireAt: time.Now().Add(30 * time.Hour * 24),
 			})
 			if err != nil {
 				errorResponse(context, http.StatusInternalServerError, err.Error())
@@ -71,21 +71,35 @@ func (h *Handler) extractCartId(context *gin.Context) {
 			}
 		}
 		context.Set("cartID", user.CartID)
+		context.SetCookie("cartID", user.CartID.Hex(), int(time.Second.Seconds())*60*60*24,
+			"/", "localhost", false, true)
 		return
 	}
 
 	log.Warnf("user not authenticated")
 	newCart, err := h.services.Carts.Create(context.Request.Context(), dto.CreateCartDTO{
-		ExpireAt:  time.Now().Add(30 * time.Hour * 24),
-		CartItems: nil,
+		ExpireAt: time.Now().Add(1 * time.Hour * 24),
 	})
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 	context.Set("cartID", newCart.ID)
+	context.SetCookie("cartID", newCart.ID.Hex(), int(time.Second.Seconds())*60*60*24,
+		"/", "localhost", false, true)
 }
 
+// GetCartItems godoc
+// @Summary  Get cart items
+// @Tags     cart
+// @Accept   json
+// @Produce  json
+// @Param    Cookie  header    string  true  "cart id"
+// @Success  200     {array}   success
+// @Failure  401     {object}  failure
+// @Failure  404     {object}  failure
+// @Failure  500     {object}  failure
+// @Router   /cart [get]
 func (h *Handler) getCartItems(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {
@@ -103,6 +117,19 @@ func (h *Handler) getCartItems(context *gin.Context) {
 	successResponse(context, cartItems)
 }
 
+// CreateCartItem godoc
+// @Summary  Add cart item
+// @Tags     cart
+// @Accept   json
+// @Produce  json
+// @Param    cartItem  body      domain.CartItem  true  "cart item"
+// @Param    Cookie    header    string           true  "cart id"
+// @Success  201       {object}  success
+// @Failure  400       {object}  failure
+// @Failure  401       {object}  failure
+// @Failure  404       {object}  failure
+// @Failure  500       {object}  failure
+// @Router   /cart [post]
 func (h *Handler) createCartItem(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {
@@ -127,6 +154,20 @@ func (h *Handler) createCartItem(context *gin.Context) {
 	createdResponse(context, cartItem)
 }
 
+// UpdateCartItem godoc
+// @Summary  Update cart item
+// @Tags     cart
+// @Accept   json
+// @Produce  json
+// @Param    productID  path      string                 true  "product id"
+// @Param    cartItem   body      dto.UpdateCartItemDTO  true  "cart item"
+// @Param    Cookie     header    string                 true  "cart id"
+// @Success  200        {object}  success
+// @Failure  400        {object}  failure
+// @Failure  401        {object}  failure
+// @Failure  404        {object}  failure
+// @Failure  500        {object}  failure
+// @Router   /cart/{productID} [put]
 func (h *Handler) updateCartItem(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {
@@ -135,7 +176,7 @@ func (h *Handler) updateCartItem(context *gin.Context) {
 	}
 	cartID := cartIDHex.(primitive.ObjectID)
 
-	productID, err := getIdFromPath(context, "id")
+	productID, err := getIdFromPath(context, "productID")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
@@ -160,6 +201,19 @@ func (h *Handler) updateCartItem(context *gin.Context) {
 	successResponse(context, cartItem)
 }
 
+// DeleteCartItem godoc
+// @Summary  Delete cart item
+// @Tags     cart
+// @Accept   json
+// @Produce  json
+// @Param    productID  path      string  true  "product id"
+// @Param    Cookie     header    string  true  "cart id"
+// @Success  200        {object}  success
+// @Failure  400        {object}  failure
+// @Failure  401        {object}  failure
+// @Failure  404        {object}  failure
+// @Failure  500        {object}  failure
+// @Router   /cart/{productID} [delete]
 func (h *Handler) deleteCartItem(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {
@@ -168,7 +222,7 @@ func (h *Handler) deleteCartItem(context *gin.Context) {
 	}
 	cartID := cartIDHex.(primitive.ObjectID)
 
-	productID, err := getIdFromPath(context, "id")
+	productID, err := getIdFromPath(context, "productID")
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
 		return

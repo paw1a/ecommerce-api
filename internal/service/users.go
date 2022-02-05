@@ -40,17 +40,16 @@ func (u *UsersService) FindUserInfo(ctx context.Context, userID primitive.Object
 
 func (u UsersService) Create(ctx context.Context, userDTO dto.CreateUserDTO) (domain.User, error) {
 	var cartID primitive.ObjectID
+	expireTime := time.Now().Add(30 * time.Hour * 24)
 	if userDTO.CartID == primitive.NilObjectID {
 		cart, err := u.cartService.Create(ctx, dto.CreateCartDTO{
-			ExpireAt:  time.Now().Add(30 * time.Hour * 24),
-			CartItems: nil,
+			ExpireAt: expireTime,
 		})
 		if err != nil {
 			return domain.User{}, err
 		}
 		cartID = cart.ID
 	} else {
-		expireTime := time.Now().Add(30 * time.Hour * 24)
 		_, err := u.cartService.Update(ctx, dto.UpdateCartDTO{ExpireAt: &expireTime}, userDTO.CartID)
 		if err != nil {
 			return domain.User{}, err

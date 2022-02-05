@@ -14,6 +14,13 @@ definitions:
       refreshToken:
         type: string
     type: object
+  domain.CartItem:
+    properties:
+      productID:
+        type: string
+      quantity:
+        type: integer
+    type: object
   domain.Category:
     properties:
       description:
@@ -64,6 +71,8 @@ definitions:
     type: object
   dto.CreateUserDTO:
     properties:
+      cartID:
+        type: string
       email:
         type: string
       name:
@@ -89,6 +98,11 @@ definitions:
       password:
         type: string
     type: object
+  dto.UpdateCartItemDTO:
+    properties:
+      quantity:
+        type: integer
+    type: object
   dto.UpdateProductDTO:
     properties:
       categories:
@@ -104,6 +118,8 @@ definitions:
     type: object
   dto.UpdateUserDTO:
     properties:
+      cartID:
+        type: string
       name:
         type: string
     type: object
@@ -867,6 +883,168 @@ paths:
       summary: Update user
       tags:
       - admin-users
+  /cart:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: cart id
+        in: header
+        name: Cookie
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/v1.success'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      summary: Get cart items
+      tags:
+      - cart
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: cart item
+        in: body
+        name: cartItem
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CartItem'
+      - description: cart id
+        in: header
+        name: Cookie
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      summary: Add cart item
+      tags:
+      - cart
+  /cart/{productID}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: product id
+        in: path
+        name: productID
+        required: true
+        type: string
+      - description: cart id
+        in: header
+        name: Cookie
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      summary: Delete cart item
+      tags:
+      - cart
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: product id
+        in: path
+        name: productID
+        required: true
+        type: string
+      - description: cart item
+        in: body
+        name: cartItem
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCartItemDTO'
+      - description: cart id
+        in: header
+        name: Cookie
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      summary: Update cart item
+      tags:
+      - cart
   /products:
     get:
       consumes:
