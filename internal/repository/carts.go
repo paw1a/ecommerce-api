@@ -61,6 +61,12 @@ func (c *CartsRepo) DeleteCartItem(ctx context.Context, productID primitive.Obje
 	return err
 }
 
+func (c *CartsRepo) ClearCart(ctx context.Context, cartID primitive.ObjectID) error {
+	emptyArray := make([]domain.CartItem, 0)
+	_, err := c.db.UpdateOne(ctx, bson.M{"_id": cartID}, bson.M{"$set": bson.M{"cartItems": emptyArray}})
+	return err
+}
+
 func (c *CartsRepo) Create(ctx context.Context, cart domain.Cart) (domain.Cart, error) {
 	cart.ID = primitive.NewObjectID()
 	if cart.CartItems == nil {

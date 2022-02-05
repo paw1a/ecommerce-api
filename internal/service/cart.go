@@ -69,6 +69,10 @@ func (c *CartService) DeleteCartItem(ctx context.Context, productID primitive.Ob
 	return c.repo.DeleteCartItem(ctx, productID, cartID)
 }
 
+func (c *CartService) ClearCart(ctx context.Context, cartID primitive.ObjectID) error {
+	return c.repo.ClearCart(ctx, cartID)
+}
+
 func (c *CartService) Create(ctx context.Context, cartDTO dto.CreateCartDTO) (domain.Cart, error) {
 	return c.repo.Create(ctx, domain.Cart{
 		ExpireAt:  cartDTO.ExpireAt,

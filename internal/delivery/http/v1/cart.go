@@ -18,31 +18,14 @@ func (h *Handler) initCartRoutes(api *gin.RouterGroup) {
 	{
 		cart.GET("/", h.getCartItems)
 		cart.POST("/", h.createCartItem)
+		cart.DELETE("/", h.clearCart)
 		cart.PUT("/:productID", h.updateCartItem)
 		cart.DELETE("/:productID", h.deleteCartItem)
 	}
 }
 
 func (h *Handler) extractCartId(context *gin.Context) {
-	cartIDHex, err := context.Cookie("cartID")
-	if err == nil {
-		cartID, err := primitive.ObjectIDFromHex(cartIDHex)
-		if err == nil {
-			_, err = h.services.Carts.FindByID(context.Request.Context(), cartID)
-			if err == nil {
-				context.Set("cartID", cartID)
-				return
-			} else {
-				log.Warnf("cart with id: %s not found in db", cartIDHex)
-			}
-		} else {
-			log.Warnf("failed to convert cookie %s to objectID", cartIDHex)
-		}
-	}
-
-	log.Warn("cartID cookie not found")
 	userID, err := h.extractIdFromAuthHeader(context, "userID")
-	log.Debugf("user with id %s", userID.Hex())
 	if err == nil {
 		user, err := h.services.Users.FindByID(context.Request.Context(), userID)
 		if err != nil {
@@ -75,8 +58,25 @@ func (h *Handler) extractCartId(context *gin.Context) {
 			"/", "localhost", false, true)
 		return
 	}
-
 	log.Warnf("user not authenticated")
+
+	cartIDHex, err := context.Cookie("cartID")
+	if err == nil {
+		cartID, err := primitive.ObjectIDFromHex(cartIDHex)
+		if err == nil {
+			_, err = h.services.Carts.FindByID(context.Request.Context(), cartID)
+			if err == nil {
+				context.Set("cartID", cartID)
+				return
+			} else {
+				log.Warnf("cart with id: %s not found in db", cartIDHex)
+			}
+		} else {
+			log.Warnf("failed to convert cookie %s to objectID", cartIDHex)
+		}
+	}
+	log.Warn("cartID cookie not found")
+
 	newCart, err := h.services.Carts.Create(context.Request.Context(), dto.CreateCartDTO{
 		ExpireAt: time.Now().Add(1 * time.Hour * 24),
 	})
@@ -162,11 +162,11 @@ func (h *Handler) createCartItem(context *gin.Context) {
 // @Param    productID  path      string                 true  "product id"
 // @Param    cartItem   body      dto.UpdateCartItemDTO  true  "cart item"
 // @Param    Cookie     header    string                 true  "cart id"
-// @Success  200        {object}  success
-// @Failure  400        {object}  failure
-// @Failure  401        {object}  failure
-// @Failure  404        {object}  failure
-// @Failure  500        {object}  failure
+// @Success  200     {object}  success
+// @Failure  400     {object}  failure
+// @Failure  401     {object}  failure
+// @Failure  404     {object}  failure
+// @Failure  500     {object}  failure
 // @Router   /cart/{productID} [put]
 func (h *Handler) updateCartItem(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
@@ -207,7 +207,7 @@ func (h *Handler) updateCartItem(context *gin.Context) {
 // @Accept   json
 // @Produce  json
 // @Param    productID  path      string  true  "product id"
-// @Param    Cookie     header    string  true  "cart id"
+// @Param    Cookie  header    string  true  "cart id"
 // @Success  200        {object}  success
 // @Failure  400        {object}  failure
 // @Failure  401        {object}  failure
@@ -229,6 +229,35 @@ func (h *Handler) deleteCartItem(context *gin.Context) {
 	}
 
 	err = h.services.Carts.DeleteCartItem(context, productID, cartID)
+	if err != nil {
+		errorResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	context.Status(http.StatusOK)
+}
+
+// ClearCart godoc
+// @Summary  Delete all cart items
+// @Tags     cart
+// @Accept   json
+// @Produce  json
+// @Param    Cookie     header    string  true  "cart id"
+// @Success  200        {object}  success
+// @Failure  400        {object}  failure
+// @Failure  401        {object}  failure
+// @Failure  404        {object}  failure
+// @Failure  500        {object}  failure
+// @Router   /cart [delete]
+func (h *Handler) clearCart(context *gin.Context) {
+	cartIDHex, ok := context.Get("cartID")
+	if !ok {
+		errorResponse(context, http.StatusInternalServerError, "failed to get cart id")
+		return
+	}
+	cartID := cartIDHex.(primitive.ObjectID)
+
+	err := h.services.Carts.ClearCart(context, cartID)
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
