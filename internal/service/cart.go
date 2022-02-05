@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"github.com/paw1a/ecommerce-api/internal/repository"
@@ -44,7 +45,7 @@ func (c *CartService) FindByID(ctx context.Context, cartID primitive.ObjectID) (
 	for _, cartItem := range cart.CartItems {
 		product, err := c.productService.FindByID(ctx, cartItem.ProductID)
 		if err != nil {
-			return domain.Cart{}, err
+			return domain.Cart{}, fmt.Errorf("product with id %s no longer exist in stock", product.ID.Hex())
 		}
 		totalPrice += product.Price * float64(cartItem.Quantity)
 	}
