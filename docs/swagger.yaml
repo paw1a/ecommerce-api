@@ -28,12 +28,30 @@ definitions:
       name:
         type: string
     type: object
+  domain.ContactInfo:
+    properties:
+      address:
+        type: string
+      name:
+        type: string
+      orderComment:
+        type: string
+      phoneNumber:
+        type: string
+      surname:
+        type: string
+    type: object
   domain.UserInfo:
     properties:
       email:
         type: string
       name:
         type: string
+    type: object
+  dto.CreateOrderDTO:
+    properties:
+      contactInfo:
+        $ref: '#/definitions/domain.ContactInfo'
     type: object
   dto.CreateProductDTO:
     properties:
@@ -102,6 +120,13 @@ definitions:
     properties:
       quantity:
         type: integer
+    type: object
+  dto.UpdateOrderDTO:
+    properties:
+      deliveredAt:
+        type: string
+      status:
+        type: string
     type: object
   dto.UpdateProductDTO:
     properties:
@@ -330,6 +355,80 @@ paths:
       summary: Get cart by id
       tags:
       - admin-carts
+  /admins/orders:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/v1.success'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Get all orders
+      tags:
+      - admin-orders
+  /admins/orders/{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: order id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: order update fields
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateOrderDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - AdminAuth: []
+      summary: Update order
+      tags:
+      - admin-orders
   /admins/products:
     get:
       consumes:
@@ -1362,6 +1461,74 @@ paths:
       summary: User sign-up
       tags:
       - user-auth
+  /users/orders:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/v1.success'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - UserAuth: []
+      summary: User order List
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: contact info
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateOrderDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/v1.success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      security:
+      - UserAuth: []
+      summary: Create order
+      tags:
+      - user
   /users/reviews:
     get:
       consumes:

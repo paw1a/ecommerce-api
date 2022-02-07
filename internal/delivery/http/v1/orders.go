@@ -17,9 +17,9 @@ func (h *Handler) initOrdersRoutes(api *gin.RouterGroup) {
 // @Accept    json
 // @Produce   json
 // @Success   200  {array}   success
-// @Failure   401  {object}  failure
-// @Failure   404  {object}  failure
-// @Failure   500  {object}  failure
+// @Failure   401    {object}  failure
+// @Failure   404    {object}  failure
+// @Failure   500    {object}  failure
 // @Security  UserAuth
 // @Router    /users/orders [get]
 func (h *Handler) getUserOrders(context *gin.Context) {
@@ -44,11 +44,11 @@ func (h *Handler) getUserOrders(context *gin.Context) {
 // @Accept    json
 // @Produce   json
 // @Param     order  body      dto.CreateOrderDTO  true  "contact info"
-// @Success   201     {object}  success
-// @Failure   400     {object}  failure
-// @Failure   401     {object}  failure
-// @Failure   404     {object}  failure
-// @Failure   500     {object}  failure
+// @Success   201    {object}  success
+// @Failure   400    {object}  failure
+// @Failure   401    {object}  failure
+// @Failure   404    {object}  failure
+// @Failure   500    {object}  failure
 // @Security  UserAuth
 // @Router    /users/orders [post]
 func (h *Handler) createOrder(context *gin.Context) {
@@ -67,6 +67,11 @@ func (h *Handler) createOrder(context *gin.Context) {
 	cart, err := h.services.Carts.FindByID(context.Request.Context(), user.CartID)
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if len(cart.CartItems) == 0 {
+		errorResponse(context, http.StatusBadRequest, "user cart is empty")
 		return
 	}
 
@@ -130,10 +135,10 @@ func (h *Handler) getAllOrdersAdmin(context *gin.Context) {
 // @Tags      admin-orders
 // @Accept    json
 // @Produce   json
-// @Param     id       path      string                true  "order id"
+// @Param     id     path      string              true  "order id"
 // @Param     order  body      dto.UpdateOrderDTO  true  "order update fields"
-// @Success   200  {object}  success
-// @Failure   400  {object}  failure
+// @Success   200    {object}  success
+// @Failure   400    {object}  failure
 // @Failure   401  {object}  failure
 // @Failure   404  {object}  failure
 // @Failure   500  {object}  failure
