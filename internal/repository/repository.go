@@ -59,6 +59,7 @@ type Carts interface {
 type Orders interface {
 	FindAll(ctx context.Context) ([]domain.Order, error)
 	FindByID(ctx context.Context, orderID primitive.ObjectID) (domain.Order, error)
+	FindByUserID(ctx context.Context, userID primitive.ObjectID) ([]domain.Order, error)
 	Create(ctx context.Context, order domain.Order) (domain.Order, error)
 	Update(ctx context.Context, orderInput dto.UpdateOrderInput,
 		orderID primitive.ObjectID) (domain.Order, error)

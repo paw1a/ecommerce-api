@@ -7,9 +7,9 @@ import (
 )
 
 type CreateOrderDTO struct {
-	OrderItems  []domain.OrderItem `json:"orderItems" bson:"orderItems"`
-	ContactInfo domain.ContactInfo `json:"contactInfo" bson:"contactInfo"`
-	UserID      primitive.ObjectID `json:"userID" bson:"userID"`
+	OrderItems  []domain.OrderItem `json:"-"`
+	ContactInfo domain.ContactInfo `json:"contactInfo"`
+	UserID      primitive.ObjectID `json:"-"`
 }
 
 type UpdateOrderDTO struct {

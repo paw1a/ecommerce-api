@@ -33,6 +33,17 @@ func (p *OrdersRepo) FindByID(ctx context.Context, orderID primitive.ObjectID) (
 	return order, err
 }
 
+func (p *OrdersRepo) FindByUserID(ctx context.Context, userID primitive.ObjectID) ([]domain.Order, error) {
+	cursor, err := p.db.Find(ctx, bson.M{"userID": userID})
+	if err != nil {
+		return nil, err
+	}
+
+	var orderArray []domain.Order
+	err = cursor.All(ctx, &orderArray)
+	return orderArray, err
+}
+
 func (p *OrdersRepo) Create(ctx context.Context, order domain.Order) (domain.Order, error) {
 	order.ID = primitive.NewObjectID()
 	_, err := p.db.InsertOne(ctx, order)

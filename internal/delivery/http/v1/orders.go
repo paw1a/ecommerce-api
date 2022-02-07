@@ -11,6 +11,94 @@ func (h *Handler) initOrdersRoutes(api *gin.RouterGroup) {
 
 }
 
+// GerUserOrders godoc
+// @Summary   User order List
+// @Tags      user
+// @Accept    json
+// @Produce   json
+// @Success   200  {array}   success
+// @Failure   401  {object}  failure
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
+// @Security  UserAuth
+// @Router    /users/orders [get]
+func (h *Handler) getUserOrders(context *gin.Context) {
+	userID, err := getIdFromRequestContext(context, "userID")
+	if err != nil {
+		errorResponse(context, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	orders, err := h.services.Orders.FindByUserID(context.Request.Context(), userID)
+	if err != nil {
+		errorResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	successResponse(context, orders)
+}
+
+// CreateOrder godoc
+// @Summary   Create order
+// @Tags      user
+// @Accept    json
+// @Produce   json
+// @Param     order  body      dto.CreateOrderDTO  true  "contact info"
+// @Success   201     {object}  success
+// @Failure   400     {object}  failure
+// @Failure   401     {object}  failure
+// @Failure   404     {object}  failure
+// @Failure   500     {object}  failure
+// @Security  UserAuth
+// @Router    /users/orders [post]
+func (h *Handler) createOrder(context *gin.Context) {
+	userID, err := getIdFromRequestContext(context, "userID")
+	if err != nil {
+		errorResponse(context, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	user, err := h.services.Users.FindByID(context.Request.Context(), userID)
+	if err != nil {
+		errorResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	cart, err := h.services.Carts.FindByID(context.Request.Context(), user.CartID)
+	if err != nil {
+		errorResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	orderItems := make([]domain.OrderItem, len(cart.CartItems))
+	for i, cartItem := range cart.CartItems {
+		orderItems[i] = domain.OrderItem{
+			ProductID: cartItem.ProductID,
+			Quantity:  cartItem.Quantity,
+		}
+	}
+
+	var createOrderDTO dto.CreateOrderDTO
+	err = context.BindJSON(&createOrderDTO)
+	if err != nil {
+		errorResponse(context, http.StatusBadRequest, "invalid input body")
+		return
+	}
+
+	order, err := h.services.Orders.Create(context.Request.Context(), dto.CreateOrderDTO{
+		OrderItems:  orderItems,
+		ContactInfo: createOrderDTO.ContactInfo,
+		UserID:      userID,
+	})
+
+	if err != nil {
+		errorResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	successResponse(context, order)
+}
+
 // GetOrdersAdmin godoc
 // @Summary   Get all orders
 // @Tags      admin-orders

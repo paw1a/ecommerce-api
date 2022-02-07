@@ -2,7 +2,6 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -17,6 +16,11 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 		{
 			authenticated.GET("/account", h.getUserAccount)
 			authenticated.GET("/reviews", h.getAllReviewsUser)
+			orders := authenticated.Group("/orders")
+			{
+				orders.GET("/", h.getUserOrders)
+				orders.POST("/", h.createOrder)
+			}
 		}
 	}
 }
@@ -39,8 +43,7 @@ func (h *Handler) getAllReviewsUser(context *gin.Context) {
 		return
 	}
 
-	reviews, err := h.services.Reviews.FindByUserID(context, userID)
-	log.Error(reviews)
+	reviews, err := h.services.Reviews.FindByUserID(context.Request.Context(), userID)
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return

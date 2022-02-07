@@ -56,6 +56,10 @@ func (p *OrdersService) FindByID(ctx context.Context, orderID primitive.ObjectID
 	return order, err
 }
 
+func (p *OrdersService) FindByUserID(ctx context.Context, userID primitive.ObjectID) ([]domain.Order, error) {
+	return p.repo.FindByUserID(ctx, userID)
+}
+
 func (p *OrdersService) Create(ctx context.Context, orderDTO dto.CreateOrderDTO) (domain.Order, error) {
 	return p.repo.Create(ctx, domain.Order{
 		OrderID:     uuid.NewV4().String(),
