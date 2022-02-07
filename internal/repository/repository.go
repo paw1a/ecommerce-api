@@ -56,12 +56,22 @@ type Carts interface {
 	Delete(ctx context.Context, cartID primitive.ObjectID) error
 }
 
+type Orders interface {
+	FindAll(ctx context.Context) ([]domain.Order, error)
+	FindByID(ctx context.Context, orderID primitive.ObjectID) (domain.Order, error)
+	Create(ctx context.Context, order domain.Order) (domain.Order, error)
+	Update(ctx context.Context, orderInput dto.UpdateOrderInput,
+		orderID primitive.ObjectID) (domain.Order, error)
+	Delete(ctx context.Context, orderID primitive.ObjectID) error
+}
+
 type Repositories struct {
 	Users    Users
 	Products Products
 	Reviews  Reviews
 	Admins   Admins
 	Carts    Carts
+	Orders   Orders
 }
 
 func NewRepositories(db *mongo.Database) *Repositories {
@@ -71,5 +81,6 @@ func NewRepositories(db *mongo.Database) *Repositories {
 		Reviews:  NewReviewsRepo(db),
 		Admins:   NewAdminsRepo(db),
 		Carts:    NewCartsRepo(db),
+		Orders:   NewOrdersRepo(db),
 	}
 }

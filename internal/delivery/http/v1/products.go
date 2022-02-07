@@ -10,6 +10,7 @@ import (
 	"net/http"
 )
 
+//TODO: add product search by query
 func (h *Handler) initProductsRoutes(api *gin.RouterGroup) {
 	products := api.Group("/products")
 	{

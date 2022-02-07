@@ -58,12 +58,22 @@ type Carts interface {
 	Delete(ctx context.Context, cartID primitive.ObjectID) error
 }
 
+type Orders interface {
+	FindAll(ctx context.Context) ([]domain.Order, error)
+	FindByID(ctx context.Context, orderID primitive.ObjectID) (domain.Order, error)
+	Create(ctx context.Context, orderDTO dto.CreateOrderDTO) (domain.Order, error)
+	Update(ctx context.Context, orderDTO dto.UpdateOrderDTO,
+		orderID primitive.ObjectID) (domain.Order, error)
+	Delete(ctx context.Context, orderID primitive.ObjectID) error
+}
+
 type Services struct {
 	Users    Users
 	Products Products
 	Reviews  Reviews
 	Admins   Admins
 	Carts    Carts
+	Orders   Orders
 }
 
 type Deps struct {
@@ -78,6 +88,7 @@ func NewServices(deps Deps) *Services {
 	adminsService := NewAdminsService(deps.Repos.Admins)
 	cartsService := NewCartsService(deps.Repos.Carts, productsService)
 	usersService := NewUsersService(deps.Repos.Users, cartsService)
+	ordersService := NewOrdersService(deps.Repos.Orders, productsService, cartsService)
 
 	return &Services{
 		Users:    usersService,
@@ -85,5 +96,6 @@ func NewServices(deps Deps) *Services {
 		Reviews:  reviewsService,
 		Admins:   adminsService,
 		Carts:    cartsService,
+		Orders:   ordersService,
 	}
 }

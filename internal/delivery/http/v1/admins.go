@@ -51,6 +51,12 @@ func (h *Handler) initAdminsRoutes(api *gin.RouterGroup) {
 				cart.GET("/:id", h.getCartByIdAdmin)
 				cart.DELETE("/:id", h.deleteCartAdmin)
 			}
+
+			orders := authenticated.Group("/orders")
+			{
+				orders.GET("/", h.getAllOrdersAdmin)
+				orders.PUT("/:id", h.updateOrderAdmin)
+			}
 		}
 	}
 }

@@ -10,6 +10,7 @@ type Product struct {
 	TotalRating float64            `json:"totalRating" bson:"-"`
 	Categories  []Category         `json:"categories" bson:"categories"` //TODO: make category independent entity, change type to Array(ObjectID)
 	//TODO: add available in stock field
+	//TODO: add image uploading
 }
 
 type Category struct {

@@ -6,4 +6,5 @@ const (
 	reviewsCollection  = "reviews"
 	adminsCollection   = "admins"
 	cartsCollection    = "carts"
+	ordersCollection   = "orders"
 )

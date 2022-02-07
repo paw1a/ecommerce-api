@@ -10,6 +10,7 @@ type User struct {
 	Email    string             `json:"email" bson:"email"`
 	Password string             `json:"-" bson:"password"`
 	CartID   primitive.ObjectID `json:"cartID" bson:"cartID"`
+	//TODO: add image uploading
 }
 
 type UserInfo struct {
