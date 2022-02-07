@@ -25,7 +25,7 @@ func (c *CartService) FindAll(ctx context.Context) ([]domain.Cart, error) {
 		for _, cartItem := range cart.CartItems {
 			product, err := c.productService.FindByID(ctx, cartItem.ProductID)
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("product with id %s no longer exist in stock", product.ID.Hex())
 			}
 			totalPrice += product.Price * float64(cartItem.Quantity)
 		}

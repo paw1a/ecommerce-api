@@ -102,3 +102,10 @@ data = [
 data = json.dumps(data, indent=4)
 admins.write(data)
 admins.close()
+
+# files to clean mongo collections with no data
+carts = open('data/carts.json', 'w')
+carts.close()
+
+orders = open('data/orders.json', 'w')
+orders.close()

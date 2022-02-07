@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"github.com/paw1a/ecommerce-api/internal/repository"
@@ -61,11 +62,21 @@ func (p *OrdersService) FindByUserID(ctx context.Context, userID primitive.Objec
 }
 
 func (p *OrdersService) Create(ctx context.Context, orderDTO dto.CreateOrderDTO) (domain.Order, error) {
+	var totalPrice float64
+	for _, orderItem := range orderDTO.OrderItems {
+		product, err := p.productService.FindByID(ctx, orderItem.ProductID)
+		if err != nil {
+			return domain.Order{}, fmt.Errorf("product with id %s no longer exist in stock", product.ID.Hex())
+		}
+		totalPrice += product.Price * float64(orderItem.Quantity)
+	}
+
 	return p.repo.Create(ctx, domain.Order{
 		OrderID:     uuid.NewV4().String(),
 		CreatedAt:   time.Now(),
 		OrderItems:  orderDTO.OrderItems,
 		ContactInfo: orderDTO.ContactInfo,
+		TotalPrice:  totalPrice,
 		UserID:      orderDTO.UserID,
 		Status:      "Created",
 	})
