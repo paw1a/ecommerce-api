@@ -1566,7 +1566,7 @@ paths:
       - UserAuth: []
       summary: Get order payment link
       tags:
-      - users
+      - user
   /users/reviews:
     get:
       consumes:

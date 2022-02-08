@@ -112,7 +112,7 @@ func (h *Handler) createOrder(context *gin.Context) {
 
 // PaymentLink godoc
 // @Summary   Get order payment link
-// @Tags      users
+// @Tags      user
 // @Accept    json
 // @Produce   json
 // @Param     id   path      string  true  "order id"
