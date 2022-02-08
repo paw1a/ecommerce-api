@@ -68,6 +68,10 @@ type Orders interface {
 	Delete(ctx context.Context, orderID primitive.ObjectID) error
 }
 
+type Payment interface {
+	GetPaymentLink(ctx context.Context, orderID primitive.ObjectID) (string, error)
+}
+
 type Services struct {
 	Users    Users
 	Products Products
@@ -75,6 +79,7 @@ type Services struct {
 	Admins   Admins
 	Carts    Carts
 	Orders   Orders
+	Payment  Payment
 }
 
 type Deps struct {
@@ -90,6 +95,7 @@ func NewServices(deps Deps) *Services {
 	cartsService := NewCartsService(deps.Repos.Carts, productsService)
 	usersService := NewUsersService(deps.Repos.Users, cartsService)
 	ordersService := NewOrdersService(deps.Repos.Orders, productsService, cartsService)
+	paymentService := NewPaymentService(deps.Services.Orders)
 
 	return &Services{
 		Users:    usersService,
@@ -98,5 +104,6 @@ func NewServices(deps Deps) *Services {
 		Admins:   adminsService,
 		Carts:    cartsService,
 		Orders:   ordersService,
+		Payment:  paymentService,
 	}
 }

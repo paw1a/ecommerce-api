@@ -101,7 +101,42 @@ func (h *Handler) createOrder(context *gin.Context) {
 		return
 	}
 
+	err = h.services.Carts.ClearCart(context.Request.Context(), cart.ID)
+	if err != nil {
+		errorResponse(context, http.StatusInternalServerError, "cart can't be cleared")
+		return
+	}
+
 	successResponse(context, order)
+}
+
+// PaymentLink godoc
+// @Summary   Get order payment link
+// @Tags      users
+// @Accept    json
+// @Produce   json
+// @Param     id     path      string    true  "order id"
+// @Success   200    {object}  success
+// @Failure   400    {object}  failure
+// @Failure   401  {object}  failure
+// @Failure   404  {object}  failure
+// @Failure   500  {object}  failure
+// @Security  UserAuth
+// @Router    /users/orders/{id}/payment [get]
+func (h *Handler) getOrderPaymentLink(context *gin.Context) {
+	orderID, err := getIdFromPath(context, "id")
+	if err != nil {
+		errorResponse(context, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	link, err := h.services.Payment.GetPaymentLink(context.Request.Context(), orderID)
+	if err != nil {
+		errorResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	successResponse(context, link)
 }
 
 // GetOrdersAdmin godoc

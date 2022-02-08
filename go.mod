@@ -49,6 +49,7 @@ require (
 	github.com/myesui/uuid v1.0.0 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/stripe/stripe-go/v72 v72.86.0 // indirect
 	github.com/ugorji/go/codec v1.2.6 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.0.2 // indirect

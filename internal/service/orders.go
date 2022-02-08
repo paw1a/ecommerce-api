@@ -78,7 +78,7 @@ func (p *OrdersService) Create(ctx context.Context, orderDTO dto.CreateOrderDTO)
 		ContactInfo: orderDTO.ContactInfo,
 		TotalPrice:  totalPrice,
 		UserID:      orderDTO.UserID,
-		Status:      "Created",
+		Status:      "reserved",
 	})
 }
 

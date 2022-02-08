@@ -20,6 +20,7 @@ func (h *Handler) initUsersRoutes(api *gin.RouterGroup) {
 			{
 				orders.GET("/", h.getUserOrders)
 				orders.POST("/", h.createOrder)
+				orders.GET("/:id/payment", h.getOrderPaymentLink)
 			}
 		}
 	}

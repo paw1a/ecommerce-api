@@ -11,3 +11,5 @@ jwt:
   refreshTokenTime: 86400 # 60 days
 redis:
   uri: localhost:6379
+stripe:
+  key: sk_test_51JAvElJwIMEm9c8xHuUPgoOlnFy1HRMV5CC4ThiM9DBNCtJCiLtHjcH3EeDMylOOdmx0AGDtlDmRNynxD2bBrOXd00j4BFdj7s

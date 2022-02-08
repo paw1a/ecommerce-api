@@ -11,6 +11,7 @@ import (
 	"github.com/paw1a/ecommerce-api/pkg/database/mongodb"
 	"github.com/paw1a/ecommerce-api/pkg/database/redis"
 	_ "github.com/paw1a/ecommerce-api/pkg/logging"
+	"github.com/paw1a/ecommerce-api/pkg/payment"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
@@ -38,6 +39,11 @@ func Run(configPath string) {
 
 	tokenProvider := auth.NewTokenProvider(cfg, redisClient)
 	log.Info("token provider initialized")
+
+	err = payment.InitStripeClient(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	repos := repository.NewRepositories(db)
 	services := service.NewServices(service.Deps{

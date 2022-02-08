@@ -26,6 +26,9 @@ type Config struct {
 	Redis struct {
 		URI string `yaml:"uri" env-default:"localhost:6379"`
 	} `yaml:"redis"`
+	Stripe struct {
+		Key string `yaml:"key" env-required:"true"`
+	} `yaml:"stripe"`
 }
 
 var instance *Config

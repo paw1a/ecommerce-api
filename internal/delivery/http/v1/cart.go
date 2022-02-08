@@ -148,7 +148,7 @@ func (h *Handler) createCartItem(context *gin.Context) {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
-	
+
 	createdResponse(context, cartItem)
 }
 
