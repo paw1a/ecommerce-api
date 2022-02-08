@@ -45,7 +45,7 @@ func (h *Handler) getUserOrders(context *gin.Context) {
 // @Produce   json
 // @Param     order  body      dto.CreateOrderDTO  true  "contact info"
 // @Success   201    {object}  success
-// @Failure   400    {object}  failure
+// @Failure   400  {object}  failure
 // @Failure   401    {object}  failure
 // @Failure   404    {object}  failure
 // @Failure   500    {object}  failure
@@ -115,8 +115,8 @@ func (h *Handler) createOrder(context *gin.Context) {
 // @Tags      users
 // @Accept    json
 // @Produce   json
-// @Param     id     path      string    true  "order id"
-// @Success   200    {object}  success
+// @Param     id   path      string  true  "order id"
+// @Success   200  {object}  success
 // @Failure   400    {object}  failure
 // @Failure   401  {object}  failure
 // @Failure   404  {object}  failure

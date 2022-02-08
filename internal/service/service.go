@@ -95,7 +95,7 @@ func NewServices(deps Deps) *Services {
 	cartsService := NewCartsService(deps.Repos.Carts, productsService)
 	usersService := NewUsersService(deps.Repos.Users, cartsService)
 	ordersService := NewOrdersService(deps.Repos.Orders, productsService, cartsService)
-	paymentService := NewPaymentService(deps.Services.Orders)
+	paymentService := NewPaymentService(ordersService, productsService)
 
 	return &Services{
 		Users:    usersService,
