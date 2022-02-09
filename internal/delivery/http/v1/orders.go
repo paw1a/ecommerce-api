@@ -130,7 +130,13 @@ func (h *Handler) getOrderPaymentLink(context *gin.Context) {
 		return
 	}
 
-	link, err := h.services.Payment.GetPaymentLink(context.Request.Context(), orderID)
+	order, err := h.services.Orders.FindByID(context.Request.Context(), orderID)
+	if err != nil {
+		errorResponse(context, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	link, err := h.services.Payment.GetPaymentLink(order)
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return

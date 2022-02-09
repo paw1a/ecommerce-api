@@ -6,10 +6,14 @@ import faker_commerce
 
 import json
 import bson
+import stripe
 
 USER_NUM = 10
 PRODUCT_NUM = 10
 REVIEW_NUM = 6
+
+stripe.api_key =\
+    "sk_test_51JAvElJwIMEm9c8xHuUPgoOlnFy1HRMV5CC4ThiM9DBNCtJCiLtHjcH3EeDMylOOdmx0AGDtlDmRNynxD2bBrOXd00j4BFdj7s"
 
 if not os.path.exists('data'):
     os.makedirs('data')
@@ -57,6 +61,14 @@ for _ in range(PRODUCT_NUM):
                                       'categories': categoriesFormatter}, num_rows=1)
 
     parsedProduct = json.loads(product)
+
+    stripe.Product.create(name=parsedProduct["name"],
+                          description=parsedProduct["description"],
+                          id=productId)
+    stripe.Price.create(unit_amount_decimal=parsedProduct["price"] * 100,
+                        currency="RUB",
+                        product=productId)
+
     productList.append(parsedProduct)
 
 data = json.dumps(productList, indent=4)
@@ -106,6 +118,5 @@ admins.close()
 # files to clean mongo collections with no data
 carts = open('data/carts.json', 'w')
 carts.close()
-
 orders = open('data/orders.json', 'w')
 orders.close()

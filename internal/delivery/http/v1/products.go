@@ -215,6 +215,11 @@ func (h *Handler) createProductAdmin(context *gin.Context) {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
+	err = h.services.Payment.CreateProduct(product)
+	if err != nil {
+		errorResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	successResponse(context, product)
 }
@@ -254,6 +259,12 @@ func (h *Handler) updateProductAdmin(context *gin.Context) {
 		return
 	}
 
+	err = h.services.Payment.UpdateProduct(product)
+	if err != nil {
+		errorResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	successResponse(context, product)
 }
 
@@ -278,6 +289,12 @@ func (h *Handler) deleteProductAdmin(context *gin.Context) {
 	}
 
 	err = h.services.Products.Delete(context, productID)
+	if err != nil {
+		errorResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	err = h.services.Payment.DeleteProduct(productID)
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return

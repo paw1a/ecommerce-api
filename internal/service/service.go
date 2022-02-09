@@ -6,6 +6,7 @@ import (
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"github.com/paw1a/ecommerce-api/internal/repository"
+	"github.com/stripe/stripe-go/v72"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -69,7 +70,11 @@ type Orders interface {
 }
 
 type Payment interface {
-	GetPaymentLink(ctx context.Context, orderID primitive.ObjectID) (string, error)
+	GetPaymentLink(order domain.Order) (string, error)
+	GetProductPrice(productID primitive.ObjectID) *stripe.Price
+	CreateProduct(domainProduct domain.Product) error
+	UpdateProduct(domainProduct domain.Product) error
+	DeleteProduct(productID primitive.ObjectID) error
 }
 
 type Services struct {
@@ -95,7 +100,7 @@ func NewServices(deps Deps) *Services {
 	cartsService := NewCartsService(deps.Repos.Carts, productsService)
 	usersService := NewUsersService(deps.Repos.Users, cartsService)
 	ordersService := NewOrdersService(deps.Repos.Orders, productsService, cartsService)
-	paymentService := NewPaymentService(ordersService, productsService)
+	paymentService := NewPaymentService()
 
 	return &Services{
 		Users:    usersService,
