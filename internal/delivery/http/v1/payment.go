@@ -10,5 +10,5 @@ func (h *Handler) initPaymentRoutes(api *gin.RouterGroup) {
 }
 
 func (h *Handler) webhook(context *gin.Context) {
-	log.Error("HELLO from webhook")
+	log.Error("WEBHOOK")
 }

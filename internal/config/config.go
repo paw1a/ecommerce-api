@@ -27,7 +27,9 @@ type Config struct {
 		URI string `yaml:"uri" env-default:"localhost:6379"`
 	} `yaml:"redis"`
 	Stripe struct {
-		Key string `yaml:"key" env-required:"true"`
+		Key           string `yaml:"key" env-required:"true"`
+		WebhookUrl    string `yaml:"webhookUrl" env-required:"true"`
+		WebhookSecret string
 	} `yaml:"stripe"`
 }
 
