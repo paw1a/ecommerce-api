@@ -70,7 +70,7 @@ type Orders interface {
 }
 
 type Payment interface {
-	GetPaymentLink(order domain.Order) (string, error)
+	GetPaymentUrl(order domain.Order) (string, error)
 	GetProductPrice(productID primitive.ObjectID) *stripe.Price
 	CreateProduct(domainProduct domain.Product) error
 	UpdateProduct(domainProduct domain.Product) error

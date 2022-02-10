@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
@@ -136,7 +137,13 @@ func (h *Handler) getOrderPaymentLink(context *gin.Context) {
 		return
 	}
 
-	link, err := h.services.Payment.GetPaymentLink(order)
+	if order.Status != "reserved" {
+		errorResponse(context, http.StatusBadRequest,
+			fmt.Sprintf("order with id: %s already paid", order.OrderID))
+		return
+	}
+
+	link, err := h.services.Payment.GetPaymentUrl(order)
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return

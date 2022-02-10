@@ -12,18 +12,18 @@ import (
 type PaymentService struct {
 }
 
-func (p *PaymentService) GetPaymentLink(order domain.Order) (string, error) {
-	linkParamsList := make([]*stripe.CheckoutSessionLineItemParams, len(order.OrderItems))
+func (p *PaymentService) GetPaymentUrl(order domain.Order) (string, error) {
+	sessionParamsList := make([]*stripe.CheckoutSessionLineItemParams, len(order.OrderItems))
 	for i, orderItem := range order.OrderItems {
 		productPrice := p.GetProductPrice(orderItem.ProductID)
-		linkParamsList[i] = &stripe.CheckoutSessionLineItemParams{
+		sessionParamsList[i] = &stripe.CheckoutSessionLineItemParams{
 			Price:    stripe.String(productPrice.ID),
 			Quantity: stripe.Int64(orderItem.Quantity),
 		}
 	}
 
 	params := &stripe.CheckoutSessionParams{
-		LineItems:         linkParamsList,
+		LineItems:         sessionParamsList,
 		SuccessURL:        stripe.String("http://localhost:8080/"),
 		CancelURL:         stripe.String("http://localhost:8080/"),
 		Mode:              stripe.String(string(stripe.CheckoutSessionModePayment)),

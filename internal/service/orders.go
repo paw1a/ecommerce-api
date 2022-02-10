@@ -58,7 +58,24 @@ func (p *OrdersService) FindByID(ctx context.Context, orderID primitive.ObjectID
 }
 
 func (p *OrdersService) FindByUserID(ctx context.Context, userID primitive.ObjectID) ([]domain.Order, error) {
-	return p.repo.FindByUserID(ctx, userID)
+	orders, err := p.repo.FindByUserID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	for i, order := range orders {
+		var totalPrice float64
+		for _, orderItem := range order.OrderItems {
+			product, err := p.productService.FindByID(ctx, orderItem.ProductID)
+			if err != nil {
+				return nil, err
+			}
+			totalPrice += product.Price * float64(orderItem.Quantity)
+		}
+		orders[i].TotalPrice = totalPrice
+	}
+
+	return orders, nil
 }
 
 func (p *OrdersService) Create(ctx context.Context, orderDTO dto.CreateOrderDTO) (domain.Order, error) {
