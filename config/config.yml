@@ -1,16 +1,14 @@
 listen:
-  type:
-  bind_ip: localhost
+  host: localhost
   port: 8080
+
 db:
-  uri: mongodb://localhost:27017
+  uri: mongodb://mongo:27017
   database: ecommerce
+
 jwt:
-  secret: jwtSecret
   accessTokenTime: 300000 # 15 minutes, 300000 for tests
   refreshTokenTime: 86400 # 60 days
+
 redis:
-  uri: localhost:6379
-stripe:
-  key: sk_test_51JAvElJwIMEm9c8xHuUPgoOlnFy1HRMV5CC4ThiM9DBNCtJCiLtHjcH3EeDMylOOdmx0AGDtlDmRNynxD2bBrOXd00j4BFdj7s
-  webhookUrl: http://3620-2a00-1370-812b-39e7-ad28-9dac-3821-5be7.ngrok.io/api/v1/payment/webhook
+  uri: redis:6379

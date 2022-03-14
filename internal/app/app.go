@@ -55,11 +55,11 @@ func Run(configPath string) {
 
 	server := &http.Server{
 		Handler:      handlers.Init(),
-		Addr:         fmt.Sprintf("%s:%s", cfg.Listen.BindIP, cfg.Listen.Port),
+		Addr:         fmt.Sprintf(":%s", cfg.Listen.Port),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-	log.Infof("server started on %s:%s", cfg.Listen.BindIP, cfg.Listen.Port)
+	log.Infof("server started on %s:%s", cfg.Listen.Host, cfg.Listen.Port)
 
 	log.Fatal(server.ListenAndServe())
 }

@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
+	log "github.com/sirupsen/logrus"
 	"github.com/stripe/stripe-go/v72"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
@@ -32,4 +33,6 @@ func (h *Handler) webhookSessionCompleted(context *gin.Context) {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	log.Warn("PAID")
 }
