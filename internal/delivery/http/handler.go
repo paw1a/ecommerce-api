@@ -9,7 +9,6 @@ import (
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
 
-	_ "github.com/paw1a/ecommerce-api/docs"
 	"net/http"
 )
 
