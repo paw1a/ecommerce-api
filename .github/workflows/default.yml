@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
 
-defaults:
+jobs:
   build-and-push:
     name: Build Docker image and push to docker hub
     runs-on: ubuntu-latest
