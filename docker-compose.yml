@@ -1,5 +1,5 @@
-version: '3'
-name: ecommerce
+version: '3.4'
+
 services:
   db:
     image: 'mongo:4.4-bionic'
