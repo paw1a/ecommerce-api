@@ -1,5 +1,5 @@
 listen:
-  host: localhost
+  host: 52.29.184.51
   port: 8080
 
 db:
