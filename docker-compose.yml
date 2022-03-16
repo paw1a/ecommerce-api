@@ -1,4 +1,5 @@
 version: '3'
+name: ecommerce
 services:
   db:
     image: 'mongo:4.4-bionic'
@@ -20,7 +21,7 @@ services:
       - backend
     command: redis-server --save 60 1 --loglevel warning
   app:
-    build: .
+    image: 'hostrey/ecommerce'
     container_name: 'app'
     depends_on:
       - db
