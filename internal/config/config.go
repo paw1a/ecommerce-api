@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
 	log "github.com/sirupsen/logrus"
 	"os"
@@ -51,6 +52,8 @@ func GetConfig(configPath string) *Config {
 		instance.JWT.Secret = os.Getenv("JWT_SECRET")
 		instance.DB.Username = os.Getenv("DB_USERNAME")
 		instance.DB.Password = os.Getenv("DB_PASSWORD")
+
+		fmt.Println(instance)
 	})
 	return instance
 }
