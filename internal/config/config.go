@@ -47,7 +47,8 @@ func GetConfig(configPath string) *Config {
 			log.Fatal(err)
 		}
 
-		instance.Stripe.WebhookUrl = instance.Listen.Host + ":" + instance.Listen.Port + "/api/v1/payment/webhook"
+		instance.Stripe.WebhookUrl = "http://" + instance.Listen.Host + ":" + instance.Listen.Port + "/api/v1/payment/webhook"
+		fmt.Println(instance.Stripe.WebhookUrl)
 		instance.Stripe.Key = os.Getenv("STRIPE_KEY")
 		instance.JWT.Secret = os.Getenv("JWT_SECRET")
 		instance.DB.Username = os.Getenv("DB_USERNAME")
