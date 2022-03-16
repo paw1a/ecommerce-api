@@ -21,7 +21,7 @@ services:
       - backend
     command: redis-server --save 60 1 --loglevel warning
   app:
-    image: 'hostrey/ecommerce'
+    image: 'hostrey/ecommerce:main'
     container_name: 'app'
     depends_on:
       - db

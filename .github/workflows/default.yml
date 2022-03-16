@@ -48,7 +48,6 @@ jobs:
             export JWT_SECRET="${{ secrets.JWT_SECRET }}"
             
             cd app
-            sudo su
             docker-compose -f docker-compose.yml stop
             docker-compose -f docker-compose.yml pull
             docker-compose -f docker-compose.yml up -d
