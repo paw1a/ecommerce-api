@@ -23,13 +23,13 @@ jobs:
           tag_with_ref: true
 
       - name: Push to Docker Hub Generate mongodb image
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          dockerfile: db/Dockerfile
-          repository: hostrey/generate
-          tag_with_ref: true
+          context: ./db
+          file: ./Dockerfile
+          tags: hostrey/generate:main
 
   deploy:
     name: Deploy to AWS
