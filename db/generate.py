@@ -5,118 +5,109 @@ from faker import Faker
 import faker_commerce
 
 import json
-import bson
 import stripe
+
+from pymongo import MongoClient
 
 USER_NUM = 10
 PRODUCT_NUM = 10
 REVIEW_NUM = 6
 
-stripe.api_key =\
-    "sk_test_51JAvElJwIMEm9c8xHuUPgoOlnFy1HRMV5CC4ThiM9DBNCtJCiLtHjcH3EeDMylOOdmx0AGDtlDmRNynxD2bBrOXd00j4BFdj7s"
+stripe.api_key = os.getenv('STRIPE_KEY')
+CONNECTION_STRING = "mongodb://mongo:27017"
 
-if not os.path.exists('data'):
-    os.makedirs('data')
+client = MongoClient(CONNECTION_STRING)
+db = client['ecommerce']
 
 fake = Faker(['en_US'])
 fake.add_provider(faker_commerce.Provider)
 
 # generate users
-users = open('data/users.json', 'w')
-userList = []
-userIds = []
+user_list = []
 
 for _ in range(USER_NUM):
-    userId = str(bson.ObjectId())
-    userIds.append(userId)
-    user = fake.json(data_columns={'_id': {"$oid": f'@{userId}'},
-                                   'name': 'name',
+    user = fake.json(data_columns={'name': 'name',
                                    'email': 'free_email',
                                    'password': 'password'}, num_rows=1)
-    parsedUser = json.loads(user)
-    userList.append(parsedUser)
+    parsed_user = json.loads(user)
+    user_list.append(parsed_user)
 
-data = json.dumps(userList, indent=4)
-users.write(data)
-users.close()
+user_collection = db['users']
+user_collection.drop()
+user_ids = user_collection.insert_many(user_list).inserted_ids
 
 # generate products
-products = open('data/products.json', 'w')
 fake.set_arguments('product_desc_arg', {'nb_words': 10})
 fake.set_arguments('category_desc_arg', {'nb_words': 5})
 fake.set_arguments('price', {'min_value': 100, 'max_value': 100000})
 
-productList = []
-productIds = []
+product_list = []
+
 for _ in range(PRODUCT_NUM):
-    productId = str(bson.ObjectId())
-    productIds.append(productId)
-    categoriesFormatter = [{'name': 'ecommerce_category',
+    categories_formatter = [{'name': 'ecommerce_category',
                             'description': 'sentence:category_desc_arg'}] * random.randint(0, 5)
 
-    product = fake.json(data_columns={'_id': {"$oid": f'@{productId}'},
-                                      'name': 'ecommerce_name',
-                                      'description': 'sentence:product_desc_arg',
-                                      'price': 'pyint:price',
-                                      'categories': categoriesFormatter}, num_rows=1)
+    product: str = fake.json(data_columns={'name': 'ecommerce_name',
+                                           'description': 'sentence:product_desc_arg',
+                                           'price': 'pyint:price',
+                                           'categories': categories_formatter}, num_rows=1)
 
-    parsedProduct = json.loads(product)
+    parsed_product = json.loads(product)
+    product_list.append(parsed_product)
 
-    stripe.Product.create(name=parsedProduct["name"],
-                          description=parsedProduct["description"],
-                          id=productId)
-    stripe.Price.create(unit_amount_decimal=parsedProduct["price"] * 100,
+product_collection = db['products']
+product_collection.drop()
+product_ids = product_collection.insert_many(product_list).inserted_ids
+
+for i, _ in enumerate(product_list):
+    product: dict = product_list[i]
+    stripe.Product.create(name=product["name"],
+                          description=product["description"],
+                          id=product_ids[i])
+    stripe.Price.create(unit_amount_decimal=product["price"] * 100,
                         currency="RUB",
-                        product=productId)
-
-    productList.append(parsedProduct)
-
-data = json.dumps(productList, indent=4)
-products.write(data)
-products.close()
+                        product=product_ids[i])
 
 # generate reviews
 fake.set_arguments('rating', {'min_value': 1, 'max_value': 5})
-reviews = open('data/reviews.json', 'w')
-reviewsList = []
-for productId in productIds:
+
+reviews_list = []
+
+for product_id in product_ids:
     for _ in range(random.randint(REVIEW_NUM // 2, REVIEW_NUM)):
-        reviewId = str(bson.ObjectId())
         reviewText = fake.text().replace('\n', ' ')
         review = fake.json(data_columns={
-            '_id': {"$oid": f'@{reviewId}'},
             'text': f'@{reviewText}',
             'rating': f'pyint:rating',
-            'productID': {"$oid": f'@{productId}'},
-            'userID': {"$oid": f'@{random.choice(userIds)}'}
         }, num_rows=1)
-        parsedReview = json.loads(review)
-        reviewsList.append(parsedReview)
 
-data = json.dumps(reviewsList, indent=4)
-reviews.write(data)
-reviews.close()
+        parsed_review: dict = json.loads(review)
+        parsed_review['productID'] = product_id
+        parsed_review['userID'] = random.choice(user_ids)
+
+        reviews_list.append(parsed_review)
+
+review_collection = db['reviews']
+review_collection.drop()
+review_collection.insert_many(reviews_list)
 
 # generate admins
-admins = open('data/admins.json', 'w')
-data = [
-    {
-        'name': 'Admin',
-        'email': 'paw1a@yandex.ru',
-        'password': '123'
-    },
-    {
-        'name': 'Admin 2',
-        'email': 'admin@admin.com',
-        'password': 'admin'
-    }
-]
-data = json.dumps(data, indent=4)
-admins.write(data)
-admins.close()
+admin_collection = db['admins']
+admin_collection.drop()
 
-# files to clean mongo collections with no data
-carts = open('data/carts.json', 'w')
-carts.close()
-orders = open('data/orders.json', 'w')
-orders.close()
+admin_1 = {'name': 'Admin',
+           'email': 'paw1a@yandex.ru',
+           'password': '123'}
+admin_collection.insert_one(admin_1)
+
+admin_2 = {'name': 'Admin 2',
+           'email': 'admin@admin.com',
+           'password': 'admin'}
+admin_collection.insert_one(admin_2)
+
+# clean up carts and orders collections
+carts_collection = db['carts']
+carts_collection.drop()
+
+orders_collection = db['orders']
+orders_collection.drop()
