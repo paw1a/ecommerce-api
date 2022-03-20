@@ -14,13 +14,18 @@ import (
 )
 
 func (h *Handler) initCartRoutes(api *gin.RouterGroup) {
-	cart := api.Group("/cart", h.extractCartId)
+	cart := api.Group("/cart")
 	{
-		cart.GET("/", h.getCartItems)
-		cart.POST("/", h.createCartItem)
-		cart.DELETE("/", h.clearCart)
-		cart.PUT("/:productID", h.updateCartItem)
-		cart.DELETE("/:productID", h.deleteCartItem)
+		cart.POST("/", h.createCart)
+	}
+
+	cartItem := api.Group("/cartItem", h.extractCartId)
+	{
+		cartItem.GET("/", h.getCartItems)
+		cartItem.POST("/", h.createCartItem)
+		cartItem.DELETE("/", h.clearCart)
+		cartItem.PUT("/:productID", h.updateCartItem)
+		cartItem.DELETE("/:productID", h.deleteCartItem)
 	}
 }
 
@@ -58,23 +63,25 @@ func (h *Handler) extractCartId(context *gin.Context) {
 	}
 	log.Warnf("user not authenticated")
 
-	cartIDHex, err := context.Cookie("cartID")
-	if err == nil {
-		cartID, err := primitive.ObjectIDFromHex(cartIDHex)
-		if err == nil {
-			_, err = h.services.Carts.FindByID(context.Request.Context(), cartID)
-			if err == nil {
-				context.Set("cartID", cartID)
-				return
-			} else {
-				log.Warnf("cart with id: %s not found in db", cartIDHex)
-			}
-		} else {
-			log.Warnf("failed to convert cookie %s to objectID", cartIDHex)
-		}
+	cartID, err := getIdFromPath(context, "cartID")
+	if err != nil {
+		errorResponse(context, http.StatusBadRequest, err.Error())
+		return
 	}
-	log.Warn("cartID cookie not found")
 
+	context.Set("cartID", cartID)
+}
+
+// CreateCart godoc
+// @Summary  Create empty cart
+// @Tags     cart
+// @Accept   json
+// @Produce  json
+// @Success  201  {object}  success
+// @Failure  404  {object}  failure
+// @Failure  500  {object}  failure
+// @Router   /cart [post]
+func (h *Handler) createCart(context *gin.Context) {
 	newCart, err := h.services.Carts.Create(context.Request.Context(), dto.CreateCartDTO{
 		ExpireAt: time.Now().Add(1 * time.Hour * 24),
 	})
@@ -82,9 +89,8 @@ func (h *Handler) extractCartId(context *gin.Context) {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
-	context.Set("cartID", newCart.ID)
-	context.SetCookie("cartID", newCart.ID.Hex(), int(time.Second.Seconds())*60*60*12,
-		"/", "localhost", false, true)
+
+	createdResponse(context, newCart.ID.Hex())
 }
 
 // GetCartItems godoc
@@ -92,12 +98,12 @@ func (h *Handler) extractCartId(context *gin.Context) {
 // @Tags     cart
 // @Accept   json
 // @Produce  json
-// @Param    Cookie  header    string  true  "cart id"
+// @Param    cartID  path      string  false  "cart id (not required)"
 // @Success  200     {array}   success
 // @Failure  401     {object}  failure
 // @Failure  404     {object}  failure
 // @Failure  500     {object}  failure
-// @Router   /cart [get]
+// @Router   /cartItem [get]
 func (h *Handler) getCartItems(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {
@@ -120,14 +126,14 @@ func (h *Handler) getCartItems(context *gin.Context) {
 // @Tags     cart
 // @Accept   json
 // @Produce  json
-// @Param    cartItem  body      domain.CartItem  true  "cart item"
-// @Param    Cookie    header    string           true  "cart id"
+// @Param    cartItem  body      domain.CartItem  true   "cart item"
+// @Param    cartID    path      string           false  "cart id (not required)"
 // @Success  201       {object}  success
 // @Failure  400       {object}  failure
 // @Failure  401       {object}  failure
 // @Failure  404       {object}  failure
 // @Failure  500       {object}  failure
-// @Router   /cart [post]
+// @Router   /cartItem [post]
 func (h *Handler) createCartItem(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {
@@ -157,15 +163,15 @@ func (h *Handler) createCartItem(context *gin.Context) {
 // @Tags     cart
 // @Accept   json
 // @Produce  json
-// @Param    productID  path      string                 true  "product id"
-// @Param    cartItem   body      dto.UpdateCartItemDTO  true  "cart item"
-// @Param    Cookie     header    string                 true  "cart id"
+// @Param    productID  path      string                 true   "product id"
+// @Param    cartItem   body      dto.UpdateCartItemDTO  true   "cart item"
+// @Param    cartID     path      string                 false  "cart id (not required)"
 // @Success  200     {object}  success
 // @Failure  400     {object}  failure
 // @Failure  401     {object}  failure
 // @Failure  404     {object}  failure
 // @Failure  500     {object}  failure
-// @Router   /cart/{productID} [put]
+// @Router   /cartItem/{productID} [put]
 func (h *Handler) updateCartItem(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {
@@ -204,14 +210,14 @@ func (h *Handler) updateCartItem(context *gin.Context) {
 // @Tags     cart
 // @Accept   json
 // @Produce  json
-// @Param    productID  path      string  true  "product id"
-// @Param    Cookie  header    string  true  "cart id"
+// @Param    productID  path      string  true   "product id"
+// @Param    cartID     path      string  false  "cart id (not required)"
 // @Success  200        {object}  success
 // @Failure  400        {object}  failure
 // @Failure  401        {object}  failure
 // @Failure  404        {object}  failure
 // @Failure  500        {object}  failure
-// @Router   /cart/{productID} [delete]
+// @Router   /cartItem/{productID} [delete]
 func (h *Handler) deleteCartItem(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {
@@ -240,13 +246,13 @@ func (h *Handler) deleteCartItem(context *gin.Context) {
 // @Tags     cart
 // @Accept   json
 // @Produce  json
-// @Param    Cookie     header    string  true  "cart id"
+// @Param    cartID  path      string  false  "cart id (not required)"
 // @Success  200        {object}  success
 // @Failure  400        {object}  failure
 // @Failure  401        {object}  failure
 // @Failure  404        {object}  failure
 // @Failure  500        {object}  failure
-// @Router   /cart [delete]
+// @Router   /cartItem [delete]
 func (h *Handler) clearCart(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {

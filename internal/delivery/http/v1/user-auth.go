@@ -8,8 +8,6 @@ import (
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"github.com/paw1a/ecommerce-api/pkg/auth"
-	log "github.com/sirupsen/logrus"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 )
@@ -77,20 +75,11 @@ func (h *Handler) userSignUp(context *gin.Context) {
 		return
 	}
 
-	var cartID primitive.ObjectID
-	cartIDHex, err := context.Cookie("cartID")
-	if err == nil {
-		cartID, err = primitive.ObjectIDFromHex(cartIDHex)
-		if err != nil {
-			log.Warnf("failed to convert cart id %s to object id", cartIDHex)
-		}
-	}
-
 	user, err := h.services.Users.Create(context, dto.CreateUserDTO{
 		Name:     signUpDTO.Name,
 		Email:    signUpDTO.Email,
 		Password: signUpDTO.Password,
-		CartID:   cartID,
+		CartID:   signUpDTO.CartID,
 	})
 	if err != nil {
 		if mongo.IsDuplicateKeyError(err) {

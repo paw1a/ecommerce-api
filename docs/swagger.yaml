@@ -109,6 +109,8 @@ definitions:
     type: object
   dto.SignUpDTO:
     properties:
+      cartID:
+        type: string
       email:
         type: string
       name:
@@ -983,14 +985,35 @@ paths:
       tags:
       - admin-users
   /cart:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/v1.success'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.failure'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.failure'
+      summary: Create empty cart
+      tags:
+      - cart
+  /cartItem:
     delete:
       consumes:
       - application/json
       parameters:
-      - description: cart id
-        in: header
-        name: Cookie
-        required: true
+      - description: cart id (not required)
+        in: path
+        name: cartID
         type: string
       produces:
       - application/json
@@ -1022,10 +1045,9 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: cart id
-        in: header
-        name: Cookie
-        required: true
+      - description: cart id (not required)
+        in: path
+        name: cartID
         type: string
       produces:
       - application/json
@@ -1061,10 +1083,9 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/domain.CartItem'
-      - description: cart id
-        in: header
-        name: Cookie
-        required: true
+      - description: cart id (not required)
+        in: path
+        name: cartID
         type: string
       produces:
       - application/json
@@ -1092,7 +1113,7 @@ paths:
       summary: Add cart item
       tags:
       - cart
-  /cart/{productID}:
+  /cartItem/{productID}:
     delete:
       consumes:
       - application/json
@@ -1102,10 +1123,9 @@ paths:
         name: productID
         required: true
         type: string
-      - description: cart id
-        in: header
-        name: Cookie
-        required: true
+      - description: cart id (not required)
+        in: path
+        name: cartID
         type: string
       produces:
       - application/json
@@ -1148,10 +1168,9 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.UpdateCartItemDTO'
-      - description: cart id
-        in: header
-        name: Cookie
-        required: true
+      - description: cart id (not required)
+        in: path
+        name: cartID
         type: string
       produces:
       - application/json
