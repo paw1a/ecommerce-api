@@ -30,7 +30,9 @@ func (h *Handler) initCartRoutes(api *gin.RouterGroup) {
 }
 
 func (h *Handler) extractCartId(context *gin.Context) {
-	userID, err := h.extractIdFromAuthHeader(context, "userID")
+	userIDHex := context.Query("cartID")
+	userID, err := primitive.ObjectIDFromHex(userIDHex)
+
 	if err == nil {
 		user, err := h.services.Users.FindByID(context.Request.Context(), userID)
 		if err != nil {
@@ -98,7 +100,7 @@ func (h *Handler) createCart(context *gin.Context) {
 // @Tags     cart
 // @Accept   json
 // @Produce  json
-// @Param    cartID  path      string  false  "cart id (not required)"
+// @Param    cartID  query     string  true  "cart id (not required)"
 // @Success  200     {array}   success
 // @Failure  401     {object}  failure
 // @Failure  404     {object}  failure
@@ -126,8 +128,8 @@ func (h *Handler) getCartItems(context *gin.Context) {
 // @Tags     cart
 // @Accept   json
 // @Produce  json
-// @Param    cartItem  body      domain.CartItem  true   "cart item"
-// @Param    cartID    path      string           false  "cart id (not required)"
+// @Param    cartItem  body      domain.CartItem  true  "cart item"
+// @Param    cartID    query     string           true  "cart id (not required)"
 // @Success  201       {object}  success
 // @Failure  400       {object}  failure
 // @Failure  401       {object}  failure
@@ -163,9 +165,9 @@ func (h *Handler) createCartItem(context *gin.Context) {
 // @Tags     cart
 // @Accept   json
 // @Produce  json
-// @Param    productID  path      string                 true   "product id"
-// @Param    cartItem   body      dto.UpdateCartItemDTO  true   "cart item"
-// @Param    cartID     path      string                 false  "cart id (not required)"
+// @Param    productID  path      string                 true  "product id"
+// @Param    cartItem   body      dto.UpdateCartItemDTO  true  "cart item"
+// @Param    cartID     query     string                 true  "cart id (not required)"
 // @Success  200     {object}  success
 // @Failure  400     {object}  failure
 // @Failure  401     {object}  failure
@@ -210,8 +212,8 @@ func (h *Handler) updateCartItem(context *gin.Context) {
 // @Tags     cart
 // @Accept   json
 // @Produce  json
-// @Param    productID  path      string  true   "product id"
-// @Param    cartID     path      string  false  "cart id (not required)"
+// @Param    productID  path      string  true  "product id"
+// @Param    cartID     query     string  true  "cart id (not required)"
 // @Success  200        {object}  success
 // @Failure  400        {object}  failure
 // @Failure  401        {object}  failure
@@ -246,7 +248,7 @@ func (h *Handler) deleteCartItem(context *gin.Context) {
 // @Tags     cart
 // @Accept   json
 // @Produce  json
-// @Param    cartID  path      string  false  "cart id (not required)"
+// @Param    cartID  query     string  true  "cart id (not required)"
 // @Success  200        {object}  success
 // @Failure  400        {object}  failure
 // @Failure  401        {object}  failure
