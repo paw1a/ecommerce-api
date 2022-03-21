@@ -30,8 +30,7 @@ func (h *Handler) initCartRoutes(api *gin.RouterGroup) {
 }
 
 func (h *Handler) extractCartId(context *gin.Context) {
-	userIDHex := context.Query("cartID")
-	userID, err := primitive.ObjectIDFromHex(userIDHex)
+	userID, err := h.extractIdFromAuthHeader(context, "userID")
 
 	if err == nil {
 		user, err := h.services.Users.FindByID(context.Request.Context(), userID)
@@ -65,7 +64,9 @@ func (h *Handler) extractCartId(context *gin.Context) {
 	}
 	log.Warnf("user not authenticated")
 
-	cartID, err := getIdFromPath(context, "cartID")
+	cartIDHex := context.Query("cartID")
+	cartID, err := primitive.ObjectIDFromHex(cartIDHex)
+
 	if err != nil {
 		errorResponse(context, http.StatusBadRequest, err.Error())
 		return
