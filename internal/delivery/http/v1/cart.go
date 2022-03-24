@@ -77,9 +77,9 @@ func (h *Handler) extractCartId(context *gin.Context) {
 
 // CreateCart godoc
 // @Summary  Create empty cart
-// @Tags     cart
-// @Accept   json
-// @Produce  json
+// @Tags      cart
+// @Accept    json
+// @Produce   json
 // @Success  201  {object}  success
 // @Failure  404  {object}  failure
 // @Failure  500  {object}  failure
@@ -97,16 +97,17 @@ func (h *Handler) createCart(context *gin.Context) {
 }
 
 // GetCartItems godoc
-// @Summary  Get cart items
-// @Tags     cart
-// @Accept   json
-// @Produce  json
-// @Param    cartID  query     string  true  "cart id (not required)"
-// @Success  200     {array}   success
-// @Failure  401     {object}  failure
-// @Failure  404     {object}  failure
-// @Failure  500     {object}  failure
-// @Router   /cartItem [get]
+// @Summary   Get cart items
+// @Tags      cart
+// @Accept    json
+// @Produce   json
+// @Param     cartID  query     string  true  "cart id (not required)"
+// @Success   200     {array}   success
+// @Failure   401     {object}  failure
+// @Failure   404     {object}  failure
+// @Failure   500     {object}  failure
+// @Security  UserAuth
+// @Router    /cartItem [get]
 func (h *Handler) getCartItems(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {
@@ -125,18 +126,19 @@ func (h *Handler) getCartItems(context *gin.Context) {
 }
 
 // CreateCartItem godoc
-// @Summary  Add cart item
-// @Tags     cart
-// @Accept   json
-// @Produce  json
-// @Param    cartItem  body      domain.CartItem  true  "cart item"
-// @Param    cartID    query     string           true  "cart id (not required)"
-// @Success  201       {object}  success
-// @Failure  400       {object}  failure
-// @Failure  401       {object}  failure
-// @Failure  404       {object}  failure
-// @Failure  500       {object}  failure
-// @Router   /cartItem [post]
+// @Summary   Add cart item
+// @Tags      cart
+// @Accept    json
+// @Produce   json
+// @Param     cartItem  body      domain.CartItem  true  "cart item"
+// @Param     cartID    query     string           true  "cart id (not required)"
+// @Success   201       {object}  success
+// @Failure   400       {object}  failure
+// @Failure   401       {object}  failure
+// @Failure   404       {object}  failure
+// @Failure   500       {object}  failure
+// @Security  UserAuth
+// @Router    /cartItem [post]
 func (h *Handler) createCartItem(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {
@@ -162,19 +164,20 @@ func (h *Handler) createCartItem(context *gin.Context) {
 }
 
 // UpdateCartItem godoc
-// @Summary  Update cart item
-// @Tags     cart
-// @Accept   json
-// @Produce  json
-// @Param    productID  path      string                 true  "product id"
-// @Param    cartItem   body      dto.UpdateCartItemDTO  true  "cart item"
-// @Param    cartID     query     string                 true  "cart id (not required)"
-// @Success  200     {object}  success
-// @Failure  400     {object}  failure
-// @Failure  401     {object}  failure
-// @Failure  404     {object}  failure
-// @Failure  500     {object}  failure
-// @Router   /cartItem/{productID} [put]
+// @Summary   Update cart item
+// @Tags      cart
+// @Accept    json
+// @Produce   json
+// @Param     productID  path      string                 true  "product id"
+// @Param     cartItem   body      dto.UpdateCartItemDTO  true  "cart item"
+// @Param     cartID     query     string                 true  "cart id (not required)"
+// @Success   200        {object}  success
+// @Failure   400        {object}  failure
+// @Failure   401        {object}  failure
+// @Failure   404        {object}  failure
+// @Failure   500        {object}  failure
+// @Security  UserAuth
+// @Router    /cartItem/{productID} [put]
 func (h *Handler) updateCartItem(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {
@@ -209,18 +212,19 @@ func (h *Handler) updateCartItem(context *gin.Context) {
 }
 
 // DeleteCartItem godoc
-// @Summary  Delete cart item
-// @Tags     cart
-// @Accept   json
-// @Produce  json
-// @Param    productID  path      string  true  "product id"
-// @Param    cartID     query     string  true  "cart id (not required)"
-// @Success  200        {object}  success
-// @Failure  400        {object}  failure
-// @Failure  401        {object}  failure
-// @Failure  404        {object}  failure
-// @Failure  500        {object}  failure
-// @Router   /cartItem/{productID} [delete]
+// @Summary   Delete cart item
+// @Tags      cart
+// @Accept    json
+// @Produce   json
+// @Param     productID  path      string  true  "product id"
+// @Param     cartID     query     string  true  "cart id (not required)"
+// @Success   200        {object}  success
+// @Failure   400        {object}  failure
+// @Failure   401        {object}  failure
+// @Failure   404        {object}  failure
+// @Failure   500        {object}  failure
+// @Security  UserAuth
+// @Router    /cartItem/{productID} [delete]
 func (h *Handler) deleteCartItem(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {
@@ -245,17 +249,18 @@ func (h *Handler) deleteCartItem(context *gin.Context) {
 }
 
 // ClearCart godoc
-// @Summary  Delete all cart items
+// @Summary   Delete all cart items
 // @Tags     cart
 // @Accept   json
 // @Produce  json
-// @Param    cartID  query     string  true  "cart id (not required)"
-// @Success  200        {object}  success
-// @Failure  400        {object}  failure
-// @Failure  401        {object}  failure
-// @Failure  404        {object}  failure
-// @Failure  500        {object}  failure
-// @Router   /cartItem [delete]
+// @Param     cartID  query     string  true  "cart id (not required)"
+// @Success   200     {object}  success
+// @Failure   400     {object}  failure
+// @Failure   401     {object}  failure
+// @Failure   404     {object}  failure
+// @Failure   500     {object}  failure
+// @Security  UserAuth
+// @Router    /cartItem [delete]
 func (h *Handler) clearCart(context *gin.Context) {
 	cartIDHex, ok := context.Get("cartID")
 	if !ok {

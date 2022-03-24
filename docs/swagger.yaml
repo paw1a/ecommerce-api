@@ -66,8 +66,8 @@ definitions:
       price:
         type: number
     required:
-      - name
-      - price
+    - name
+    - price
     type: object
   dto.CreateReviewDTOAdmin:
     properties:
@@ -168,7 +168,7 @@ definitions:
     properties:
       data: {}
     type: object
-host: localhost:8080
+host: 52.29.184.51:8080
 info:
   contact:
     email: paw1a@yandex.ru
@@ -181,16 +181,16 @@ paths:
   /admins/auth/refresh:
     post:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: refresh data
-          in: body
-          name: refreshInput
-          required: true
-          schema:
-            $ref: '#/definitions/auth.RefreshInput'
+      - description: refresh data
+        in: body
+        name: refreshInput
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RefreshInput'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -214,20 +214,20 @@ paths:
             $ref: '#/definitions/v1.failure'
       summary: Admin refresh token
       tags:
-        - admin-auth
+      - admin-auth
   /admins/auth/sign-in:
     post:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: admin credentials
-          in: body
-          name: admin
-          required: true
-          schema:
-            $ref: '#/definitions/dto.SignInDTO'
+      - description: admin credentials
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignInDTO'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -251,13 +251,13 @@ paths:
             $ref: '#/definitions/v1.failure'
       summary: Admin sign-in
       tags:
-        - admin-auth
+      - admin-auth
   /admins/carts:
     get:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -278,22 +278,22 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Get all carts
       tags:
-        - admin-carts
+      - admin-carts
   /admins/carts/{id}:
     delete:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: cart id
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: cart id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -316,21 +316,21 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Delete cart
       tags:
-        - admin-carts
+      - admin-carts
     get:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: cart id
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: cart id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -353,16 +353,16 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Get cart by id
       tags:
-        - admin-carts
+      - admin-carts
   /admins/orders:
     get:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -383,28 +383,28 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Get all orders
       tags:
-        - admin-orders
+      - admin-orders
   /admins/orders/{id}:
     put:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: order id
-          in: path
-          name: id
-          required: true
-          type: string
-        - description: order update fields
-          in: body
-          name: order
-          required: true
-          schema:
-            $ref: '#/definitions/dto.UpdateOrderDTO'
+      - description: order id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: order update fields
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateOrderDTO'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -427,16 +427,16 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Update order
       tags:
-        - admin-orders
+      - admin-orders
   /admins/products:
     get:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -457,22 +457,22 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Get all products
       tags:
-        - admin-products
+      - admin-products
     post:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: product
-          in: body
-          name: product
-          required: true
-          schema:
-            $ref: '#/definitions/dto.CreateProductDTO'
+      - description: product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateProductDTO'
       produces:
-        - application/json
+      - application/json
       responses:
         "201":
           description: Created
@@ -495,22 +495,22 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Create product
       tags:
-        - admin-products
+      - admin-products
   /admins/products/{id}:
     delete:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: product id
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -533,21 +533,21 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Delete product
       tags:
-        - admin-products
+      - admin-products
     get:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: product id
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -570,27 +570,27 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Get product by id
       tags:
-        - admin-products
+      - admin-products
     put:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: product id
-          in: path
-          name: id
-          required: true
-          type: string
-        - description: product update fields
-          in: body
-          name: product
-          required: true
-          schema:
-            $ref: '#/definitions/dto.UpdateProductDTO'
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: product update fields
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateProductDTO'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -613,22 +613,22 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Update product
       tags:
-        - admin-products
+      - admin-products
   /admins/products/{id}/reviews:
     get:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: product id
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -651,16 +651,16 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Get product reviews list
       tags:
-        - admin-products
+      - admin-products
   /admins/reviews:
     get:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -681,22 +681,22 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Get all reviews
       tags:
-        - admin-reviews
+      - admin-reviews
     post:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: review
-          in: body
-          name: review
-          required: true
-          schema:
-            $ref: '#/definitions/dto.CreateReviewDTOAdmin'
+      - description: review
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateReviewDTOAdmin'
       produces:
-        - application/json
+      - application/json
       responses:
         "201":
           description: Created
@@ -719,22 +719,22 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Create review
       tags:
-        - admin-reviews
+      - admin-reviews
   /admins/reviews/{id}:
     delete:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: review id
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: review id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -757,21 +757,21 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Delete review
       tags:
-        - admin-reviews
+      - admin-reviews
     get:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: review id
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: review id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -794,16 +794,16 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Get review by id
       tags:
-        - admin-reviews
+      - admin-reviews
   /admins/users:
     get:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -824,22 +824,22 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Get all users
       tags:
-        - admin-users
+      - admin-users
     post:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: user
-          in: body
-          name: user
-          required: true
-          schema:
-            $ref: '#/definitions/dto.CreateUserDTO'
+      - description: user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserDTO'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -862,22 +862,22 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Create user
       tags:
-        - admin-users
+      - admin-users
   /admins/users/{id}:
     delete:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: user id
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -900,21 +900,21 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Delete user
       tags:
-        - admin-users
+      - admin-users
     get:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: user id
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -937,27 +937,27 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Get user by id
       tags:
-        - admin-users
+      - admin-users
     put:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: user id
-          in: path
-          name: id
-          required: true
-          type: string
-        - description: user update fields
-          in: body
-          name: user
-          required: true
-          schema:
-            $ref: '#/definitions/dto.UpdateUserDTO'
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: user update fields
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserDTO'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -980,16 +980,16 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - AdminAuth: []
+      - AdminAuth: []
       summary: Update user
       tags:
-        - admin-users
+      - admin-users
   /cart:
     post:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "201":
           description: Created
@@ -1005,19 +1005,19 @@ paths:
             $ref: '#/definitions/v1.failure'
       summary: Create empty cart
       tags:
-        - cart
+      - cart
   /cartItem:
     delete:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: cart id (not required)
-          in: query
-          name: cartID
-          required: false
-          type: string
+      - description: cart id (not required)
+        in: query
+        name: cartID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1039,20 +1039,22 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/v1.failure'
+      security:
+      - UserAuth: []
       summary: Delete all cart items
       tags:
-        - cart
+      - cart
     get:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: cart id (not required)
-          in: query
-          name: cartID
-          required: false
-          type: string
+      - description: cart id (not required)
+        in: query
+        name: cartID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1072,26 +1074,28 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/v1.failure'
+      security:
+      - UserAuth: []
       summary: Get cart items
       tags:
-        - cart
+      - cart
     post:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: cart item
-          in: body
-          name: cartItem
-          required: true
-          schema:
-            $ref: '#/definitions/domain.CartItem'
-        - description: cart id (not required)
-          in: query
-          name: cartID
-          required: false
-          type: string
+      - description: cart item
+        in: body
+        name: cartItem
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CartItem'
+      - description: cart id (not required)
+        in: query
+        name: cartID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "201":
           description: Created
@@ -1113,26 +1117,28 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/v1.failure'
+      security:
+      - UserAuth: []
       summary: Add cart item
       tags:
-        - cart
+      - cart
   /cartItem/{productID}:
     delete:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: product id
-          in: path
-          name: productID
-          required: true
-          type: string
-        - description: cart id (not required)
-          in: query
-          name: cartID
-          required: false
-          type: string
+      - description: product id
+        in: path
+        name: productID
+        required: true
+        type: string
+      - description: cart id (not required)
+        in: query
+        name: cartID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1154,31 +1160,33 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/v1.failure'
+      security:
+      - UserAuth: []
       summary: Delete cart item
       tags:
-        - cart
+      - cart
     put:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: product id
-          in: path
-          name: productID
-          required: true
-          type: string
-        - description: cart item
-          in: body
-          name: cartItem
-          required: true
-          schema:
-            $ref: '#/definitions/dto.UpdateCartItemDTO'
-        - description: cart id (not required)
-          in: query
-          name: cartID
-          required: false
-          type: string
+      - description: product id
+        in: path
+        name: productID
+        required: true
+        type: string
+      - description: cart item
+        in: body
+        name: cartItem
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCartItemDTO'
+      - description: cart id (not required)
+        in: query
+        name: cartID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1200,15 +1208,17 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/v1.failure'
+      security:
+      - UserAuth: []
       summary: Update cart item
       tags:
-        - cart
+      - cart
   /products:
     get:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1230,19 +1240,19 @@ paths:
             $ref: '#/definitions/v1.failure'
       summary: Get all products
       tags:
-        - products
+      - products
   /products/{id}:
     get:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: product id
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1266,19 +1276,19 @@ paths:
             $ref: '#/definitions/v1.failure'
       summary: Get product by id
       tags:
-        - products
+      - products
   /products/{id}/reviews:
     get:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: product id
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1302,24 +1312,24 @@ paths:
             $ref: '#/definitions/v1.failure'
       summary: Get product reviews list
       tags:
-        - products
+      - products
     post:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: product id
-          in: path
-          name: id
-          required: true
-          type: string
-        - description: review
-          in: body
-          name: review
-          required: true
-          schema:
-            $ref: '#/definitions/dto.CreateReviewDTOUser'
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: review
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateReviewDTOUser'
       produces:
-        - application/json
+      - application/json
       responses:
         "201":
           description: Created
@@ -1342,16 +1352,16 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - UserAuth: []
+      - UserAuth: []
       summary: Create review
       tags:
-        - products
+      - products
   /users/account:
     get:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1370,23 +1380,23 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - UserAuth: []
+      - UserAuth: []
       summary: User account
       tags:
-        - user
+      - user
   /users/auth/refresh:
     post:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: user refresh data
-          in: body
-          name: refreshInput
-          required: true
-          schema:
-            $ref: '#/definitions/auth.RefreshInput'
+      - description: user refresh data
+        in: body
+        name: refreshInput
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RefreshInput'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1410,20 +1420,20 @@ paths:
             $ref: '#/definitions/v1.failure'
       summary: User refresh token
       tags:
-        - user-auth
+      - user-auth
   /users/auth/sign-in:
     post:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: user credentials
-          in: body
-          name: user
-          required: true
-          schema:
-            $ref: '#/definitions/dto.SignInDTO'
+      - description: user credentials
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignInDTO'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1447,20 +1457,20 @@ paths:
             $ref: '#/definitions/v1.failure'
       summary: User sign-in
       tags:
-        - user-auth
+      - user-auth
   /users/auth/sign-up:
     post:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: user data
-          in: body
-          name: user
-          required: true
-          schema:
-            $ref: '#/definitions/dto.SignUpDTO'
+      - description: user data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignUpDTO'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1484,13 +1494,13 @@ paths:
             $ref: '#/definitions/v1.failure'
       summary: User sign-up
       tags:
-        - user-auth
+      - user-auth
   /users/orders:
     get:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1511,22 +1521,22 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - UserAuth: []
+      - UserAuth: []
       summary: User order List
       tags:
-        - user
+      - user
     post:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: contact info
-          in: body
-          name: order
-          required: true
-          schema:
-            $ref: '#/definitions/dto.CreateOrderDTO'
+      - description: contact info
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateOrderDTO'
       produces:
-        - application/json
+      - application/json
       responses:
         "201":
           description: Created
@@ -1549,22 +1559,22 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - UserAuth: []
+      - UserAuth: []
       summary: Create order
       tags:
-        - user
+      - user
   /users/orders/{id}/payment:
     get:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: order id
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: order id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1587,16 +1597,16 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - UserAuth: []
+      - UserAuth: []
       summary: Get order payment link
       tags:
-        - user
+      - user
   /users/reviews:
     get:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1617,10 +1627,12 @@ paths:
           schema:
             $ref: '#/definitions/v1.failure'
       security:
-        - UserAuth: []
+      - UserAuth: []
       summary: User reviews List
       tags:
-        - user
+      - user
+schemes:
+- http
 securityDefinitions:
   AdminAuth:
     in: header

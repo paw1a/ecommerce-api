@@ -10,8 +10,10 @@ import "github.com/paw1a/ecommerce-api/internal/app"
 // @contact.url    https://t.me/paw1a
 // @contact.email  paw1a@yandex.ru
 
-// @host      localhost:8080
+// @host      52.29.184.51:8080
 // @BasePath  /api/v1
+
+// @schemes  http
 
 // @securityDefinitions.apikey  AdminAuth
 // @in                          header
@@ -22,4 +24,5 @@ import "github.com/paw1a/ecommerce-api/internal/app"
 // @name                        Authorization
 func main() {
 	app.Run("config/config.yml")
+
 }
