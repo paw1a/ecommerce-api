@@ -58,6 +58,7 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           source: "deploy/,!deploy/Dockerfile"
           target: "app"
+          strip_components: 1
 
       - name: Deploy ssh
         uses: appleboy/ssh-action@v0.1.3
