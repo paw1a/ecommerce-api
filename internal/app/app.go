@@ -42,7 +42,7 @@ func Run(configPath string) {
 
 	err = payment.InitStripeClient(cfg)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 
 	repos := repository.NewRepositories(db)
@@ -59,7 +59,7 @@ func Run(configPath string) {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-	log.Infof("server started on %s:%s", cfg.Listen.Host, cfg.Listen.Port)
+	log.Infof("server started on port %s", cfg.Listen.Port)
 
 	log.Fatal(server.ListenAndServe())
 }

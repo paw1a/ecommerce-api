@@ -5,6 +5,11 @@ on:
     branches: [main]
   pull_request:
 
+env:
+  APP_IMAGE: ecommerce
+  GENERATE_IMAGE: generate
+  TAG: latest
+
 jobs:
   build-and-push:
     name: Build and Push
@@ -26,16 +31,16 @@ jobs:
       - name: Push to Docker Hub Ecommerce image
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: ./deploy
           push: true
-          tags: hostrey/ecommerce:main
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.APP_IMAGE }}:${{ env.TAG }}
 
       - name: Push to Docker Hub generate mongodb image
         uses: docker/build-push-action@v2
         with:
           context: ./db
           push: true
-          tags: hostrey/generate:main
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.GENERATE_IMAGE }}:${{ env.TAG }}
 
   deploy:
     name: Deploy to AWS
@@ -50,7 +55,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
-          source: "docker-compose.yml"
+          source: "deploy/docker-compose.yml"
           target: "app"
 
       - name: Deploy ssh

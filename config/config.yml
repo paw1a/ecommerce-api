@@ -1,14 +1,3 @@
-listen:
-  host: 52.29.184.51
-  port: 8080
-
-db:
-  uri: mongodb://mongo:27017
-  database: ecommerce
-
 jwt:
   accessTokenTime: 300000 # 15 minutes, 300000 for tests
   refreshTokenTime: 86400 # 60 days
-
-redis:
-  uri: redis:6379

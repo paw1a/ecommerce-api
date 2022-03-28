@@ -6,4 +6,5 @@ docs/docs.go
 /db/data
 **/.DS_Store
 .env
-mongo-data/
+.data
+.bin

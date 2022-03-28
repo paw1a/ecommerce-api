@@ -9,23 +9,23 @@ import (
 
 type Config struct {
 	Listen struct {
-		Host string `yaml:"host" env-default:"127.0.0.1"`
-		Port string `yaml:"port" env-default:"8080"`
-	} `yaml:"listen"`
+		Host string
+		Port string
+	}
 	DB struct {
-		Database string `yaml:"database" env-required:"true"`
-		URI      string `yaml:"uri" env-required:"true"`
+		Database string
+		URI      string
 		Username string
 		Password string
-	} `yaml:"db"`
+	}
 	JWT struct {
 		Secret           string
 		AccessTokenTime  int64 `yaml:"accessTokenTime" env-default:"15"`
 		RefreshTokenTime int64 `yaml:"refreshTokenTime" env-default:"86400"`
 	} `yaml:"jwt"`
 	Redis struct {
-		URI string `yaml:"uri" env-default:"127.0.0.1:6379"`
-	} `yaml:"redis"`
+		URI string
+	}
 	Stripe struct {
 		Key           string
 		WebhookUrl    string
@@ -46,11 +46,20 @@ func GetConfig(configPath string) *Config {
 			log.Fatal(err)
 		}
 
-		instance.Stripe.WebhookUrl = "http://" + instance.Listen.Host + ":" + instance.Listen.Port + "/api/v1/payment/webhook"
+		instance.Listen.Host = os.Getenv("HOST")
+		instance.Listen.Port = os.Getenv("PORT")
+
 		instance.Stripe.Key = os.Getenv("STRIPE_KEY")
+		instance.Stripe.WebhookUrl = "http://" + instance.Listen.Host + ":" + instance.Listen.Port + "/api/v1/payment/webhook"
+
 		instance.JWT.Secret = os.Getenv("JWT_SECRET")
+
 		instance.DB.Username = os.Getenv("DB_USERNAME")
 		instance.DB.Password = os.Getenv("DB_PASSWORD")
+		instance.DB.Database = os.Getenv("DB_NAME")
+		instance.DB.URI = os.Getenv("DB_URI")
+
+		instance.Redis.URI = os.Getenv("REDIS_URI")
 	})
 	return instance
 }
