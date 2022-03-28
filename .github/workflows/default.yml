@@ -78,6 +78,11 @@ jobs:
             
             export REDIS_URI="${{ secrets.REDIS_URI }}"
             
+            export DOCKER_HUB_USERNAME="${{ secrets.DOCKER_HUB_USERNAME }}"
+            export GENERATE_IMAGE="${{ env.GENERATE_IMAGE }}"
+            export APP_IMAGE="${{ env.APP_IMAGE }}"
+            export TAG="${{ env.TAG }}"
+            
             cd app
             docker-compose -f docker-compose.yml stop
             docker-compose -f docker-compose.yml pull
