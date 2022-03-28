@@ -10,7 +10,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build GOOS=linux -o ./.bin/app ./cmd/app/main.go
+RUN GOOS=linux go build -o ./.bin/app ./cmd/app/main.go
 
 
 FROM alpine
