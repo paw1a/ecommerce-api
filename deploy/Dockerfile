@@ -4,9 +4,12 @@ RUN apk update && apk upgrade && apk add --no-cache bash git openssh
 
 WORKDIR /app
 
-COPY . .
+COPY go.mod go.sum ./
 
 RUN go mod download
+
+COPY . .
+
 RUN go build -o ./.bin/app ./cmd/app/main.go
 
 
