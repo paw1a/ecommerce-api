@@ -14,7 +14,7 @@ services:
       - backend
 
   generate:
-    image: ${DOCKER_HUB_USERNAME}/${GENERATE_IMAGE}
+    image: ${DOCKER_HUB_USERNAME}/${GENERATE_IMAGE}:${TAG}
     container_name: ${GENERATE_IMAGE}
     environment:
       - STRIPE_KEY=${STRIPE_KEY}
@@ -35,7 +35,7 @@ services:
     command: redis-server --save 60 1 --loglevel warning
 
   app:
-    image: ${DOCKER_HUB_USERNAME}/${APP_IMAGE}
+    image: ${DOCKER_HUB_USERNAME}/${APP_IMAGE}:${TAG}
     container_name: ${APP_IMAGE}
     environment:
       - STRIPE_KEY=${STRIPE_KEY}
