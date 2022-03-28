@@ -82,11 +82,9 @@ jobs:
             export GENERATE_IMAGE="${{ env.GENERATE_IMAGE }}"
             export APP_IMAGE="${{ env.APP_IMAGE }}"
             export TAG="${{ env.TAG }}"
-            
-            env
-            
+                        
             cd app
             docker-compose -f docker-compose.yml stop
             docker-compose -f docker-compose.yml pull
-            docker-compose -f docker-compose.yml up app
+            docker-compose -f docker-compose.yml up -d app
             docker image prune -f --filter="dangling=true"
