@@ -47,6 +47,7 @@ services:
       - REDIS_URI
     depends_on:
       - db
+      - generate
       - redis
     ports:
       - '8080:8080'
