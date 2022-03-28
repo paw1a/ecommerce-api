@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
 	log "github.com/sirupsen/logrus"
 	"os"
@@ -60,6 +61,8 @@ func GetConfig(configPath string) *Config {
 		instance.DB.URI = os.Getenv("DB_URI")
 
 		instance.Redis.URI = os.Getenv("REDIS_URI")
+
+		fmt.Println(instance)
 	})
 	return instance
 }
