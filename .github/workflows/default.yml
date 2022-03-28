@@ -31,7 +31,8 @@ jobs:
       - name: Push to Docker Hub Ecommerce image
         uses: docker/build-push-action@v2
         with:
-          context: ./deploy
+          context: .
+          file: deploy/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.APP_IMAGE }}:${{ env.TAG }}
 
