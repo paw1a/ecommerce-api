@@ -17,7 +17,7 @@ services:
     image: ${DOCKER_HUB_USERNAME}/${GENERATE_IMAGE}:${TAG}
     container_name: ${GENERATE_IMAGE}
     environment:
-      - STRIPE_KEY=${STRIPE_KEY}
+      - STRIPE_KEY
     depends_on:
       - db
     networks:
@@ -38,8 +38,13 @@ services:
     image: ${DOCKER_HUB_USERNAME}/${APP_IMAGE}:${TAG}
     container_name: ${APP_IMAGE}
     environment:
-      - STRIPE_KEY=${STRIPE_KEY}
-      - JWT_SECRET=${JWT_SECRET}
+      - STRIPE_KEY
+      - JWT_SECRET
+      - HOST
+      - PORT
+      - DB_NAME
+      - DB_URI
+      - REDIS_URI
     depends_on:
       - db
       - redis
