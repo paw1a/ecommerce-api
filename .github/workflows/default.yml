@@ -56,7 +56,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSHKEY }}
-          source: "deploy/docker-compose.yml"
+          source: "deploy/,!deploy/Dockerfile"
           target: "app"
 
       - name: Deploy ssh
