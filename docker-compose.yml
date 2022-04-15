@@ -17,8 +17,8 @@ services:
     image: 'generate-db'
     container_name: 'generate-db'
     build:
-      context: .
-      dockerfile: db/Dockerfile
+      context: db
+      dockerfile: Dockerfile
     environment:
       - STRIPE_KEY=${STRIPE_KEY}
     depends_on:

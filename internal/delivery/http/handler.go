@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/paw1a/ecommerce-api/docs"
 	v1 "github.com/paw1a/ecommerce-api/internal/delivery/http/v1"
@@ -29,6 +30,7 @@ func (h *Handler) Init() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 
+	router.Use(cors.Default())
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")

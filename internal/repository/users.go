@@ -21,6 +21,7 @@ func NewUsersRepo(db *mongo.Database) *UsersRepo {
 		Keys:    bson.M{"email": 1},
 		Options: options.Index().SetUnique(true),
 	}
+
 	_, err := collection.Indexes().CreateOne(context.Background(), indexModel)
 	if err != nil {
 		log.Fatalf("unable to create user collection index, %v", err)

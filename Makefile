@@ -4,6 +4,9 @@ build:
 run: build
 	docker-compose up app
 
+clean:
+	rm -rf .bin .data
+
 swag:
 	swag fmt -g cmd/app/main.go
 	swag init -g cmd/app/main.go
@@ -15,4 +18,4 @@ init:
 	&& python3 generate.py \
 	&& (bash init.sh "ecommerce");
 
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := run
