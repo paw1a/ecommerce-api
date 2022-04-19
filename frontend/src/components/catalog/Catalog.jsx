@@ -8,9 +8,8 @@ import ProductCard from "./Card";
 
 const Catalog = () => {
     let [products, setProducts] = useState([]);
-
     useEffect(() => {
-        axios.get('http://localhost:8080/api/v1/products/')
+        axios.get('http://52.29.184.51:8080/api/v1/products/')
             .then((resp) => {
                 const products = resp.data.data;
                 setProducts(products);
