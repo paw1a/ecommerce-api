@@ -1,0 +1,24 @@
+.product-card {
+    background-color: white;
+    padding: 20px;
+    height: 100%;
+}
+
+.image-row {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    display: flex;
+}
+
+.price-cart {
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-button {
+    color: #bdbdbd
+}
+
+.card-button:hover {
+    color: #3b3b3b;
+}

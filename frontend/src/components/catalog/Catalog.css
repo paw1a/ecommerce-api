@@ -1,0 +1,19 @@
+.catalog {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    padding: 0 30px;
+    justify-content: center;
+}
+
+img {
+    width: 100%;
+}
+
+.product-catalog {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 10px;
+    order: 2;
+    max-width: 900px;
+}
