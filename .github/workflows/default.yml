@@ -7,7 +7,7 @@ on:
 
 env:
   BACKEND_IMAGE: ecommerce
-  FRINTEND_IMAGE: ecommerce-frontend
+  FRONTEND_IMAGE: ecommerce-frontend
   GENERATE_IMAGE: generate
   TAG: latest
 
