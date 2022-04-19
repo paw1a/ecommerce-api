@@ -6,7 +6,8 @@ on:
   pull_request:
 
 env:
-  APP_IMAGE: ecommerce
+  BACKEND_IMAGE: ecommerce
+  FRINTEND_IMAGE: frontend
   GENERATE_IMAGE: generate
   TAG: latest
 
@@ -32,9 +33,17 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: deploy/Dockerfile
+          file: deploy/Dockerfile-backend
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.APP_IMAGE }}:${{ env.TAG }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.BACKEND_IMAGE }}:${{ env.TAG }}
+
+      - name: Push to Docker Hub React Frontend image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: deploy/Dockerfile-frontend
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.FRONTEND_IMAGE }}:${{ env.TAG }}
 
       - name: Push to Docker Hub generate mongodb image
         uses: docker/build-push-action@v2
@@ -56,7 +65,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSHKEY }}
-          source: "deploy/,!deploy/Dockerfile"
+          source: "deploy/,!deploy/Dockerfile-frontend-backend"
           target: "app"
           strip_components: 1
 
@@ -80,11 +89,12 @@ jobs:
             
             export DOCKER_HUB_USERNAME="${{ secrets.DOCKER_HUB_USERNAME }}"
             export GENERATE_IMAGE="${{ env.GENERATE_IMAGE }}"
-            export APP_IMAGE="${{ env.APP_IMAGE }}"
+            export BACKEND_IMAGE="${{ env.BACKEND_IMAGE }}"
+            export FRONTEND_IMAGE="${{ env.FRONTEND_IMAGE }}"
             export TAG="${{ env.TAG }}"
                         
             cd app
             docker-compose -f docker-compose.yml stop
             docker-compose -f docker-compose.yml pull
-            docker-compose -f docker-compose.yml up -d app
+            docker-compose -f docker-compose.yml up -d frontend app db redis
             docker image prune -f --filter="dangling=true"

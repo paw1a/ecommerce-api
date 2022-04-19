@@ -35,7 +35,7 @@ services:
     command: redis-server --save 60 1 --loglevel warning
 
   app:
-    image: ${DOCKER_HUB_USERNAME}/${APP_IMAGE}:${TAG}
+    image: ${DOCKER_HUB_USERNAME}/${BACKEND_IMAGE}:${TAG}
     container_name: ${APP_IMAGE}
     environment:
       - STRIPE_KEY
@@ -51,6 +51,16 @@ services:
       - redis
     ports:
       - '8080:8080'
+    networks:
+      - backend
+
+  frontend:
+    image: ${DOCKER_HUB_USERNAME}/${FRONTEND_IMAGE}:${TAG}
+    container_name: ${FRONTEND_IMAGE}
+    depends_on:
+      - app
+    ports:
+      - '3000:80'
     networks:
       - backend
 
