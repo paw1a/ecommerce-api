@@ -40,8 +40,8 @@ jobs:
       - name: Push to Docker Hub React Frontend image
         uses: docker/build-push-action@v2
         with:
-          context: .
-          file: deploy/Dockerfile-frontend
+          context: deploy
+          file: Dockerfile-frontend
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.FRONTEND_IMAGE }}:${{ env.TAG }}
 
