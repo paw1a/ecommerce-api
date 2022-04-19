@@ -33,15 +33,15 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: deploy/Dockerfile-backend
+          file: ./deploy/Dockerfile-backend
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.BACKEND_IMAGE }}:${{ env.TAG }}
 
       - name: Push to Docker Hub React Frontend image
         uses: docker/build-push-action@v2
         with:
-          context: deploy
-          file: Dockerfile-frontend
+          context: ./frontend
+          file: ./deploy/Dockerfile-frontend
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.FRONTEND_IMAGE }}:${{ env.TAG }}
 
