@@ -1,0 +1,28 @@
+.container {
+    margin: 50px auto;
+    padding: 50px;
+    max-width: 1200px;
+}
+
+.image {
+
+}
+
+.content {
+    padding: 0 50px;
+}
+
+.product-button {
+    color: #bdbdbd;
+    font-size: 23px;
+    padding: 0;
+}
+
+.product-button:hover {
+    color: #3b3b3b;
+}
+
+.price {
+    font-size: 40px;
+    margin: 30px 0;
+}

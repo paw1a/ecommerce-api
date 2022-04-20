@@ -2,7 +2,7 @@
     display: flex;
     flex-wrap: wrap;
     margin: 0 auto;
-    padding: 0 30px;
+    padding: 30px;
     justify-content: center;
 }
 
@@ -20,14 +20,15 @@ img {
 
 .show-more {
     width: 100%;
-    background-color: #d7d7d7;
+    background-color: #e8e8e8;
     color: black;
     border-radius: 0;
     margin-bottom: 30px;
+    height: 50px;
 }
 
 .show-more:hover {
-    background-color: #c5c5c5;
+    background-color: #dcdcdc;
 }
 
 .pagination-container {

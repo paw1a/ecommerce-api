@@ -30,7 +30,7 @@ const Catalog = () => {
                 </Grid>
                 <Button className='show-more'>Показать еще</Button>
                 <div className='pagination-container'>
-                    <Pagination className='pagination' count={10} shape="rounded" />
+                    <Pagination count={10} shape="rounded" />
                 </div>
             </div>
         </div>
