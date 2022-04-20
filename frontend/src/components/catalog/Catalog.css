@@ -17,3 +17,22 @@ img {
     order: 2;
     max-width: 900px;
 }
+
+.show-more {
+    width: 100%;
+    background-color: #d7d7d7;
+    color: black;
+    border-radius: 0;
+    margin-bottom: 30px;
+}
+
+.show-more:hover {
+    background-color: #c5c5c5;
+}
+
+.pagination-container {
+    width: 100%;
+    margin-bottom: 100px;
+    justify-content: center;
+    display: flex;
+}

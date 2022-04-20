@@ -2,7 +2,14 @@ header.MuiAppBar-root {
     box-shadow: none;
 }
 
-
 header.MuiPaper-root {
     box-shadow: none;
+}
+
+.profile-menu {
+    padding: 30px;
+}
+
+.right-menu {
+
 }

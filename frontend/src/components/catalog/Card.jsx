@@ -33,7 +33,7 @@ export default function ProductCard({product}) {
             <div className='price-cart'>
                 <h2>{product.price} $</h2>
                 <IconButton disableRipple='true'>
-                    <AddShoppingCartIcon style={{color: '#bdbdbd'}} fontSize='large'/>
+                    <AddShoppingCartIcon className='card-button' fontSize='large'/>
                 </IconButton>
             </div>
         </div>

@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './Catalog.css'
 import Filter from "./Filter";
-import {Grid} from "@mui/material";
-import ProductItem from "../ProductItem";
+import {Button, Grid, Pagination} from "@mui/material";
 import axios from "axios";
 import ProductCard from "./Card";
 
@@ -29,6 +28,10 @@ const Catalog = () => {
                         </Grid>
                     ))}
                 </Grid>
+                <Button className='show-more'>Показать еще</Button>
+                <div className='pagination-container'>
+                    <Pagination className='pagination' count={10} shape="rounded" />
+                </div>
             </div>
         </div>
     );
