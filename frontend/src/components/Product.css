@@ -14,8 +14,7 @@
 
 .product-button {
     color: #bdbdbd;
-    font-size: 23px;
-    padding: 0;
+    font-size: 18px;
 }
 
 .product-button:hover {
@@ -23,6 +22,10 @@
 }
 
 .price {
-    font-size: 40px;
+    font-size: 36px;
     margin: 30px 0;
+}
+
+.comments-container {
+    margin: 50px 0;
 }
