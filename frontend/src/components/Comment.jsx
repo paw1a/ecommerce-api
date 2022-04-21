@@ -11,7 +11,7 @@ import './Comment.css'
 
 export default function Comment() {
     return (
-        <Card className='comment'>
+        <Card sx={{backgroundColor: '#f5f5f5', boxShadow: 'none'}}>
             <CardHeader
                 avatar={
                     <Avatar aria-label="recipe"/>
@@ -33,7 +33,6 @@ export default function Comment() {
                     if you like.
                 </Typography>
             </CardContent>
-
         </Card>
     );
 }
