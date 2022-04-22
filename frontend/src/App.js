@@ -1,24 +1,19 @@
 import React from "react";
 import './App.css'
 
-import Navbar from "./components/navbar/Navbar";
-import CssBaseline from '@mui/material/CssBaseline';
-import Catalog from "./components/catalog/Catalog";
-import Product from "./components/Product";
+import {Link} from "react-router-dom";
+import {CssBaseline} from "@mui/material";
 
 function App() {
-  return (
-    // <div className='App'>
-    //     <CssBaseline />
-    //     <Navbar/>
-    //     <Catalog/>
-    // </div>
-      <div className='App'>
-          <CssBaseline />
-          <Navbar />
-          <Product />
-      </div>
-  );
+    return (
+        <div>
+            <CssBaseline />
+            <Link to="/">App</Link> |{" "}
+            <Link to="/catalog">Catalog</Link> |{" "}
+            <Link to="/sign-in">Sign-in</Link> |{" "}
+            <Link to="/sign-up">Sign-up</Link> |{" "}
+        </div>
+    )
 }
 
 export default App;

@@ -65,7 +65,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSHKEY }}
-          source: "deploy/,!deploy/Dockerfile-frontend-backend"
+          source: "deploy/,!deploy/Dockerfile-frontend,!deploy/Dockerfile-backend"
           target: "app"
           strip_components: 1
 

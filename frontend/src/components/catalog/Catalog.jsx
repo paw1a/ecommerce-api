@@ -28,7 +28,17 @@ const Catalog = () => {
                         </Grid>
                     ))}
                 </Grid>
-                <Button className='show-more'>Показать еще</Button>
+                <Button sx={{
+                    width: '100%',
+                    backgroundColor: '#e8e8e8',
+                    color: 'black',
+                    borderRadius: 0,
+                    marginBottom: '30px',
+                    height: '50px',
+                    ":hover": {
+                        backgroundColor: '#dcdcdc'
+                    }
+                }}>Показать еще</Button>
                 <div className='pagination-container'>
                     <Pagination count={10} shape="rounded" />
                 </div>
