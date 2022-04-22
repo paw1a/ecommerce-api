@@ -1,0 +1,29 @@
+.cart-card {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.cart-image {
+    height: 100px;
+    width: auto;
+    margin-right: 20px;
+}
+
+.product-image-name {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.counter {
+    height: 35px;
+}
+
+.Mui-disabled {
+    color: #3b3b3b;
+    border-color: #3b3b3b;
+}

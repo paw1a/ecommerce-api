@@ -14,6 +14,7 @@ import {CssBaseline} from "@mui/material";
 import './App.css'
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
+import CartPage from "./pages/CartPage";
 
 render(
     <BrowserRouter>
@@ -22,6 +23,7 @@ render(
             <Routes>
                 <Route path="/" element={<App />} />
                 <Route path="catalog" element={<CatalogPage />} />
+                <Route path="cart" element={<CartPage />} />
                 <Route path="product/:productID" element={<ProductPage/>} />
                 <Route path="sign-in" element={<SignInPage/>} />
                 <Route path="sign-up" element={<SignUpPage/>} />

@@ -1,0 +1,31 @@
+.cart-container {
+    width: 80%;
+    margin: 30px auto;
+}
+
+.card-header {
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 30px;
+}
+
+.cart-summary {
+    padding: 20px;
+    background-color: #e7e7e7;
+}
+
+.cart-content {
+    padding-right: 30px;
+}
+
+.total-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.MuiButton-root {
+    width: 100%;
+    border-radius: 0;
+}
