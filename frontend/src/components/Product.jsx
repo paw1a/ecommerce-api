@@ -52,7 +52,7 @@ const Product = () => {
 
                             <IconButton disableRipple='true'>
                                 <ModeCommentIcon className='product-button' fontSize='small'/>
-                                  {comments.length}
+                                  <span style={{paddingLeft: '5px'}}>{comments.length}</span>
                             </IconButton>
                         </div>
 

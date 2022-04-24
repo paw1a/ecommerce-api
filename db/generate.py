@@ -1,4 +1,3 @@
-import datetime
 import os
 import random
 import time
@@ -17,9 +16,7 @@ PRODUCT_NUM = 10
 REVIEW_NUM = 6
 
 stripe.api_key = os.getenv('STRIPE_KEY')
-stripe.api_key = 'sk_test_51JAvElJwIMEm9c8xHuUPgoOlnFy1HRMV5CC4ThiM9D' \
-                 'BNCtJCiLtHjcH3EeDMylOOdmx0AGDtlDmRNynxD2bBrOXd00j4BFdj7s'
-CONNECTION_STRING = "mongodb://localhost:27017"
+CONNECTION_STRING = "mongodb://mongo:27017"
 
 client = MongoClient(CONNECTION_STRING)
 db = client['ecommerce']
@@ -36,8 +33,6 @@ for _ in range(USER_NUM):
                                    'password': 'password'}, num_rows=1)
     parsed_user = json.loads(user)
     user_list.append(parsed_user)
-
-print(user_list)
 
 user_collection = db['users']
 user_collection.drop()

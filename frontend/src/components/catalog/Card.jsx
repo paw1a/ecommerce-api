@@ -7,7 +7,6 @@ import StarIcon from '@mui/icons-material/Star';
 import ModeCommentIcon from '@mui/icons-material/ModeComment';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import Link from "@mui/material/Link";
-import {useParams} from "react-router";
 
 export default function ProductCard({product}) {
     return (
@@ -23,7 +22,7 @@ export default function ProductCard({product}) {
                 <div>
                     <IconButton disableRipple='true' style={{fontSize: '14px'}}>
                         <StarIcon className='card-button'/>
-                        4.5
+                        {product.totalRating}
                     </IconButton>
 
                     <IconButton style={{fontSize: '13px'}} disableRipple='true'>

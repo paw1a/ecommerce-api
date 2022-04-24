@@ -19,8 +19,8 @@ services:
     build:
       context: db
       dockerfile: Dockerfile
-    environment:
-      - STRIPE_KEY=${STRIPE_KEY}
+    env_file:
+      - .env
     depends_on:
       - db
     networks:

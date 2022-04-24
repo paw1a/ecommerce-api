@@ -4,7 +4,6 @@ import Filter from "./Filter";
 import {Button, Grid, Pagination} from "@mui/material";
 import axios from "axios";
 import ProductCard from "./Card";
-import Link from "@mui/material/Link";
 
 const Catalog = () => {
     let [products, setProducts] = useState([]);
