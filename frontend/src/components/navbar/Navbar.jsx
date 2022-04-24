@@ -16,6 +16,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 import './Navbar.css'
+import Link from "@mui/material/Link";
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -160,15 +161,17 @@ export default function Navbar() {
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static" color='inherit'>
                 <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{ mr: 2 }}
-                    >
-                        <ShoppingBagIcon fontSize='large' />
-                    </IconButton>
+                    <Link href='/catalog' color='inherit'>
+                        <IconButton
+                            size="large"
+                            edge="start"
+                            color="inherit"
+                            aria-label="open drawer"
+                            sx={{ mr: 2 }}
+                        >
+                            <ShoppingBagIcon fontSize='large' />
+                        </IconButton>
+                    </Link>
                     <Typography
                         variant="h5"
                         noWrap
@@ -191,13 +194,15 @@ export default function Navbar() {
                         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
                             <BookmarkIcon />
                         </IconButton>
-                        <IconButton
-                            size="large"
-                            aria-label="show 17 new notifications"
-                            color="inherit"
-                        >
-                            <ShoppingCartIcon />
-                        </IconButton>
+                        <Link href='/cart' color='inherit'>
+                            <IconButton
+                                size="large"
+                                aria-label="show 17 new notifications"
+                                color="inherit"
+                            >
+                                <ShoppingCartIcon />
+                            </IconButton>
+                        </Link>
                         <IconButton
                             size="large"
                             edge="end"

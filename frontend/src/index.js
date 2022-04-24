@@ -27,6 +27,7 @@ render(
                 <Route path="product/:productID" element={<ProductPage/>} />
                 <Route path="sign-in" element={<SignInPage/>} />
                 <Route path="sign-up" element={<SignUpPage/>} />
+                <Route path="*" element={<div>Page not found</div>} />
             </Routes>
         </div>
     </BrowserRouter>,

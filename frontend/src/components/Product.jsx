@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Grid} from "@mui/material";
 import image from "./catalog/img.png";
 
@@ -9,8 +9,31 @@ import ModeCommentIcon from "@mui/icons-material/ModeComment";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Comment from "./Comment";
+import {useParams} from "react-router";
+import axios from "axios";
 
 const Product = () => {
+
+    const { productID } = useParams()
+
+    let [product, setProduct] = useState([]);
+    useEffect(() => {
+        axios.get('http://52.29.184.51:8080/api/v1/products/' + productID)
+            .then((resp) => {
+                const product = resp.data.data;
+                setProduct(product);
+            });
+    }, [setProduct]);
+
+    let [comments, setComments] = useState([]);
+    useEffect(() => {
+        axios.get('http://52.29.184.51:8080/api/v1/products/' + productID + '/reviews')
+            .then((resp) => {
+                const comments = resp.data.data;
+                setComments(comments);
+            });
+    }, [setComments]);
+
     return (
         <div className='container'>
             <Grid container columnSpacing={2}>
@@ -19,21 +42,21 @@ const Product = () => {
                 </Grid>
                 <Grid item xs={12} md={7}>
                     <div className='content'>
-                        <h1 style={{marginTop: 0}}>Name of the product</h1>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto culpa debitis doloremque expedita facere illo incidunt, repellendus sint unde voluptate. Amet, aperiam autem corporis debitis eligendi facere harum laborum libero magnam possimus. A beatae, debitis dignissimos esse iure laborum minus nihil nisi nulla obcaecati odio odit perferendis quis sunt, tenetur?</p>
+                        <h1 style={{marginTop: 0}}>{product.name}</h1>
+                        <p>{product.description}</p>
                         <div>
                             <IconButton disableRipple='true' style={{paddingLeft: 0}}>
                                 <StarIcon className='product-button'/>
-                                4.5
+                                {product.totalRating}
                             </IconButton>
 
                             <IconButton disableRipple='true'>
                                 <ModeCommentIcon className='product-button' fontSize='small'/>
-                                17
+                                  {comments.length}
                             </IconButton>
                         </div>
 
-                        <div className='price'>12000 <span style={{color: "gray"}}>$</span></div>
+                        <div className='price'>{product.price} <span style={{color: "gray"}}>$</span></div>
                         <Button variant="outlined" color='inherit' startIcon={
                             <ShoppingCartIcon fontSize='large' />
                         }>
@@ -42,19 +65,15 @@ const Product = () => {
                         <IconButton className='bookmark' disableRipple='true' size='large'>
                             <BookmarkIcon className='product-button'/>
                         </IconButton>
-
-                        <div className='comments-container'>
-                            <h2>Comments</h2>
-                            <Comment/>
-                            <Comment/>
-                            <Comment/>
-                            <Comment/>
-                            <Comment/>
-                        </div>
-
                     </div>
                 </Grid>
             </Grid>
+            <div className='comments-container'>
+                <h2>Comments</h2>
+                {comments.map(comment => (
+                    <Comment comment={comment}/>
+                ))}
+            </div>
         </div>
     );
 };

@@ -102,6 +102,8 @@ func NewServices(deps Deps) *Services {
 	ordersService := NewOrdersService(deps.Repos.Orders, productsService, cartsService)
 	paymentService := NewPaymentService()
 
+	reviewsService.userService = usersService
+
 	return &Services{
 		Users:    usersService,
 		Products: productsService,

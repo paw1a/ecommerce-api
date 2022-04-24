@@ -8,7 +8,7 @@ import Link from "@mui/material/Link";
 const Cart = () => {
     return (
         <div className='cart-container'>
-            <Link href="#" color='inherit' underline="none">
+            <Link href="/catalog" color='inherit' underline="none">
                 {'Return to catalog'}
             </Link>
             <Grid container columnSpacing={2}>
@@ -30,7 +30,10 @@ const Cart = () => {
                             <h3>Total cost</h3>
                             <strong>3456$</strong>
                         </div>
-                        <Button color='inherit' variant="outlined">Checkout</Button>
+                        <Button style={{
+                            width: '100%',
+                            borderRadius: 0
+                        }} color='inherit' variant="outlined">Checkout</Button>
                     </div>
                 </Grid>
             </Grid>

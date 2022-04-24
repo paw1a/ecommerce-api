@@ -1,6 +1,9 @@
+import datetime
 import os
 import random
+import time
 
+import bson
 from faker import Faker
 import faker_commerce
 
@@ -14,7 +17,9 @@ PRODUCT_NUM = 10
 REVIEW_NUM = 6
 
 stripe.api_key = os.getenv('STRIPE_KEY')
-CONNECTION_STRING = "mongodb://mongo:27017"
+stripe.api_key = 'sk_test_51JAvElJwIMEm9c8xHuUPgoOlnFy1HRMV5CC4ThiM9D' \
+                 'BNCtJCiLtHjcH3EeDMylOOdmx0AGDtlDmRNynxD2bBrOXd00j4BFdj7s'
+CONNECTION_STRING = "mongodb://localhost:27017"
 
 client = MongoClient(CONNECTION_STRING)
 db = client['ecommerce']
@@ -32,12 +37,14 @@ for _ in range(USER_NUM):
     parsed_user = json.loads(user)
     user_list.append(parsed_user)
 
+print(user_list)
+
 user_collection = db['users']
 user_collection.drop()
-user_ids = user_collection.insert_many(user_list).inserted_ids
+user_collection.insert_many(user_list)
 
 # generate products
-fake.set_arguments('product_desc_arg', {'nb_words': 10})
+fake.set_arguments('product_desc_arg', {'nb_words': 40})
 fake.set_arguments('category_desc_arg', {'nb_words': 5})
 fake.set_arguments('price', {'min_value': 100, 'max_value': 100000})
 
@@ -57,23 +64,24 @@ for _ in range(PRODUCT_NUM):
 
 product_collection = db['products']
 product_collection.drop()
-product_ids = product_collection.insert_many(product_list).inserted_ids
+product_collection.insert_many(product_list)
 
-for i, _ in enumerate(product_list):
-    product: dict = product_list[i]
+for product in product_list:
+    product: dict
     stripe.Product.create(name=product["name"],
                           description=product["description"],
-                          id=product_ids[i])
+                          id=product['_id'])
     stripe.Price.create(unit_amount_decimal=product["price"] * 100,
                         currency="RUB",
-                        product=product_ids[i])
+                        product=product['_id'])
 
 # generate reviews
 fake.set_arguments('rating', {'min_value': 1, 'max_value': 5})
 
 reviews_list = []
 
-for product_id in product_ids:
+for product in product_list:
+    product: dict
     for _ in range(random.randint(REVIEW_NUM // 2, REVIEW_NUM)):
         reviewText = fake.text().replace('\n', ' ')
         review = fake.json(data_columns={
@@ -82,8 +90,12 @@ for product_id in product_ids:
         }, num_rows=1)
 
         parsed_review: dict = json.loads(review)
-        parsed_review['productID'] = product_id
-        parsed_review['userID'] = random.choice(user_ids)
+        parsed_review['productID'] = product['_id']
+        user = random.choice(user_list)
+        parsed_review['userID'] = user['_id']
+        parsed_review['username'] = user['name']
+        date = bson.timestamp.Timestamp(int(time.time()), 0)
+        parsed_review['date'] = date
 
         reviews_list.append(parsed_review)
 

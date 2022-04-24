@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"time"
 )
 
 type ReviewsRepo struct {
@@ -56,6 +57,7 @@ func (r ReviewsRepo) FindByProductID(ctx context.Context, productID primitive.Ob
 
 func (r ReviewsRepo) Create(ctx context.Context, review domain.Review) (domain.Review, error) {
 	review.ID = primitive.NewObjectID()
+	review.Date = time.Now()
 	_, err := r.db.InsertOne(ctx, review)
 	return review, err
 }

@@ -9,28 +9,27 @@ import StarIcon from '@mui/icons-material/Star';
 
 import './Comment.css'
 
-export default function Comment() {
+export default function Comment({comment}) {
+    console.log(comment)
     return (
         <Card sx={{backgroundColor: '#f5f5f5', boxShadow: 'none'}}>
             <CardHeader
                 avatar={
                     <Avatar aria-label="recipe"/>
                 }
-                title="Shrimp and Chorizo Paella"
-                subheader="September 14, 2016"
+                title={comment.username}
+                subheader={comment.date}
                 action={
                     <IconButton aria-label="settings" disabled>
                         <StarIcon/>
-                        5
+                        {comment.rating}
                     </IconButton>
                 }
                 sx={{paddingLeft: 0}}
             />
             <CardContent sx={{paddingLeft: 0}}>
                 <Typography variant="body2" color="text.secondary">
-                    This impressive paella is a perfect party dish and a fun meal to cook
-                    together with your guests. Add 1 cup of frozen peas along with the mussels,
-                    if you like.
+                    {comment.text}
                 </Typography>
             </CardContent>
         </Card>

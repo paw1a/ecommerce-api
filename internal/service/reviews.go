@@ -15,6 +15,7 @@ import (
 type ReviewsService struct {
 	repo        repository.Reviews
 	redisClient *redis.Client
+	userService Users
 }
 
 func (r *ReviewsService) FindAll(ctx context.Context) ([]domain.Review, error) {
@@ -34,11 +35,17 @@ func (r *ReviewsService) FindByProductID(ctx context.Context, productID primitiv
 }
 
 func (r *ReviewsService) Create(ctx context.Context, reviewDTO dto.CreateReviewInput) (domain.Review, error) {
+	user, err := r.userService.FindByID(ctx, reviewDTO.UserID)
+	if err != nil {
+		return domain.Review{}, err
+	}
+
 	review, err := r.repo.Create(ctx, domain.Review{
 		UserID:    reviewDTO.UserID,
 		ProductID: reviewDTO.ProductID,
 		Text:      reviewDTO.Text,
 		Rating:    reviewDTO.Rating,
+		Username:  user.Name,
 	})
 	if err != nil {
 		return domain.Review{}, err
