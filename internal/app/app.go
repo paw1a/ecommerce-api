@@ -24,7 +24,8 @@ func Run(configPath string) {
 	cfg := config.GetConfig(configPath)
 	log.Info("config created")
 
-	mongoClient, err := mongodb.NewClient(context.Background(), cfg)
+	mongoClient, err := mongodb.NewClient(context.Background(),
+		cfg.DB.URI, cfg.DB.Username, cfg.DB.Password)
 	if err != nil {
 		log.Fatal(err)
 	}

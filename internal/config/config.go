@@ -31,6 +31,12 @@ type Config struct {
 		WebhookUrl    string
 		WebhookSecret string
 	}
+	Test struct {
+		Database   string
+		DBURI      string
+		DBUsername string
+		DBPassword string
+	}
 }
 
 var instance *Config
@@ -58,6 +64,11 @@ func GetConfig(configPath string) *Config {
 		instance.DB.Password = os.Getenv("DB_PASSWORD")
 		instance.DB.Database = os.Getenv("DB_NAME")
 		instance.DB.URI = os.Getenv("DB_URI")
+
+		instance.Test.DBUsername = os.Getenv("TEST_DB_USERNAME")
+		instance.Test.DBPassword = os.Getenv("TEST_DB_PASSWORD")
+		instance.Test.Database = os.Getenv("TEST_DB_NAME")
+		instance.Test.DBURI = os.Getenv("TEST_DB_URI")
 
 		instance.Redis.URI = os.Getenv("REDIS_URI")
 	})

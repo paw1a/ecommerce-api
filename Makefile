@@ -1,5 +1,8 @@
+include .env
+export
+
 build:
-	go mod download && CGO_ENABLED=0 GOOS=linux go build -o ./.bin/app ./cmd/app/main.go
+	go mod download && CGO_ENABLED=0 GOOS=linux go build -o ./.bin/app ./cmd/app/main.go && env
 
 run: build
 	docker-compose up app redis db
@@ -17,5 +20,8 @@ init:
 	&& pip3 install -r requirements.txt \
 	&& python3 generate.py \
 	&& (bash init.sh "ecommerce");
+
+test:
+	go test -v ./internal/repository/
 
 .DEFAULT_GOAL := run

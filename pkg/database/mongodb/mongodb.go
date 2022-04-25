@@ -2,17 +2,16 @@ package mongodb
 
 import (
 	"context"
-	"github.com/paw1a/ecommerce-api/internal/config"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func NewClient(ctx context.Context, config *config.Config) (*mongo.Client, error) {
-	opts := options.Client().ApplyURI(config.DB.URI)
-	if config.DB.Username != "" && config.DB.Password != "" {
+func NewClient(ctx context.Context, uri string, dbUsername string, dbPassword string) (*mongo.Client, error) {
+	opts := options.Client().ApplyURI(uri)
+	if dbUsername != "" && dbPassword != "" {
 		opts.SetAuth(options.Credential{
-			Username: config.DB.Username, Password: config.DB.Password,
+			Username: dbUsername, Password: dbPassword,
 		})
 	}
 
