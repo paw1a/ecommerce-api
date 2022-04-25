@@ -1,12 +1,10 @@
 package v1
 
 import (
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
-	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 )
 
@@ -38,7 +36,7 @@ func (h *Handler) initProductsRoutes(api *gin.RouterGroup) {
 func (h *Handler) getAllProducts(context *gin.Context) {
 	products, err := h.services.Products.FindAll(context.Request.Context())
 	if err != nil {
-		errorResponse(context, http.StatusInternalServerError, err.Error())
+		internalErrorResponse(context, err)
 		return
 	}
 
@@ -65,17 +63,15 @@ func (h *Handler) getAllProducts(context *gin.Context) {
 func (h *Handler) getProductById(context *gin.Context) {
 	id, err := getIdFromPath(context, "id")
 	if err != nil {
-		errorResponse(context, http.StatusBadRequest, err.Error())
+		badRequestResponse(context,
+			fmt.Sprintf("invalid product id param: id=%v", id), err)
 		return
 	}
+
 	product, err := h.services.Products.FindByID(context.Request.Context(), id)
 	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			errorResponse(context, http.StatusInternalServerError,
-				fmt.Sprintf("no products with id: %s", id.Hex()))
-		} else {
-			errorResponse(context, http.StatusInternalServerError, err.Error())
-		}
+		notFoundOrInternalErrorResponse(context,
+			fmt.Sprintf("no products with id: %s", id.Hex()), err)
 		return
 	}
 
@@ -97,13 +93,14 @@ func (h *Handler) getProductById(context *gin.Context) {
 func (h *Handler) getProductReviews(context *gin.Context) {
 	productID, err := getIdFromPath(context, "id")
 	if err != nil {
-		errorResponse(context, http.StatusBadRequest, err.Error())
+		badRequestResponse(context,
+			fmt.Sprintf("invalid product id param: id=%v", productID), err)
 		return
 	}
 
 	reviews, err := h.services.Reviews.FindByProductID(context, productID)
 	if err != nil {
-		errorResponse(context, http.StatusInternalServerError, err.Error())
+		internalErrorResponse(context, err)
 		return
 	}
 
@@ -207,21 +204,23 @@ func (h *Handler) createProductAdmin(context *gin.Context) {
 	var productDTO dto.CreateProductDTO
 	err := context.BindJSON(&productDTO)
 	if err != nil {
-		errorResponse(context, http.StatusBadRequest, "invalid input body")
+		badRequestResponse(context, "invalid product body format", err)
 		return
 	}
+
 	product, err := h.services.Products.Create(context.Request.Context(), productDTO)
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
+
 	err = h.services.Payment.CreateProduct(product)
 	if err != nil {
 		errorResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	successResponse(context, product)
+	createdResponse(context, product)
 }
 
 // UpdateProduct godoc
