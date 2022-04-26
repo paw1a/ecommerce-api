@@ -64,7 +64,7 @@ func (h *Handler) getProductById(context *gin.Context) {
 	id, err := getIdFromPath(context, "id")
 	if err != nil {
 		badRequestResponse(context,
-			fmt.Sprintf("invalid product id param: id=%v", id), err)
+			fmt.Sprintf("invalid product id param: id=%v", id.Hex()), err)
 		return
 	}
 

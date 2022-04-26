@@ -8,7 +8,7 @@ import (
 )
 
 var products = []domain.Product{
-	domain.Product{
+	{
 		ID:          primitive.NewObjectID(),
 		Name:        "My product",
 		Description: "Full product description",
@@ -26,7 +26,7 @@ var products = []domain.Product{
 			},
 		},
 	},
-	domain.Product{
+	{
 		ID:          primitive.NewObjectID(),
 		Name:        "My another product",
 		Description: "Full another product description",

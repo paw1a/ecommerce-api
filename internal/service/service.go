@@ -21,6 +21,7 @@ type Users interface {
 	Delete(ctx context.Context, userID primitive.ObjectID) error
 }
 
+//go:generate mockery --dir . --name Products --output ./mocks --filename products.go
 type Products interface {
 	FindAll(ctx context.Context) ([]domain.Product, error)
 	FindByID(ctx context.Context, productID primitive.ObjectID) (domain.Product, error)

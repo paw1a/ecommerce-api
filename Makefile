@@ -22,6 +22,6 @@ init:
 	&& (bash init.sh "ecommerce");
 
 test:
-	go test -v ./internal/repository/
+	go test -v ./internal/service/
 
 .DEFAULT_GOAL := run

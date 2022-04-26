@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+//go:generate mockery --dir . --name Users --output ./mocks --filename users.go
 type Users interface {
 	FindAll(ctx context.Context) ([]domain.User, error)
 	FindByID(ctx context.Context, userID primitive.ObjectID) (domain.User, error)
@@ -19,6 +20,7 @@ type Users interface {
 	Delete(ctx context.Context, userID primitive.ObjectID) error
 }
 
+//go:generate mockery --dir . --name Products --output ./mocks --filename products.go
 type Products interface {
 	FindAll(ctx context.Context) ([]domain.Product, error)
 	FindByID(ctx context.Context, productID primitive.ObjectID) (domain.Product, error)
@@ -28,6 +30,7 @@ type Products interface {
 	Delete(ctx context.Context, productID primitive.ObjectID) error
 }
 
+//go:generate mockery --dir . --name Reviews --output ./mocks --filename reviews.go
 type Reviews interface {
 	FindAll(ctx context.Context) ([]domain.Review, error)
 	FindByID(ctx context.Context, reviewID primitive.ObjectID) (domain.Review, error)
@@ -38,10 +41,12 @@ type Reviews interface {
 	DeleteByProductID(ctx context.Context, productID primitive.ObjectID) error
 }
 
+//go:generate mockery --dir . --name Admins --output ./mocks --filename admins.go
 type Admins interface {
 	FindByCredentials(ctx context.Context, email string, password string) (domain.Admin, error)
 }
 
+//go:generate mockery --dir . --name Carts --output ./mocks --filename carts.go
 type Carts interface {
 	FindAll(ctx context.Context) ([]domain.Cart, error)
 	FindByID(ctx context.Context, cartID primitive.ObjectID) (domain.Cart, error)
@@ -56,6 +61,7 @@ type Carts interface {
 	Delete(ctx context.Context, cartID primitive.ObjectID) error
 }
 
+//go:generate mockery --dir . --name Orders --output ./mocks --filename orders.go
 type Orders interface {
 	FindAll(ctx context.Context) ([]domain.Order, error)
 	FindByID(ctx context.Context, orderID primitive.ObjectID) (domain.Order, error)
