@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from "react-dom";
+import * as ReactDOM from 'react-dom';
 import {
     BrowserRouter,
     Routes,
@@ -16,7 +16,10 @@ import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import CartPage from "./pages/CartPage";
 
-render(
+const container = document.getElementById('root');
+const root = ReactDOM.createRoot(container);
+
+root.render(
     <BrowserRouter>
         <CssBaseline />
         <div className='App'>

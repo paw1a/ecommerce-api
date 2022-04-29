@@ -15,17 +15,17 @@ export default function ProductCard({product}) {
                 <Link href={"/product/" + product.id}>
                     <img src={image} alt="image"/>
                 </Link>
-                <IconButton style={{paddingLeft: 0}} disableRipple='true'>
+                <IconButton style={{paddingLeft: 0}} disableRipple>
                     <BookmarkIcon className='card-button'/>
                 </IconButton>
 
                 <div>
-                    <IconButton disableRipple='true' style={{fontSize: '14px'}}>
+                    <IconButton disableRipple style={{fontSize: '14px'}}>
                         <StarIcon className='card-button'/>
                         {product.totalRating}
                     </IconButton>
 
-                    <IconButton style={{fontSize: '13px'}} disableRipple='true'>
+                    <IconButton style={{fontSize: '13px'}} disableRipple>
                         <ModeCommentIcon className='card-button' fontSize='small'/>
                         17
                     </IconButton>
@@ -37,7 +37,7 @@ export default function ProductCard({product}) {
             </Link>
             <div className='price-cart'>
                 <h2>{product.price} $</h2>
-                <IconButton disableRipple='true'>
+                <IconButton disableRipple>
                     <AddShoppingCartIcon className='card-button' fontSize='large'/>
                 </IconButton>
             </div>

@@ -6,6 +6,7 @@ import (
 	"github.com/paw1a/ecommerce-api/internal/domain"
 	"github.com/paw1a/ecommerce-api/internal/domain/dto"
 	"net/http"
+	"time"
 )
 
 //TODO: add product search by query
@@ -45,6 +46,8 @@ func (h *Handler) getAllProducts(context *gin.Context) {
 		productsArray = products
 	}
 
+	time.Sleep(5 * time.Second)
+
 	successResponse(context, productsArray)
 }
 
@@ -64,7 +67,7 @@ func (h *Handler) getProductById(context *gin.Context) {
 	id, err := getIdFromPath(context, "id")
 	if err != nil {
 		badRequestResponse(context,
-			fmt.Sprintf("invalid product id param: id=%v", id.Hex()), err)
+			fmt.Sprintf("invalid product id param"), err)
 		return
 	}
 

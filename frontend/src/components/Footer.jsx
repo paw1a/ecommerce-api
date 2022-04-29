@@ -24,7 +24,6 @@ const Footer = () => {
         },
     ];
 
-
     return (
         <footer className='footer'>
             <Grid container spacing={2} justify="space-evenly">

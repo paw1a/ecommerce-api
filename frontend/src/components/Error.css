@@ -1,0 +1,5 @@
+.error-container {
+    margin: 0 auto;
+    max-width: 500px;
+    border: 4px double red;
+}
