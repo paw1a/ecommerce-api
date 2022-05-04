@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/paw1a/ecommerce-api/pkg/auth"
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 	"strings"
@@ -30,11 +31,22 @@ func extractAuthToken(context *gin.Context) (string, error) {
 
 func (h *Handler) refreshToken(context *gin.Context) {
 	var input auth.RefreshInput
+
+	log.Infof("%v", context.Request.Header)
+
 	err := context.BindJSON(&input)
 	if err != nil {
-		errorResponse(context, http.StatusBadRequest, "invalid request body")
+		badRequestResponse(context, "can't parse request body", err)
 		return
 	}
+
+	refreshCookie, err := context.Cookie("refreshToken")
+	if err != nil {
+		badRequestResponse(context, "refresh cookie not found", err)
+		return
+	}
+
+	input.RefreshToken = refreshCookie
 
 	authDetails, err := h.tokenProvider.Refresh(auth.RefreshInput{
 		RefreshToken: input.RefreshToken,
@@ -42,22 +54,27 @@ func (h *Handler) refreshToken(context *gin.Context) {
 	})
 
 	if err != nil {
-		errorResponse(context, http.StatusUnauthorized, err.Error())
+		unauthorizedResponse(context, err.Error())
 		return
 	}
-	successResponse(context, authDetails)
+
+	context.SetSameSite(http.SameSiteLaxMode)
+	context.SetCookie("refreshToken", authDetails.RefreshToken,
+		int(h.config.JWT.RefreshTokenTime), "/", h.config.Listen.Host, false, true)
+
+	successResponse(context, authDetails.AccessToken)
 }
 
 func (h *Handler) verifyToken(context *gin.Context, idName string) {
 	tokenString, err := extractAuthToken(context)
 	if err != nil {
-		errorResponse(context, http.StatusUnauthorized, err.Error())
+		unauthorizedResponse(context, err.Error())
 		return
 	}
 
 	tokenClaims, err := h.tokenProvider.VerifyToken(tokenString)
 	if err != nil {
-		errorResponse(context, http.StatusUnauthorized, err.Error())
+		unauthorizedResponse(context, err.Error())
 		return
 	}
 

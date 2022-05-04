@@ -24,7 +24,7 @@ type AuthDetails struct {
 }
 
 type RefreshInput struct {
-	RefreshToken string `json:"refreshToken"`
+	RefreshToken string `json:"-"`
 	Fingerprint  string `json:"fingerprint"`
 }
 
@@ -123,9 +123,11 @@ func (p *Provider) VerifyToken(tokenString string) (jwt.MapClaims, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
 		return claims, nil
 	}
+
 	return nil, errors.New("token or claims are invalid")
 }

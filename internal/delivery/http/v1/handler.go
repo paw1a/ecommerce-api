@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/paw1a/ecommerce-api/internal/config"
 	"github.com/paw1a/ecommerce-api/internal/service"
 	"github.com/paw1a/ecommerce-api/pkg/auth"
 	log "github.com/sirupsen/logrus"
@@ -14,12 +15,16 @@ import (
 )
 
 type Handler struct {
+	config        *config.Config
 	services      *service.Services
 	tokenProvider auth.TokenProvider
 }
 
-func NewHandler(services *service.Services, tokenProvider auth.TokenProvider) *Handler {
+func NewHandler(services *service.Services,
+	tokenProvider auth.TokenProvider, config *config.Config) *Handler {
+
 	return &Handler{
+		config:        config,
 		services:      services,
 		tokenProvider: tokenProvider,
 	}

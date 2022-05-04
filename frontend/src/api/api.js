@@ -30,7 +30,7 @@ const useAxios = (url) => {
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        axios.get("/api/v1" + url)
+        axios.get("/api/v1" + url, {withCredentials: true})
             .then(resp => {
                 const data = resp.data.data;
                 console.log(data);

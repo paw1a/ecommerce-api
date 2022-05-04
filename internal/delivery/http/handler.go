@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/paw1a/ecommerce-api/docs"
+	"github.com/paw1a/ecommerce-api/internal/config"
 	v1 "github.com/paw1a/ecommerce-api/internal/delivery/http/v1"
 	"github.com/paw1a/ecommerce-api/internal/service"
 	"github.com/paw1a/ecommerce-api/pkg/auth"
@@ -15,12 +16,16 @@ import (
 )
 
 type Handler struct {
+	config        *config.Config
 	services      *service.Services
 	tokenProvider auth.TokenProvider
 }
 
-func NewHandler(services *service.Services, tokenProvider auth.TokenProvider) *Handler {
+func NewHandler(services *service.Services,
+	tokenProvider auth.TokenProvider, config *config.Config) *Handler {
+
 	return &Handler{
+		config:        config,
 		services:      services,
 		tokenProvider: tokenProvider,
 	}
@@ -42,7 +47,7 @@ func (h *Handler) Init() *gin.Engine {
 }
 
 func (h *Handler) initAPI(router *gin.Engine) {
-	handlerV1 := v1.NewHandler(h.services, h.tokenProvider)
+	handlerV1 := v1.NewHandler(h.services, h.tokenProvider, h.config)
 	api := router.Group("/api")
 	{
 		handlerV1.Init(api)

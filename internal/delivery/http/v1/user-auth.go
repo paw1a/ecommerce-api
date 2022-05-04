@@ -28,18 +28,22 @@ func (h *Handler) userSignIn(context *gin.Context) {
 	var signInDTO dto.SignInDTO
 	err := context.BindJSON(&signInDTO)
 	if err != nil {
-		errorResponse(context, http.StatusBadRequest, "invalid input body")
+		badRequestResponse(context, "invalid sign in credentials", err)
 		return
 	}
 
 	user, err := h.services.Users.FindByCredentials(context, signInDTO)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			errorResponse(context, http.StatusUnauthorized, "invalid user credentials")
+			unauthorizedResponse(context, "invalid user email or password")
 		} else {
-			errorResponse(context, http.StatusInternalServerError, err.Error())
+			internalErrorResponse(context, err)
 		}
 		return
+	}
+
+	if err != nil {
+
 	}
 
 	userClaims := jwt.MapClaims{"userID": user.ID}
@@ -49,10 +53,15 @@ func (h *Handler) userSignIn(context *gin.Context) {
 	})
 
 	if err != nil {
-		errorResponse(context, http.StatusUnauthorized, err.Error())
+		internalErrorResponse(context, err)
 		return
 	}
-	successResponse(context, authDetails)
+
+	context.SetSameSite(http.SameSiteLaxMode)
+	context.SetCookie("refreshToken", authDetails.RefreshToken,
+		int(h.config.JWT.RefreshTokenTime), "/", h.config.Listen.Host, false, true)
+
+	successResponse(context, authDetails.AccessToken)
 }
 
 // UserSignUp godoc
@@ -71,7 +80,7 @@ func (h *Handler) userSignUp(context *gin.Context) {
 	var signUpDTO dto.SignUpDTO
 	err := context.BindJSON(&signUpDTO)
 	if err != nil {
-		errorResponse(context, http.StatusBadRequest, "invalid input body")
+		badRequestResponse(context, "invalid sign up data", err)
 		return
 	}
 
@@ -83,10 +92,10 @@ func (h *Handler) userSignUp(context *gin.Context) {
 	})
 	if err != nil {
 		if mongo.IsDuplicateKeyError(err) {
-			errorResponse(context, http.StatusInternalServerError,
-				fmt.Sprintf("user with email %s already exists", signUpDTO.Email))
+			badRequestResponse(context,
+				fmt.Sprintf("user with email %s already exists", signUpDTO.Email), err)
 		} else {
-			errorResponse(context, http.StatusInternalServerError, err.Error())
+			internalErrorResponse(context, err)
 		}
 		return
 	}

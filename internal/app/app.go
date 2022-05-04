@@ -51,7 +51,7 @@ func Run(configPath string) {
 		Repos:       repos,
 		RedisClient: redisClient,
 	})
-	handlers := delivery.NewHandler(services, tokenProvider)
+	handlers := delivery.NewHandler(services, tokenProvider, cfg)
 	log.Info("services, repositories and handlers initialized")
 
 	server := &http.Server{
