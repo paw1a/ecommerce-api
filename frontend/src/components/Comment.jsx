@@ -10,7 +10,6 @@ import StarIcon from '@mui/icons-material/Star';
 import './Comment.css'
 
 export default function Comment({comment}) {
-    console.log(comment)
     return (
         <Card sx={{backgroundColor: '#f5f5f5', boxShadow: 'none'}}>
             <CardHeader

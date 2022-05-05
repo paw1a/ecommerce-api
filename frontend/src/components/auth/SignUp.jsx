@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -12,6 +10,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Error from "../Error";
+import {useEffect, useState} from "react";
+import {signUp} from "../../api/auth";
 
 function Copyright(props) {
     return (
@@ -29,19 +30,26 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
+    let [error, setError] = useState(null)
+
     const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        signUp(event)
+            .then(() => {
+                window.location = '/catalog';
+            })
+            .catch(err => {
+                setError(err.response.data)
+                console.log(error);
+            })
     };
 
     return (
         <ThemeProvider theme={theme}>
             <Container style={{marginBottom: '100px'}} component="main" maxWidth="xs">
                 <CssBaseline />
+
+                {error && <Error message={error}/>}
+
                 <Box
                     sx={{
                         marginTop: 8,
@@ -112,7 +120,7 @@ export default function SignUp() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href="/sign-in" variant="body2">
                                     Already have an account? Sign in
                                 </Link>
                             </Grid>

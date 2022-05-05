@@ -1,4 +1,5 @@
 import axios from "axios";
+import {useState} from "react";
 
 let accessToken = JSON.parse(localStorage.getItem('ACCESS_TOKEN')) || null
 
@@ -45,9 +46,6 @@ export const refreshToken = () => {
     })
         .then(resp => {
             updatedToken = resp.data.data;
-            if (refreshError) {
-                return null;
-            }
             setToken(updatedToken);
         })
         .catch(error => {
@@ -79,10 +77,28 @@ export const signIn = (event) => {
             token = resp.data.data;
             setToken(token);
             console.log(token);
+            window.location = '/catalog';
         })
         .catch(error => {
             console.log(error.response.data);
         })
+};
+
+export const signUp = (event) => {
+    event.preventDefault();
+
+    const data = new FormData(event.currentTarget);
+
+    return axios({
+        method: 'post',
+        url: '/api/v1/users/auth/sign-up',
+        withCredentials: true,
+        data: {
+            email: data.get('email'),
+            password: data.get('password'),
+            name: data.get('name')
+        }
+    })
 };
 
 export const setToken = (token) => {
