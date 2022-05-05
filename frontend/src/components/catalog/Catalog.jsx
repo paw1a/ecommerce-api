@@ -2,7 +2,7 @@ import './Catalog.css'
 import Filter from "./Filter";
 import {Button, Grid, LinearProgress, Pagination} from "@mui/material";
 import ProductCard from "./Card";
-import useAxios from "../../api/api";
+import {useAxios} from "../../api/api";
 import Error from "../Error";
 import React from "react";
 

@@ -10,7 +10,7 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Comment from "./Comment";
 import {useParams} from "react-router";
-import useAxios from "../api/api";
+import {useAxios} from "../api/api";
 import Error from "./Error";
 
 const Product = () => {

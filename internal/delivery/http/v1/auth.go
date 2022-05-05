@@ -60,7 +60,7 @@ func (h *Handler) refreshToken(context *gin.Context) {
 
 	context.SetSameSite(http.SameSiteLaxMode)
 	context.SetCookie("refreshToken", authDetails.RefreshToken,
-		int(h.config.JWT.RefreshTokenTime), "/", h.config.Listen.Host, false, true)
+		int(h.config.JWT.RefreshTokenTime), "/", h.config.Listen.Host, false, false)
 
 	successResponse(context, authDetails.AccessToken)
 }
