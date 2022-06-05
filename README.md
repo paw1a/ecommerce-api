@@ -52,7 +52,7 @@ make run
 or
 
 ```
-dcoker-compose up
+docker-compose up
 ```
 
 Run test data generation for MongoDB
