@@ -3,12 +3,12 @@
 
 # Contents
 
-1. [Domain diagram](#Domain diagram)
+1. [Domain diagram](#Diagram)
 2. [Run](#Run)
 3. [API](#API)
 4. [Implementation](#Implementation)
 
-# Domain diagram
+# Diagram
 ![image not found](docs/E-commerce%20API%20diagram.png)
 
 # Run
