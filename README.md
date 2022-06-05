@@ -1,15 +1,16 @@
 # E-commerce Rest API
+
+API for web stores to sell different types of products. Integrated with payment system Stripe. Also has admin dashboard.
+
+![Preview](docs/Preview.jpg)
+
 ### [Swagger API documentation](https://app.swaggerhub.com/apis-docs/paw1a/E-commerce)
 
 # Contents
 
-1. [Domain diagram](#Diagram)
-2. [Run](#Run)
-3. [API](#API)
-4. [Implementation](#Implementation)
-
-# Diagram
-![image not found](docs/E-commerce%20API%20diagram.png)
+1. [Run](#Run)
+2. [API](#API)
+3. [Implementation](#Implementation)
 
 # Run
 
@@ -113,3 +114,6 @@ API documentation can be found [here](https://app.swaggerhub.com/apis-docs/paw1a
 │   └── payment     // payment service configuration
 └─
 ```
+
+# Diagram
+![image not found](docs/E-commerce%20API%20diagram.png)
